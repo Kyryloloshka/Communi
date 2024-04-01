@@ -33,10 +33,24 @@
     --ring: 0 0% 3.9%;
 
     --radius: 0.5rem;
+    --primary-color: #F1CD78;
+    --secondary-color: #CFE96C;
+    --secondary-color-800: #6c811b;
+    --dark-1: #000000;
+    --dark-2: #09090A;
+    --dark-3: #101012;
+    --dark-4: #1F1F22;
+    --dark-5: #2F2F32;
+    --dark-6: #41403c;
+    --light-1: #FFFFFF;
+    --light-2: #f1f0ef;
+    --light-3: #dbd5cc;
+    --light-4: #c8bdab;
+    --light-4: #c2ae8e;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
+    --background: var(--dark-3);
     --foreground: 0 0% 98%;
 
     --card: 0 0% 3.9%;
@@ -74,3 +88,49 @@
     @apply bg-background text-foreground;
   }
 }
+
+.shadow-primary {
+  -webkit-box-shadow: 0px 1px 68px -1px var(--primary-color);
+  -moz-box-shadow: 0px 1px 68px -1px var(--primary-color);
+  box-shadow: 0px 1px 68px -1px var(--primary-color);
+}
+.shadow-primary-small {
+  -webkit-box-shadow: 0px 1px 10px -1px var(--primary-color);
+  -moz-box-shadow: 0px 1px 10px -1px var(--primary-color);
+  box-shadow: 0px 1px 10px -1px var(--primary-color);
+}
+.shadow-secondary {
+  -webkit-box-shadow: 0px 0px 15px 5px var(--secondary-color);
+  -moz-box-shadow: 0px 0px 15px 5px var(--secondary-color);
+  box-shadow: 0px 0px 15px 5px var(--secondary-color);
+}
+.text-shadow-primary {
+  text-shadow:  0px 0px 20px var(--primary-color);
+}
+
+.loader {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 24px 0 #fff, -24px 0 #fff;
+  position: relative;
+  animation: flash 0.5s ease-out infinite alternate;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #FFF2;
+    box-shadow: 24px 0 #FFF2, -24px 0 #FFF;
+  }
+  50% {
+    background-color: #FFF;
+    box-shadow: 24px 0 #FFF2, -24px 0 #FFF2;
+  }
+  100% {
+    background-color: #FFF2;
+    box-shadow: 24px 0 #FFF, -24px 0 #FFF2;
+  }
+}
+      
+    
