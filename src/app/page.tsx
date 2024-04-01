@@ -6,10 +6,17 @@ import { app, db } from "@/lib/firebase/firebase"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { DocumentData, doc, getDoc } from "firebase/firestore"
+import Users from "@/components/Users"
+import Chat from "@/components/Chat"
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
 
 export default function Home() {
   const auth = getAuth(app);
-  const [user, setUser] = useState<DocumentData | null>();
+  const [user, setUser] = useState<DocumentData | null | undefined>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -29,8 +36,15 @@ export default function Home() {
 
   return (
     <div className="flex h-screen">
-      <div className="flex-shrink-0 w-3/12"></div>
-      <div className="flex-grow w-3/12"></div>
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel defaultSize={25} className="min-w-[200px] py-3">
+          <Users user={user}/>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={75} className="min-w-[300px]">
+          <Chat user={user}/>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }
