@@ -1,8 +1,11 @@
 "use client"
 import { Button } from '@/components/ui/button';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { FormEvent, useState } from 'react'
+import {auth, db} from '@/lib/firebase/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export interface ErrorForm {
   name?: string;
@@ -41,12 +44,20 @@ const page = () => {
     return Object.keys(newErrors).length === 0;
   }
 
-  const handleSumbit = (e: any) => {
+  const handleSumbit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       if (validateForm()) {
+        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredentials.user;
+        const docRef = doc(db, 'users', user.uid);
+        await setDoc(docRef, {
+          name,
+          email
+        });
         router.push('/');
+        setErrors({});
       } else {
         setLoading(false);
         return;

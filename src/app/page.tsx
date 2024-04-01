@@ -1,42 +1,36 @@
 "use client"
-import * as React from "react"
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
-import { useTheme } from "next-themes"
  
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { User, getAuth } from "firebase/auth"
+import { app, db } from "@/lib/firebase/firebase"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { DocumentData, doc, getDoc } from "firebase/firestore"
 
 export default function Home() {
-  const { setTheme } = useTheme()
+  const auth = getAuth(app);
+  const [user, setUser] = useState<DocumentData | null>();
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const userRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userRef);
+        const userData = userDoc.data();
+        setUser(userData)
+      } else {
+        setUser(null)
+        router.push('/login')
+      }
+    })
+    return () => unsubscribe();
+  }, [auth, router])
+
   return (
-    <div>
-      <h1>Home</h1>
-      <Button>Click me</Button>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon">
-            <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setTheme("light")}>
-            Light
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("dark")}>
-            Dark
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("system")}>
-            System
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="flex h-screen">
+      <div className="flex-shrink-0 w-3/12"></div>
+      <div className="flex-grow w-3/12"></div>
     </div>
   );
 }
