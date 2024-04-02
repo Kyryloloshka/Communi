@@ -10,12 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import EmojiPicker from 'emoji-picker-react';
 const InputText = ({ sendMessage, message, setMessage, image, setImage }: { sendMessage: Function, message: string, setMessage: Function, image: string, setImage: Function }) => {
   const storage = getStorage(app);
   const [file, setFile] = useState<any>(null);
   const [uploadProgress, setUploadProgress] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<any>(null);
   const [open, setOpen] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     setFile(file);
@@ -45,6 +48,10 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
     })
   }
 
+  const handleEmojiCLick = (emoji: any, event: any) => {
+    setMessage((prev: any) => prev + emoji.emoji);
+  }
+
   return (
     <form onSubmit={
       (e) => {
@@ -67,6 +74,10 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
           </DialogDescription>
         </DialogContent>
       </Dialog>
+      <Button onClick={() => {setShowEmoji(prev => !prev)}} variant={"primary"} className='text-gray-500 mr-2 cursor-pointer'>emoji</Button>
+      {showEmoji && <div className="absolute bottom-[70px] right-4">
+      <EmojiPicker onEmojiClick={handleEmojiCLick} />
+      </div>}
       <input type="text" placeholder='Type a message' value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none rounded-sm'/>
       <Button variant={"primary"} type="submit" className='text-gray-500 ml-2 cursor-pointer'>send</Button>
     </form>
