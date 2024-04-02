@@ -69,7 +69,7 @@ export default function Home() {
         </ResizablePanel>
         <ResizableHandle className="bg-dark-5"/>
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
-          <Chat user={user} setSelectedChat={setSelectedChat}/>
+          <Chat user={user} selectedChat={selectedChat}/>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

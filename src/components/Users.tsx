@@ -79,7 +79,12 @@ const Users = ({userData, setSelectedChat}: {userData: any, setSelectedChat: Fun
   }
 
   const openChat = (chat: any) => {
-    router.push(`/chat/${chat.id}`)
+    const data={
+      id: chat.id,
+      myData: userData,
+      otherData: chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
+    }
+    setSelectedChat(data)
   }
 
   return (
