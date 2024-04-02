@@ -20,6 +20,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
+  const [image, setImage] = useState<any>(null);
   const messagesContainerRef = useRef(null);
 
   useEffect(() => {
@@ -40,8 +41,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
 
   const sendMessage = async (e: InputEvent) => {
     const messageCollection = collection(db, 'messages');
-    if (message.trim() === "") return
-    console.log(selectedChat);
+    if (message.trim() === "" && !image) return
     
     try {
       const messageData = {
@@ -49,14 +49,15 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
         text: message,
         chatRoomId: chatRoomId,
         time:serverTimestamp(),
-        image: "",
+        image: image,
         messageType: "text",
       }
       await addDoc(messageCollection, messageData);
       setMessage("");
+      setImage(null)
       const chatRef = doc(db, 'chats', chatRoomId);
       await updateDoc(chatRef,{
-        lastMessage: message,
+        lastMessage: message ? message : "Image",
       })
     } catch (error) {
       console.log('Error sending message: ', error);
@@ -71,7 +72,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
           ))
         }
       </div>
-      <InputText sendMessage={sendMessage} message={message} setMessage={setMessage}/>
+      <InputText sendMessage={sendMessage} message={message} setMessage={setMessage} image={image} setImage={setImage}/>
     </div>
   )
 }

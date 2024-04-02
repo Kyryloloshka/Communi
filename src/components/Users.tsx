@@ -117,10 +117,10 @@ const Users = ({userData, setSelectedChat}: {userData: any, setSelectedChat: Fun
           >
             {chat.id !== auth.currentUser?.uid && chat.users && chat.users.length > 0 &&
             <UserCard
-            name={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.name}
-            avatarUrl={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.avatarUrl}
-            latestMessageText={chat.lastMessage}
-            time={chat.time}
+              name={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.name}
+              avatarUrl={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.avatarUrl}
+              latestMessageText={chat.lastMessage}
+              time={chat.time}
               type={ChatType.Chat}
             />}
           </div>

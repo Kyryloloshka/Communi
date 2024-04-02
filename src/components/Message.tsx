@@ -1,6 +1,5 @@
 import React from 'react'
 import { IMessage } from './Chat';
-import { DocumentData } from 'firebase/firestore';
 import moment from 'moment';
 
 function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, otherUser: any}) {
@@ -21,6 +20,10 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
       </div>
       }
       <div className={`text-light-1 p-2 rounded-t-lg ${isCurrentUser ? "bg-secondary-500/40 self-end  rounded-l-lg" : "bg-dark-5 rounded-r-lg self-start"}`}>
+        {
+          message.image && 
+          <img src={message.image} alt="message" className='w-40 h-40 rounded-lg object-cover mb-2' />
+        }
         <p className=''>{message.text}</p>
         <div className="text-xs text-gray-400">{timeAgo(message.time)}</div>
       </div>
