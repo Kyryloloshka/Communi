@@ -11,7 +11,7 @@ export interface IMessage {
   time: string;
 }
 
-const Chat = ({user}: {user: DocumentData | null | undefined}) => {
+const Chat = ({user, setSelectedChat}: {user: DocumentData | null | undefined, setSelectedChat: Function}) => {
   
   const messages = [
     {

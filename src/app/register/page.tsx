@@ -54,7 +54,8 @@ const page = () => {
         const docRef = doc(db, 'users', user.uid);
         await setDoc(docRef, {
           name,
-          email
+          email,
+          avatarUrl: `https://ui-avatars.com/api/?background=F1CD78&color=000&name=${name}`
         });
         router.push('/');
         setErrors({});

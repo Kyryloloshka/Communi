@@ -134,3 +134,25 @@
 }
       
     
+.burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 18px;
+  width: 24px;
+  cursor: pointer;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+.burger::after {
+  content: "";
+  background-color: var(--light-4);
+  height: 2px;
+  width: 24px;
+  border: none;
+  padding: 8px 0px;
+  display: flex;
+  padding: 0;
+  box-shadow: 0 8px var(--light-4), 0 16px var(--light-4);
+}
