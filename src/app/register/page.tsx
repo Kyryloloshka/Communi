@@ -12,6 +12,7 @@ export interface ErrorForm {
   email?: string;
   password?: string;
   confirmPassword?: string;
+  tag?: string;
 }
 
 
@@ -23,7 +24,7 @@ const page = () => {
   const [errors, setErrors] = useState<ErrorForm>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const [tag, setTag] = useState(""); // Додали стан для тегу
   const validateForm = () => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const newErrors = {} as ErrorForm;
@@ -40,6 +41,9 @@ const page = () => {
     if (password!== confirmPassword) {
       newErrors.confirmPassword = "Passwords are not the same!";
     }
+    if (!tag.trim() || !tag.startsWith("@")) { 
+      newErrors.tag = "Tag must start with '@'!";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -55,7 +59,8 @@ const page = () => {
         await setDoc(docRef, {
           name,
           email,
-          avatarUrl: `https://ui-avatars.com/api/?background=F1CD78&color=000&name=${name}`
+          avatarUrl: `https://ui-avatars.com/api/?background=F1CD78&color=000&name=${name}`,
+          tag
         });
         router.push('/');
         setErrors({});
@@ -92,6 +97,18 @@ const page = () => {
           <label htmlFor="confirmPassword" className='block'>Confirm Password</label>
           <input type="password" placeholder='Confirm password' id="confirmPassword" className='w-full border px-3 py-2 rounded dark:bg-dark-4' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           {errors.confirmPassword && <p className='text-red-400'>{errors.confirmPassword}</p>}
+        </div>
+        <div className='space-y-2'>
+          <label htmlFor="tag" className='block'>Tag</label>
+          <input
+            placeholder='Enter your unique tag starting with @'
+            type="text"
+            id="tag"
+            className='w-full border px-3 py-2 rounded dark:bg-dark-4'
+            value={tag}
+            onChange={(e) => setTag(e.target.value)}
+          />
+          {errors.tag && <p className='text-red-400'>{errors.tag}</p>}
         </div>
         <div className="flex flex-auto flex-wrap gap-1 self-center align-center justify-center">
           <span className='text-center'>Already have an Account? </span>

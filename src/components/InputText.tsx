@@ -62,7 +62,7 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
     } className='flex items-center px-4 pt-2 pb-3 border-t border-dark-5'>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
-          <Button variant={"primary"} className='text-gray-500 mr-2 cursor-pointer'>file</Button>
+          <div className='text-gray-500 mr-2 cursor-pointer'>file</div>
         </DialogTrigger>
         <DialogContent>
           <DialogTitle>Upload Image</DialogTitle>
