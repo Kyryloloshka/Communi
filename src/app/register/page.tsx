@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { FormEvent, useState } from 'react'
 import {auth, db} from '@/lib/firebase/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 export interface ErrorForm {
   name?: string;
@@ -24,8 +24,21 @@ const page = () => {
   const [errors, setErrors] = useState<ErrorForm>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [tag, setTag] = useState(""); // Додали стан для тегу
-  const validateForm = () => {
+  const [tag, setTag] = useState("");
+
+  const checkIfTagExists = async (): Promise<boolean> => {
+    try {
+      const q = query(collection(db, 'users'), where('tag', '==', tag));
+      const querySnapshot = await getDocs(q);
+      console.log(querySnapshot.docs);
+      return querySnapshot.docs.length > 0; // Поверне true, якщо хоча б один користувач із вказаним тегом існує
+    } catch (error) {
+      console.error('Error checking tag existence:', error);
+      return false; // У випадку помилки повертаємо false
+    }
+  };
+
+  const validateForm = async () => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const newErrors = {} as ErrorForm;
 
@@ -41,9 +54,14 @@ const page = () => {
     if (password!== confirmPassword) {
       newErrors.confirmPassword = "Passwords are not the same!";
     }
-    if (!tag.trim() || !tag.startsWith("@")) { 
-      newErrors.tag = "Tag must start with '@'!";
+    if (!/^@[a-z]+$/.test(tag.trim())){ 
+      newErrors.tag = "Tag must start with '@' and contain only lowercase latin letters!";
     }
+    await checkIfTagExists().then((exists) => {
+       if (exists) {
+        newErrors.tag = "Tag already exists!";
+      }
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -52,7 +70,7 @@ const page = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      if (validateForm()) {
+      if (await validateForm()) {
         const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredentials.user;
         const docRef = doc(db, 'users', user.uid);

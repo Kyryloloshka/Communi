@@ -32,51 +32,30 @@ const Users = ({userData, setSelectedChat}: {userData: any, setSelectedChat: Fun
   },[])
 
   useEffect(() => {
-    setLoading2(true);
-    if (!userData) {
-      setLoading2(false);
-      return;
-    }
-    const chatQuery = query(collection(db, "chats"), where("users", "array-contains", userData.id));
-
-    const unsub = onSnapshot(chatQuery, (snapshot) => {
-      const chats = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-      console.log(chats);
-      setUserChats(chats);
-      setLoading2(false);
-    })
-    return unsub
-  }, [userData])
-  const handleCreateChat = async (user: any) => {
-    setLoading2(true);
-    const chatQuery = query(collection(db, 'chats'), where("users", "==", [user.id, userData.id]));
-
     try {
-      const existingChatSnapshot = await getDocs(chatQuery);
-      if (existingChatSnapshot.docs.length > 0) {
-        console.log('Chat already exists');
+      setLoading2(true);
+      if (!userData) {
+        setLoading2(false);
         return;
       }
-      const usersData = {
-        [userData.id]: userData,
-        [user.id]: user,
-      }
-      const chatData = {
-        users: [user.id, userData.id],
-        usersData,
-        timestamp: serverTimestamp(),
-        lastMessage: null,
-      }
+      const chatQuery = query(collection(db, "chats"), where("users", "array-contains", userData.id));
 
-      const chatRef = await addDoc(collection(db, "chats"), chatData);
-      console.log("chat created with id: ", chatRef.id);
+      const unsub = onSnapshot(chatQuery, (snapshot) => {
+        const chats = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        console.log(chats);
+        setUserChats(chats);
+        setLoading2(false);
+      })
+      return unsub
     } catch (error) {
-      console.log('Error creating chat: ', error);
+      console.log(error);
     }
-  }
+    
+  }, [userData])
+  
 
   const openChat = (chat: any) => {
     const data={
@@ -88,25 +67,7 @@ const Users = ({userData, setSelectedChat}: {userData: any, setSelectedChat: Fun
   }
 
   return (
-    <div className='py-3'>
-      {loading 
-        ? <div className='flex justify-center content-center'><span className="loader"></span></div> 
-        : userChats.map((user: DocumentData) => (
-          <div 
-            className=""
-            key={user.id}
-            onClick={() => handleCreateChat(user)}
-          >
-            {user.id !== auth.currentUser?.uid &&
-            <UserCard 
-              name={user.name} 
-              avatarUrl={user.avatarUrl}
-              latestMessageText={user.latestMessageText}
-              time={user.time}
-              type={ChatType.Chat}
-            />}
-          </div>
-      ))}
+    <div className=''>
       {loading2
         ? <div className='flex justify-center content-center'><span className="loader"></span></div> 
         : userChats.map((chat: DocumentData) => (

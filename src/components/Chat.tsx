@@ -24,17 +24,22 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
   const messagesContainerRef = useRef(null);
 
   useEffect(() => {
-    if (!chatRoomId) return;
-    const unsub = onSnapshot(query(collection(db, 'messages'), where("chatRoomId", "==", chatRoomId), orderBy("time", "asc")), (snapshot) => {
-      const messagesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-      console.log(messagesData);
-      
-      setMessages(messagesData);
-    })
-    return unsub;
+    try {
+      if (!chatRoomId) return;
+      const unsub = onSnapshot(query(collection(db, 'messages'), where("chatRoomId", "==", chatRoomId), orderBy("time", "asc")), (snapshot) => {
+        const messagesData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        console.log(messagesData);
+        
+        setMessages(messagesData);
+      })
+      return unsub;
+    } catch (error) {
+      console.log(error);
+    }
+    
   }, [chatRoomId])
 
   

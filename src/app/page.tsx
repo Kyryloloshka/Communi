@@ -1,5 +1,4 @@
 "use client"
- 
 import { Button } from "@/components/ui/button"
 import { User, getAuth, signOut } from "firebase/auth"
 import { app, db } from "@/lib/firebase/firebase"
@@ -20,12 +19,16 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import SearchUsersByTag from "@/components/SearchUsersByTag"
+import SearchResultsComponent from "@/components/SearchResultsComponent"
 
 export default function Home() {
   const auth = getAuth(app);
   const [user, setUser] = useState<DocumentData | null | undefined>(null);
   const router = useRouter();
   const [selectedChat, setSelectedChat] = useState(null);
+  const [searchResults, setSearchResults] = useState([] as any);
+  const [searchTag, setSearchTag] = useState("");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -54,7 +57,7 @@ export default function Home() {
     <div className="flex h-screen">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={25} className="min-w-[200px]">
-          <div className="h-8 w-full flex items-center gap-2 p-3 bg-dark-3">
+          <div className="h-12 w-full flex items-center gap-2 p-3">
             <Sheet>
               <SheetTrigger>
                 <div className='burger'>
@@ -64,8 +67,10 @@ export default function Home() {
                 <Button variant={"primary"} onClick={handleLogout}>Logout</Button>
               </SheetContent>
             </Sheet>
+            <SearchUsersByTag searchTag={searchTag} setSearchTag={setSearchTag} setSearchResults={setSearchResults}/>
           </div>
-          <Users userData={user} setSelectedChat={setSelectedChat}/>
+          {searchTag.length > 0 ? <SearchResultsComponent userData={user} loading={false} searchResults={searchResults}/> :
+          <Users userData={user} setSelectedChat={setSelectedChat}/>}
         </ResizablePanel>
         <ResizableHandle className="bg-dark-5"/>
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
