@@ -9,7 +9,7 @@ import { app, db } from '@/lib/firebase/firebase'
 import { useRouter } from 'next/navigation'
 
 
-const Users = ({userData, setSelectedChat}: {userData: any, setSelectedChat: Function}) => {
+const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSelectedChat: Function, selectedChat: any}) => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
@@ -78,6 +78,7 @@ const Users = ({userData, setSelectedChat}: {userData: any, setSelectedChat: Fun
           >
             {chat.id !== auth.currentUser?.uid && chat.users && chat.users.length > 0 &&
             <UserCard
+              isSelected={selectedChat?.id === chat.id}
               name={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.name}
               avatarUrl={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.avatarUrl}
               latestMessageText={chat.lastMessage}

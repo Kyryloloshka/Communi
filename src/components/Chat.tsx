@@ -69,7 +69,9 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
     }
   }
   return (
-    <div className='flex flex-col h-screen'>
+    <>
+    {!selectedChat ? <div className='flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50'>Select a chat to start messaging</div> :
+    <div className='flex flex-col h-full'>
       <div className="flex-1 overflow-y-auto p-5">
         {
           messages.map(message => (
@@ -78,7 +80,8 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
         }
       </div>
       <InputText sendMessage={sendMessage} message={message} setMessage={setMessage} image={image} setImage={setImage}/>
-    </div>
+    </div>}
+    </>
   )
 }
 

@@ -6,11 +6,15 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import EmojiPicker from 'emoji-picker-react';
+import { Input } from './ui/input';
+import { FiPaperclip } from 'react-icons/fi';
+import { BsEmojiSmile } from 'react-icons/bs';
+
+
 const InputText = ({ sendMessage, message, setMessage, image, setImage }: { sendMessage: Function, message: string, setMessage: Function, image: string, setImage: Function }) => {
   const storage = getStorage(app);
   const [file, setFile] = useState<any>(null);
@@ -59,11 +63,14 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
         sendMessage();
       }
     
-    } className='flex items-center px-4 pt-2 pb-3 border-t border-dark-5'>
+    } className='flex items-center pb-1 border-t border-dark-5'>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
-          <div className='text-gray-500 mr-2 cursor-pointer'>file</div>
+          <div className='text-gray-500 mr-2 cursor-pointer py-3 pl-4'>
+            <FiPaperclip className='file-clip'/>
+          </div>
         </DialogTrigger>
+        
         <DialogContent>
           <DialogTitle>Upload Image</DialogTitle>
           <DialogDescription>
@@ -74,12 +81,27 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
           </DialogDescription>
         </DialogContent>
       </Dialog>
-      <Button onClick={() => {setShowEmoji(prev => !prev)}} variant={"primary"} className='text-gray-500 mr-2 cursor-pointer'>emoji</Button>
+      <BsEmojiSmile onClick={() => {setShowEmoji(prev => !prev)}} className='fill-white hover:-translate-y-0.5 hover:fill-primary-500 my-3 ml-1.5 transition h-5 w-5 emoji-icon cursor-pointer '/>
       {showEmoji && <div className="absolute bottom-[70px] right-4">
       <EmojiPicker onEmojiClick={handleEmojiCLick} />
       </div>}
-      <input type="text" placeholder='Type a message' value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none rounded-sm'/>
-      <Button variant={"primary"} type="submit" className='text-gray-500 ml-2 cursor-pointer'>send</Button>
+      <Input type="text" placeholder='Type a message' value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none'/>
+      <button className='button-send p-3' type="submit">
+        <div className="button-send-svg-wrapper">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+          >
+            <path fill="none" d="M0 0h24v24H0z"></path>
+            <path
+              fill="currentColor"
+              d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+            ></path>
+          </svg>
+        </div>
+      </button>
     </form>
   )
 }

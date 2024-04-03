@@ -13,11 +13,12 @@ interface ChatData {
   latestMessageText: string;
   time: string;
   type: ChatType;
+  isSelected?: boolean;
 }
 
-const UserCard = ({name, avatarUrl, latestMessageText, time, type }: ChatData) => {
+const UserCard = ({name, avatarUrl, latestMessageText, time, type, isSelected }: ChatData) => {
   return (
-    <div className='flex items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-3 transition w-full cursor-pointer'>
+    <div className={`flex items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-4/70 transition w-full cursor-pointer ${isSelected && "bg-dark-3"}`}>
       <img src={avatarUrl} alt={name} className='w-10 h-10 rounded-full' />
       <div className="flex flex-col w-full">
         <div className="flex gap-1">

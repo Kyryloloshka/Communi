@@ -19,7 +19,7 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
         <img src={otherUser.avatarUrl} alt="avatar" className='w-full h-full rounded-full object-cover' />
       </div>
       }
-      <div className={`text-light-1 p-2 rounded-t-lg ${isCurrentUser ? "bg-secondary-500/40 self-end  rounded-l-lg" : "bg-dark-5 rounded-r-lg self-start"}`}>
+      <div className={`text-light-1 p-2 rounded-t-lg ${isCurrentUser ? "bg-dark-5 self-end  rounded-l-lg" : "bg-dark-5 rounded-r-lg self-start"}`}>
         {
           message.image && 
           <img src={message.image} alt="message" className='w-40 h-40 rounded-lg object-cover mb-2' />
