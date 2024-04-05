@@ -210,3 +210,18 @@
   stroke: var(--primary-color);
   transform: rotate(-10deg);
 }
+
+.emoji-picker * {
+  background: #000;
+  color: #000;
+  stroke: #000;
+  fill: #000;
+}
+
+.emoji-picker > *:hover {
+  background: #000;
+}
+
+.epr_-99lr9q {
+  background: #000;
+}

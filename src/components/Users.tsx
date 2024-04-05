@@ -45,7 +45,6 @@ const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSel
           id: doc.id,
           ...doc.data()
         }))
-        console.log(chats);
         setUserChats(chats);
         setLoading2(false);
       })
@@ -82,7 +81,7 @@ const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSel
               name={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.name}
               avatarUrl={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.avatarUrl}
               latestMessageText={chat.lastMessage}
-              time={chat.time}
+              time={chat.timestamp}
               type={ChatType.Chat}
             />}
           </div>

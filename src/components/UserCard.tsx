@@ -1,5 +1,6 @@
 import React from 'react'
 import TruncateMarkup from 'react-truncate-markup';
+import { getValidTime } from './Message';
 
 export enum ChatType {
   Chat = "chat",
@@ -11,7 +12,7 @@ interface ChatData {
   name: string;
   avatarUrl: string;
   latestMessageText: string;
-  time: string;
+  time: any;
   type: ChatType;
   isSelected?: boolean;
 }
@@ -28,7 +29,7 @@ const UserCard = ({name, avatarUrl, latestMessageText, time, type, isSelected }:
               <div className="whitespace-nowrap overflow-hidden truncate" >
                   <span title={name}>{name}</span>
               </div>
-              <span className='text-muted-foreground text-xs pt-[3px]'>{time}</span>
+              <span className='text-muted-foreground text-xs pt-[3px]'>{getValidTime(time)}</span>
           </div>
         </div>
         <div className="grid" style={{ gridTemplateColumns: '1fr' }}>

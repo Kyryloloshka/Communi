@@ -31,8 +31,6 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
           id: doc.id,
           ...doc.data()
         }))
-        console.log(messagesData);
-        
         setMessages(messagesData);
       })
       return unsub;

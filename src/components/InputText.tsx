@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker, { Theme } from 'emoji-picker-react';
 import { Input } from './ui/input';
 import { FiPaperclip } from 'react-icons/fi';
 import { BsEmojiSmile } from 'react-icons/bs';
@@ -83,7 +83,7 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
       </Dialog>
       <BsEmojiSmile onClick={() => {setShowEmoji(prev => !prev)}} className='fill-white hover:-translate-y-0.5 hover:fill-primary-500 my-3 ml-1.5 transition h-5 w-5 emoji-icon cursor-pointer '/>
       {showEmoji && <div className="absolute bottom-[70px] right-4">
-      <EmojiPicker onEmojiClick={handleEmojiCLick} />
+        <EmojiPicker theme={"dark" as Theme} previewConfig={{showPreview: false, defaultCaption:""}} lazyLoadEmojis={true} className='text-sm emoji-picker' onEmojiClick={handleEmojiCLick} />
       </div>}
       <Input type="text" placeholder='Type a message' value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none'/>
       <button className='button-send p-3' type="submit">
