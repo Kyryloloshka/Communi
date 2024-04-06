@@ -4,6 +4,7 @@ import { app } from '@/lib/firebase/firebase';
 import { useState } from 'react';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
@@ -15,13 +16,14 @@ import { FiPaperclip } from 'react-icons/fi';
 import { BsEmojiSmile } from 'react-icons/bs';
 
 
-const InputText = ({ sendMessage, message, setMessage, image, setImage }: { sendMessage: Function, message: string, setMessage: Function, image: string, setImage: Function }) => {
+const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function, message: string, setMessage: Function }) => {
   const storage = getStorage(app);
   const [file, setFile] = useState<any>(null);
   const [uploadProgress, setUploadProgress] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [image, setImage] = useState<any>(null);
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
@@ -31,6 +33,7 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
       setImagePreview(reader.result);
     }
     reader.readAsDataURL(file);
+    setOpen(true);
   }
 
   const handleUpload = async () => {
@@ -48,8 +51,14 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
         setUploadProgress(null);
         setImagePreview(null);
         setOpen(false);
+        sendMessage(downloadURL);
       })
     })
+  }
+  const handleCancelUpload = () => {
+    setFile(null);
+    setImagePreview(null);
+    setOpen(false);
   }
 
   const handleEmojiCLick = (emoji: any, event: any) => {
@@ -63,27 +72,34 @@ const InputText = ({ sendMessage, message, setMessage, image, setImage }: { send
         sendMessage();
       }
     
-    } className='flex items-center pb-1 border-t border-dark-5'>
+    } className='flex items-center pb-1 border-t border-dark-5 relative'>
+      <div className='text-gray-500 mr-2 cursor-pointer py-3 pl-4'>
+        <label htmlFor="file-upload" className="cursor-pointer">
+          <FiPaperclip className='file-clip' />
+        </label>
+        <input id="file-upload" type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+      </div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <div className='text-gray-500 mr-2 cursor-pointer py-3 pl-4'>
-            <FiPaperclip className='file-clip'/>
-          </div>
-        </DialogTrigger>
-        
-        <DialogContent>
-          <DialogTitle>Upload Image</DialogTitle>
-          <DialogDescription>
-            <input type="file" onChange={handleFileChange} />
-            <Button variant={"primary"} onClick={handleUpload}>Upload</Button>
-            {imagePreview && <img src={imagePreview} alt="preview" className='w-full mt-2' />}
+        <DialogContent className='h-screen w-screen flex justify-center items-center bg-transparent p-5' >
+          <div className="max-w-xl flex flex-col gap-3 flex-auto">
+            <DialogTitle>Send Image</DialogTitle>
+            {imagePreview && <img src={imagePreview} alt="preview" className='w-full mt-2 object-contain max-h-[500px] max-w-[300px] self-center' />}
             {uploadProgress && <progress value={uploadProgress} max="100"></progress>}
-          </DialogDescription>
+            <div className="container-input">
+              <input required={true} type="text" value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none'/>
+              <label>Description</label>
+              <i></i>
+            </div>
+            <div className="flex gap-3 justify-between">
+              <Button variant={"gray"} onClick={handleCancelUpload}>Cancel</Button>
+              <Button variant={"primary"} onClick={handleUpload}>Send</Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
-      <BsEmojiSmile onClick={() => {setShowEmoji(prev => !prev)}} className='fill-white hover:-translate-y-0.5 hover:fill-primary-500 my-3 ml-1.5 transition h-5 w-5 emoji-icon cursor-pointer '/>
-      {showEmoji && <div className="absolute bottom-[70px] right-4">
-        <EmojiPicker theme={"dark" as Theme} previewConfig={{showPreview: false, defaultCaption:""}} lazyLoadEmojis={true} className='text-sm emoji-picker' onEmojiClick={handleEmojiCLick} />
+      <BsEmojiSmile onClick={() => {setShowEmoji(prev => !prev)}} className='fill-white hover:-translate-y-0.5 hover:fill-primary-500  transition h-5 w-5 emoji-icon cursor-pointer '/>
+      {showEmoji && <div className="absolute bottom-[70px] left-4">
+        <EmojiPicker theme={Theme.DARK} previewConfig={{showPreview: false, defaultCaption:""}} lazyLoadEmojis={true} className='text-sm emoji-picker' onEmojiClick={handleEmojiCLick} />
       </div>}
       <Input type="text" placeholder='Type a message' value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none'/>
       <button className='button-send p-3' type="submit">

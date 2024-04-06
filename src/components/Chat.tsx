@@ -8,6 +8,7 @@ export interface IMessage {
   id: string;
   chatRoomId: string;
   senderId: string;
+  senderName: string;
   text: string;
   time: string;
   image?: string;
@@ -17,10 +18,9 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
   const myUser = selectedChat?.myData
   const otherUser = selectedChat?.otherData
   const chatRoomId = selectedChat?.id
-
+  const chatContainerRef = useRef<any>(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
-  const [image, setImage] = useState<any>(null);
   const messagesContainerRef = useRef(null);
 
   useEffect(() => {
@@ -40,24 +40,31 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
     
   }, [chatRoomId])
 
-  
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-  const sendMessage = async (e: InputEvent) => {
+  const sendMessage = async (imageURL?: string) => {
     const messageCollection = collection(db, 'messages');
-    if (message.trim() === "" && !image) return
+    if (message.trim() === "" && !imageURL) return
     
     try {
       const messageData = {
         senderId: myUser.id,
+        senderName: myUser.name,
         text: message,
         chatRoomId: chatRoomId,
         time:serverTimestamp(),
-        image: image,
+        image: imageURL ? imageURL : null,
         messageType: "text",
       }
       await addDoc(messageCollection, messageData);
       setMessage("");
-      setImage(null)
       const chatRef = doc(db, 'chats', chatRoomId);
       await updateDoc(chatRef,{
         lastMessage: message ? message : "Image",
@@ -70,14 +77,14 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
     <>
     {!selectedChat ? <div className='flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50'>Select a chat to start messaging</div> :
     <div className='flex flex-col h-full'>
-      <div className="flex-1 overflow-y-auto p-5">
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-5">
         {
           messages.map(message => (
             <Message key={message.id} message={message} myUser={myUser} otherUser={otherUser}/>
           ))
         }
       </div>
-      <InputText sendMessage={sendMessage} message={message} setMessage={setMessage} image={image} setImage={setImage}/>
+      <InputText sendMessage={sendMessage} message={message} setMessage={setMessage}/>
     </div>}
     </>
   )

@@ -73,7 +73,6 @@ const SearchResultsComponent = ({searchResults, loading, userData}: {searchResul
               name={user.name} 
               avatarUrl={user.avatarUrl}
               latestMessageText={user.latestMessageText}
-              time={user.time}
               type={ChatType.Chat}
             />}
           </div>
