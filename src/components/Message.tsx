@@ -12,14 +12,7 @@ export const getValidTime = (time: any) => {
 
 function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, otherUser: any}) {
   const isCurrentUser = message.senderId === myUser.id;
-  const [imageClasses, setImageClasses] = useState("");
-  
-  const fullScreen = () => {
-    if (message.image) {
-      setImageClasses("fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-90 z-50 flex items-center justify-center")
-    }
-  }
-
+  const [open, setOpen] = useState<boolean | undefined>(undefined);
   return (
     <div key={message.id} className={`flex mb-1 ${isCurrentUser ? "justify-end" : "justify-start"}`}>
       {!isCurrentUser && 
@@ -31,11 +24,12 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
         {!isCurrentUser && <Link href={"/profile/" + otherUser.id} className="text-primary-500 px-2 pt-1.5 leading-[1em] pb-1">{message.senderName}</Link> }
         {
           message.image && 
-          <Dialog>
-            <DialogTrigger asChild>
+          <Dialog open={open}>
+            <DialogTrigger asChild onClick={() => setOpen(true)}>
               <img src={message.image} alt="message" className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer`} />
             </DialogTrigger>
             <DialogContent className="h-screen flex justify-center items-center w-screen outline-none ring-none border-none">
+              <div onClick={() => setOpen(false)} className="fixed bg-transparent left-0 top-0 h-screen w-screen -z-10"></div>
               <img src={message.image} alt="message" className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`} />
             </DialogContent>
           </Dialog>
