@@ -262,3 +262,17 @@
   background: var(--dark-5);
   animation: animate 3s linear infinite;
 }
+.left-corner-message {
+  position: relative;
+  overflow: visible;
+}
+
+.left-corner-message::before {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: -15px;
+  transform: rotate(225deg);
+  border: 10px solid transparent;
+  border-right-color: var(--dark-5); /* Змініть цей колір на потрібний */
+}
