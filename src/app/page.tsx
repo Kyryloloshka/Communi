@@ -69,7 +69,7 @@ export default function Home() {
             </Sheet>
             <SearchUsersByTag searchTag={searchTag} setSearchTag={setSearchTag} setSearchResults={setSearchResults}/>
           </div>
-          {searchTag.length > 0 ? <SearchResultsComponent userData={user} loading={false} searchResults={searchResults}/> :
+          {searchTag.length > 0 ? <SearchResultsComponent setSelectedChat={setSelectedChat} userData={user} loading={false} searchResults={searchResults}/> :
           <Users userData={user} setSelectedChat={setSelectedChat} selectedChat={selectedChat}/>}
         </ResizablePanel>
         <ResizableHandle className="bg-dark-5"/>

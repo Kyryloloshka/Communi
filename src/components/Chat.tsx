@@ -42,7 +42,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.height;
     }
   };
   useEffect(() => {

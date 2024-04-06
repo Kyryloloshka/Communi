@@ -80,10 +80,10 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
         <input id="file-upload" type="file" onChange={handleFileChange} style={{ display: 'none' }} />
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className='h-screen w-screen flex justify-center items-center bg-transparent p-5' >
+        <DialogContent className='h-screen w-screen flex justify-center items-center bg-transparent p-2 sm:p-5' >
           <div className="max-w-xl flex flex-col gap-3 flex-auto">
             <DialogTitle>Send Image</DialogTitle>
-            {imagePreview && <img src={imagePreview} alt="preview" className='w-full mt-2 object-contain max-h-[500px] max-w-[300px] self-center' />}
+            {imagePreview && <img src={imagePreview} alt="preview" className='w-full mt-2 object-contain max-h-[600px] max-w-[500px] self-center' />}
             {uploadProgress && <progress value={uploadProgress} max="100"></progress>}
             <div className="container-input">
               <input required={true} type="text" value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none'/>

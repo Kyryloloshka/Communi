@@ -3,7 +3,7 @@ import { DocumentData, addDoc, collection, getDocs, onSnapshot, query, serverTim
 import React, { useEffect, useState } from 'react'
 import UserCard, { ChatType } from './UserCard';
 
-const SearchResultsComponent = ({searchResults, loading, userData}: {searchResults: any[], loading: boolean, userData: any}) => {
+const SearchResultsComponent = ({searchResults, loading, userData, setSelectedChat}: {searchResults: any[], loading: boolean, userData: any, setSelectedChat: any}) => {
   const [loading2, setLoading2] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
   const handleCreateChat = async (user: any) => {
@@ -29,6 +29,7 @@ const SearchResultsComponent = ({searchResults, loading, userData}: {searchResul
 
       const chatRef = await addDoc(collection(db, "chats"), chatData);
       console.log("chat created with id: ", chatRef.id);
+      return chatRef;
     } catch (error) {
       console.log('Error creating chat: ', error);
     }
@@ -47,7 +48,6 @@ const SearchResultsComponent = ({searchResults, loading, userData}: {searchResul
           id: doc.id,
           ...doc.data()
         }))
-        console.log(chats);
         setUserChats(chats);
         setLoading2(false);
       })
@@ -58,15 +58,29 @@ const SearchResultsComponent = ({searchResults, loading, userData}: {searchResul
     
   }, [userData])
   
+  const openChat = (chat: any) => {
+    if (!chat) return;
+    const data={
+      id: chat.id,
+      myData: userData,
+      otherData: chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
+    }
+    setSelectedChat(data)
+  }
+
   return (
     <div className=''>
       {loading 
         ? <div className='flex justify-center content-center'><span className="loader"></span></div> 
-        : searchResults.map((user: DocumentData) => {
+        : searchResults.length === 0 
+          ? <div className='text-center text-light-6/50'>No users found</div>
+          : searchResults.map((user: DocumentData) => {
           return <div 
             className=""
             key={user.id}
-            onClick={() => handleCreateChat(user)}
+            onClick={() => {
+              openChat(handleCreateChat(user))
+            }}
           >
             {user.id !== auth.currentUser?.uid &&
             <UserCard 
