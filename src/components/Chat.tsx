@@ -12,6 +12,8 @@ export interface IMessage {
   text: string;
   time: string;
   image?: string;
+  isPreviousMessageSameSender?: boolean;
+  isNextMessageSameSender?: boolean;
 }
 
 const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, selectedChat: any}) => {
@@ -22,6 +24,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const messagesContainerRef = useRef(null);
+  const [lastSenderId, setLastSenderId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -30,7 +33,21 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
         const messagesData = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }))
+        })) as IMessage[];
+        messagesData.map((message, index) => {
+          if (index === 0) {
+            message.isPreviousMessageSameSender = false;
+          } else {
+            message.isPreviousMessageSameSender = messagesData[index - 1].senderId === message.senderId;
+          }
+        })
+        messagesData.map((message, index) => {
+          if (index === messagesData.length - 1) {
+            message.isNextMessageSameSender = false;
+          } else {
+            message.isNextMessageSameSender = messagesData[index + 1].senderId === message.senderId;
+          }
+        })
         setMessages(messagesData);
       })
       return unsub;
@@ -42,7 +59,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.height;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   };
   useEffect(() => {
@@ -77,7 +94,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
     <>
     {!selectedChat ? <div className='flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50'>Select a chat to start messaging</div> :
     <div className='flex flex-col h-full'>
-      <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-5">
+      <div ref={chatContainerRef} className="flex-1 flex flex-col gap-1 overflow-y-auto p-5">
         {
           messages.map(message => (
             <Message key={message.id} message={message} myUser={myUser} otherUser={otherUser}/>

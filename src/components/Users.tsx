@@ -80,8 +80,7 @@ const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSel
               isSelected={selectedChat?.id === chat.id}
               name={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.name}
               avatarUrl={chat.usersData[chat.users.find((id: any) => id !== userData?.id)]?.avatarUrl}
-              latestMessageText={chat.lastMessage}
-              time={chat.timestamp}
+              latestMessage={chat.lastMessage}
               type={ChatType.Chat}
             />}
           </div>

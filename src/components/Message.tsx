@@ -12,15 +12,18 @@ export const getValidTime = (time: any) => {
 
 function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, otherUser: any}) {
   const isCurrentUser = message.senderId === myUser.id;
+  const isFirstInGroup = !message.isPreviousMessageSameSender;
+  const isLastInGroup = !message.isNextMessageSameSender;
   const [open, setOpen] = useState<boolean | undefined>(undefined);
   return (
-    <div key={message.id} className={`flex mb-1 ${isCurrentUser ? "justify-end" : "justify-start"}`}>
-      {!isCurrentUser && 
+    <div key={message.id} className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
+      {!isCurrentUser &&
       <div className={`w-10 h-10 mr-2 self-end aspect-square cursor-pointer`}>
-        <img src={otherUser.avatarUrl} alt="avatar" className='w-full h-full rounded-full object-cover' />
+        {isLastInGroup && 
+        <img src={otherUser.avatarUrl} alt="avatar" className='w-full h-full rounded-full object-cover' />}
       </div>
       }
-      <div className={`text-light-1 max-w-[500px] overflow-hidden flex flex-col flex-wrap rounded-t-lg ${isCurrentUser ? "bg-dark-5 self-end  rounded-l-lg" : "bg-dark-5 rounded-r-lg self-start"}`}>
+      <div className={`text-light-1 max-w-[500px] overflow-hidden flex flex-col flex-wrap ${isCurrentUser ? "bg-dark-5 self-end  rounded-l-xl" : "bg-dark-5 rounded-r-xl self-start"} rounded-sm ${isFirstInGroup && "rounded-t-xl"}`}>
         {!isCurrentUser && <Link href={"/profile/" + otherUser.id} className="text-primary-500 px-2 pt-1.5 leading-[1em] pb-1">{message.senderName}</Link> }
         {
           message.image && 
@@ -37,11 +40,6 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
         <p style={{wordBreak: "break-word"}} className='break-words text-sm leading-[1em] px-2 pb-0.5 pt-1.5'>{message.text}</p>
         <div className={`text-xs  text-gray-400 ${isCurrentUser && "self-end"} px-2 pb-1`}>{getValidTime(message.time)}</div>
       </div>
-      {isCurrentUser && 
-      <div className={`w-10 h-10 ml-2 self-end aspect-square`}>
-        <img src={myUser.avatarUrl} alt="avatar" className='w-full h-full rounded-full object-cover' />
-      </div>
-      }
     </div>
   )
 }

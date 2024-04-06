@@ -86,7 +86,7 @@ const SearchResultsComponent = ({searchResults, loading, userData, setSelectedCh
             <UserCard 
               name={user.name} 
               avatarUrl={user.avatarUrl}
-              latestMessageText={user.latestMessageText}
+              latestMessage={user.latestMessage}
               type={ChatType.Chat}
             />}
           </div>
