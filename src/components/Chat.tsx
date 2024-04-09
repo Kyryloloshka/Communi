@@ -12,9 +12,16 @@ export interface IMessage {
   text: string;
   time: string;
   image?: string;
+  video?: string;
+  file?: string;
+  messageType: MessageType;
   isPreviousMessageSameSender?: boolean;
   isNextMessageSameSender?: boolean;
 }
+
+export type MessageType = "text" | "voice" | "sticker" | "gif"
+
+export type typeAttached = "image" | "video" | "file";
 
 const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, selectedChat: any}) => {
   const myUser = selectedChat?.myData
@@ -23,7 +30,6 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
   const chatContainerRef = useRef<any>(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
-  const messagesContainerRef = useRef(null);
   const [lastSenderId, setLastSenderId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -66,9 +72,9 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
     scrollToBottom();
   }, [messages]);
 
-  const sendMessage = async (imageURL?: string) => {
+  const sendMessage = async (URL?: string, typeMessage?: typeAttached) => {
     const messageCollection = collection(db, 'messages');
-    if (message.trim() === "" && !imageURL) return
+    if (message.trim() === "" && !URL) return
     
     try {
       const messageData = {
@@ -76,15 +82,17 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
         senderName: myUser.name,
         text: message,
         chatRoomId: chatRoomId,
-        time:serverTimestamp(),
-        image: imageURL ? imageURL : null,
+        time: serverTimestamp(),
+        image: typeMessage === "image" && URL ? URL : null,
+        video: typeMessage === "video" && URL ? URL : null,
+        file: typeMessage === "file" && URL ? URL : null,
         messageType: "text",
       }
       await addDoc(messageCollection, messageData);
       setMessage("");
       const chatRef = doc(db, 'chats', chatRoomId);
-      await updateDoc(chatRef,{
-        lastMessage: message ? message : "Image",
+      await updateDoc(chatRef, {
+        lastMessage: messageData ? messageData : "Image",
       })
     } catch (error) {
       console.log('Error sending message: ', error);
@@ -94,7 +102,7 @@ const Chat = ({user, selectedChat}: {user: DocumentData | null | undefined, sele
     <>
     {!selectedChat ? <div className='flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50'>Select a chat to start messaging</div> :
     <div className='flex flex-col h-full'>
-      <div ref={chatContainerRef} className="flex-1 flex flex-col gap-1 overflow-y-auto p-5">
+      <div ref={chatContainerRef} className="flex-1 flex flex-col gap-1 overflow-y-auto p-5 flex-end">
         {
           messages.map(message => (
             <Message key={message.id} message={message} myUser={myUser} otherUser={otherUser}/>

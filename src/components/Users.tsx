@@ -14,7 +14,6 @@ const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSel
   const [loading2, setLoading2] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
   const auth = getAuth(app);
-  const router = useRouter();
 
   useEffect(() => {
     setLoading(true);

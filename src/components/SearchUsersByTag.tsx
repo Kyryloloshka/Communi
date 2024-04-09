@@ -38,7 +38,7 @@ const SearchUsersByTag = ({setSearchResults, searchTag, setSearchTag}: any) => {
         type="text"
         placeholder="Search users by tag"
         value={searchTag}
-        className='py-1.5 bg-dark-5 placeholder:text-light-6/40 outline-none border-none placeholder:font-light px-5 rounded-full overflow-hidden min-w-0 text-sm'
+        className='py-1.5 bg-dark-4 placeholder:text-light-6/40 outline-none border-none placeholder:font-light px-5 rounded-full overflow-hidden min-w-0 text-sm'
         onChange={(e) => setSearchTag(e.target.value)}
       />
     </div>

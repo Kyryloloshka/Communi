@@ -23,22 +23,39 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
         <img src={otherUser.avatarUrl} alt="avatar" className='w-full h-full rounded-full object-cover' />}
       </div>
       }
-      <div className={`text-light-1 pt-1.5 max-w-[500px] overflow-hidden relative flex flex-col gap-1 pb-1 flex-wrap ${isCurrentUser ? "bg-dark-5 self-end  rounded-l-xl" : "bg-dark-5 rounded-r-xl self-start"} rounded-sm ${isFirstInGroup && "rounded-t-xl"} ${isLastInGroup && (isCurrentUser ? "rounded-br-none" : "rounded-bl-none")}`}>
-        {!isCurrentUser && isFirstInGroup && <Link href={"/profile/" + otherUser.id} className="text-primary-500 px-2 leading-[1em]">{message.senderName}</Link> }
+      <div className={`text-light-1 max-w-[500px] overflow-hidden relative flex flex-col flex-wrap ${isCurrentUser ? "bg-dark-5 self-end  rounded-l-xl" : "bg-dark-5 rounded-r-xl self-start"} rounded-sm ${isFirstInGroup && "rounded-t-xl"} ${isLastInGroup && (isCurrentUser ? "rounded-br-none" : "rounded-bl-none")}`}>
+        {!isCurrentUser && isFirstInGroup && <Link href={"/profile/" + otherUser.id} className="text-primary-500 px-2 leading-[1em] pt-1.5">{message.senderName}</Link> }
         {
           message.image && 
           <Dialog open={open}>
             <DialogTrigger asChild onClick={() => setOpen(true)}>
-              <img src={message.image} alt="message" className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer`} />
+              <img src={message.image} alt="image" className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer`} />
             </DialogTrigger>
-            <DialogContent className="h-screen flex justify-center items-center w-screen outline-none ring-none border-none">
-              <div onClick={() => setOpen(false)} className="fixed bg-transparent left-0 top-0 h-screen w-screen -z-10"></div>
-              <img src={message.image} alt="message" className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`} />
+            <DialogContent onClick={() => setOpen(false)} className="h-screen flex justify-center items-center w-screen outline-none ring-none border-none">
+              <img src={message.image} alt="image" className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`} />
             </DialogContent>
           </Dialog>
         }
-        <p style={{wordBreak: "break-word"}} className='break-words text-sm leading-[1em] px-2'>{message.text}</p>
-        <div className={`text-xs  text-gray-400 ${isCurrentUser && "self-end"} px-2`}>{getValidTime(message.time)}</div>
+        {
+          message.video && 
+          <Dialog open={open}>
+            <DialogTrigger asChild onClick={() => setOpen(true)}>
+              <video src={message.video} className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer`} />
+            </DialogTrigger>
+            <DialogContent className="h-screen flex justify-center items-center w-screen outline-none ring-none border-none">
+              <div onClick={() => setOpen(false)} className="fixed bg-transparent left-0 top-0 h-screen w-screen -z-10"></div>
+              <video src={message.video} autoPlay={true} controls className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`} />
+            </DialogContent>
+          </Dialog>
+        }
+        {
+          message.file &&
+          <a href={message.file} download className="text-primary-500 px-2 leading-[1em]">{message.file}</a>
+        } 
+        {message.text.trim() && <p style={{wordBreak: "break-word"}} className={`px-2 pb-2 pt-1.5 ${!isCurrentUser && isFirstInGroup && "pt-0"} leading-[1em]`}><span className='break-words text-sm'>{message.text.trim()}</span>
+          <span className="inline-block w-[37px]">{""}</span>
+        </p>}
+        <div className={`text-xs absolute bottom-1 text-gray-400 right-0 ${isCurrentUser && "self-end"} px-2`}>{getValidTime(message.time)}</div>
       </div>
       {isLastInGroup &&
         <img className={`w-3 absolute bottom-0 fill-white object-fill ${isCurrentUser ? "-right-3 rotate-90" : "left-[28px]"}`} src="assets/items/pseudo-elem-for-message.svg" alt="" />

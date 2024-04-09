@@ -32,12 +32,16 @@ const UserCard = ({name, avatarUrl, latestMessage, type, isSelected }: ChatData)
               {latestMessage && latestMessage.time && <span className='text-muted-foreground text-xs pt-[3px]'>{getValidTime(latestMessage.time)}</span>}
           </div>
         </div>
-        {latestMessage && latestMessage.text &&
+        {latestMessage &&
         <div className="grid" style={{ gridTemplateColumns: '1fr' }}>
           <div className="whitespace-nowrap overflow-hidden truncate text-sm text-light-5/50" >
-            <span title={latestMessage.text}>{latestMessage.text}</span>
+            {latestMessage.text && <span title={latestMessage.text}>{latestMessage.text}</span>}
+            {latestMessage.image && <span>Image</span>}
+            {latestMessage.video && <span>Video</span>}
+            {latestMessage.file && <span>File</span>}            
           </div>
-        </div>}
+        </div> 
+        }
       </div>
     </div>
   )

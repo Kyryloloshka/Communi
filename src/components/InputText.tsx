@@ -21,43 +21,83 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
   const [file, setFile] = useState<any>(null);
   const [uploadProgress, setUploadProgress] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<any>(null);
+  const [videoPreview, setVideoPreview] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
-  const [image, setImage] = useState<any>(null);
+  const [video, setVideo] = useState<any>(null);
+  const [attachment, setAttachment] = useState<any>(null);
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     setFile(file);
     const reader = new FileReader();
     reader.onload = () => {
-      setImagePreview(reader.result);
+      if (file.type.includes('image')) {
+        // Якщо це зображення, показуємо попередній перегляд
+        setImagePreview(reader.result);
+      } else if (file.type.includes('video')) {
+        // Якщо це відео, можна виконати відповідні дії для відео
+        setVideoPreview(reader.result)
+      } else {
+        setAttachment(file);
+      }
     }
     reader.readAsDataURL(file);
     setOpen(true);
   }
 
   const handleUpload = async () => {
-    const storageRef = ref(storage, `images/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    if (!file) return;
+    
+    if (imagePreview) {
+      const imageStorageRef = ref(storage, `images/${file.name}`);
+      const imageUploadTask = uploadBytesResumable(imageStorageRef, file);
 
-    uploadTask.on('state_changed', (snapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      setUploadProgress(progress);
-    }, (error) => {
-      console.log(error);
-    }, () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        setImage(downloadURL);
-        setUploadProgress(null);
-        setImagePreview(null);
-        setOpen(false);
-        sendMessage(downloadURL);
-      })
-    })
+      imageUploadTask.on('state_changed', (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(progress);
+      }, (error) => {
+        console.log(error);
+      }, () => {
+        getDownloadURL(imageUploadTask.snapshot.ref).then((downloadURL) => {
+          setAttachment(downloadURL);
+          setUploadProgress(null);
+          setImagePreview(null);
+          setVideoPreview(null);
+          setOpen(false);
+          sendMessage(downloadURL, 'image');
+        })
+      });
+    } else if (videoPreview) {
+      const videoStorageRef = ref(storage, `videos/${file.name}`);
+      const videoUploadTask = uploadBytesResumable(videoStorageRef, file);
+
+      videoUploadTask.on('state_changed', (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(progress);
+      }, (error) => {
+        console.log(error);
+      }, () => {
+        getDownloadURL(videoUploadTask.snapshot.ref).then((downloadURL) => {
+          setAttachment(downloadURL);
+          setUploadProgress(null);
+          setImagePreview(null);
+          setVideoPreview(null);
+          setOpen(false);
+          sendMessage(downloadURL, 'video');
+        })
+      });
+    } else {
+      sendMessage(attachment, 'file');
+      setOpen(false);
+      setAttachment(null);
+      return;
+    }
   }
   const handleCancelUpload = () => {
     setFile(null);
     setImagePreview(null);
+    setVideoPreview(null);
     setOpen(false);
   }
 
@@ -82,8 +122,9 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className='h-screen w-screen flex justify-center items-center bg-transparent p-2 sm:p-5' >
           <div className="max-w-xl flex flex-col gap-3 flex-auto">
-            <DialogTitle>Send Image</DialogTitle>
+            <DialogTitle>Send</DialogTitle>
             {imagePreview && <img src={imagePreview} alt="preview" className='w-full mt-2 object-contain max-h-[600px] max-w-[500px] self-center' />}
+            {videoPreview && <video src={videoPreview} controls className='w-full mt-2 max-h-[600px] max-w-[500px] self-center' />}
             {uploadProgress && <progress value={uploadProgress} max="100"></progress>}
             <div className="container-input">
               <input required={true} type="text" value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none'/>
