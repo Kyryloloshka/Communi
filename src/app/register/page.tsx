@@ -25,10 +25,11 @@ const page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [tag, setTag] = useState("");
+  const [tagMessage, setTagMessage] = useState("");
 
-  const checkIfTagExists = async (): Promise<boolean> => {
+  const checkIfTagExists = async (tagValue: string): Promise<boolean> => {
     try {
-      const q = query(collection(db, 'users'), where('tag', '==', tag));
+      const q = query(collection(db, 'users'), where('tag', '==', tagValue));
       const querySnapshot = await getDocs(q);
       console.log(querySnapshot.docs);
       return querySnapshot.docs.length > 0; // Поверне true, якщо хоча б один користувач із вказаним тегом існує
@@ -36,6 +37,33 @@ const page = () => {
       console.error('Error checking tag existence:', error);
       return false; // У випадку помилки повертаємо false
     }
+  };
+
+  const checkIfEmailExists = async (email: string): Promise<boolean> => {
+    try {
+      const q = query(collection(db, 'users'), where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+      console.log(querySnapshot.docs);
+      return querySnapshot.docs.length > 0; // Поверне true, якщо хоча б один користувач із вказаним тегом існує
+    } catch (error) {
+      console.error('Error checking tag existence:', error);
+      return false; // У випадку помилки повертаємо false
+    }
+  };
+
+  const checkTag = async (tagValue: string) => {
+    if (tagValue.trim().length < 5) {
+      setTagMessage("Tag must be at least 5 characters long!");
+    } else if (!/^[a-zA-Z_0-9]+$/.test(tagValue.trim())) {
+      setTagMessage("Only letters, digits, and underscores are allowed!");
+    } else if (!/^[a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]$/.test(tagValue.trim())) {
+      setTagMessage("The tag is not acceptable");
+    } else {
+      setTagMessage("Tag is ok!");
+    }
+    if (await checkIfTagExists("@" + tagValue)) {
+        setTagMessage("Tag already exists!");
+    };
   };
 
   const validateForm = async () => {
@@ -47,6 +75,8 @@ const page = () => {
     }
     if (!email.trim() || !emailRegex.test(email)) {
       newErrors.email = "Email is required!";
+    } else if (await checkIfEmailExists(email)) {
+      newErrors.email = "Email already exists!";
     }
     if (password.length < 6) {
       newErrors.password = "Password must be at least 6 characters long!";
@@ -54,14 +84,15 @@ const page = () => {
     if (password!== confirmPassword) {
       newErrors.confirmPassword = "Passwords are not the same!";
     }
-    if (!/^@[a-z]+$/.test(tag.trim())){ 
-      newErrors.tag = "Tag must start with '@' and contain only lowercase latin letters!";
-    }
-    await checkIfTagExists().then((exists) => {
-       if (exists) {
+    if (tag.trim().length < 5) {
+      newErrors.tag = "Tag must be at least 5 characters long!";
+    } else if (!/^[a-zA-Z_0-9]+$/.test(tag.trim())) {
+      newErrors.tag = "Only letters, digits, and underscores are allowed!";
+    } else if (!/^[a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]$/.test(tag.trim())) {
+      newErrors.tag = "The tag is not acceptable";
+    } else if (await checkIfTagExists("@" + tag)) {
         newErrors.tag = "Tag already exists!";
-      }
-    });
+    };
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -78,7 +109,7 @@ const page = () => {
           name,
           email,
           avatarUrl: `https://ui-avatars.com/api/?background=F1CD78&color=000&name=${name}`,
-          tag
+          tag: "@" + tag,
         });
         router.push('/');
         setErrors({});
@@ -117,16 +148,19 @@ const page = () => {
           {errors.confirmPassword && <p className='text-red-400'>{errors.confirmPassword}</p>}
         </div>
         <div className='space-y-2'>
-          <label htmlFor="tag" className='block'>Tag</label>
+          <label htmlFor="tag" className='block'>@username</label>
           <input
-            placeholder='Enter your unique tag starting with @'
+            placeholder='Enter your unique tag'
             type="text"
             id="tag"
             className='w-full border px-3 py-2 rounded dark:bg-dark-4'
             value={tag}
-            onChange={(e) => setTag(e.target.value)}
+            onChange={(e) => {
+              setTag(e.target.value)
+              checkTag(e.target.value);
+            }}
           />
-          {errors.tag && <p className='text-red-400'>{errors.tag}</p>}
+          {tagMessage && <p className={`${tagMessage === "" || tagMessage === "Tag is ok!" ? "text-green-500" : "text-red-400"}`}>{tagMessage}</p>}
         </div>
         <div className="flex flex-auto flex-wrap gap-1 self-center align-center justify-center">
           <span className='text-center'>Already have an Account? </span>
