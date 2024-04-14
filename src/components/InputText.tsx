@@ -14,6 +14,7 @@ import EmojiPicker, { Theme } from 'emoji-picker-react';
 import { Input } from './ui/input';
 import { FiPaperclip } from 'react-icons/fi';
 import { BsEmojiSmile } from 'react-icons/bs';
+import { Cross2Icon } from '@radix-ui/react-icons';
 
 
 const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function, message: string, setMessage: Function }) => {
@@ -24,7 +25,6 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
   const [videoPreview, setVideoPreview] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
-  const [video, setVideo] = useState<any>(null);
   const [attachment, setAttachment] = useState<any>(null);
 
   const handleFileChange = (e: any) => {
@@ -33,10 +33,8 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
     const reader = new FileReader();
     reader.onload = () => {
       if (file.type.includes('image')) {
-        // Якщо це зображення, показуємо попередній перегляд
         setImagePreview(reader.result);
       } else if (file.type.includes('video')) {
-        // Якщо це відео, можна виконати відповідні дії для відео
         setVideoPreview(reader.result)
       } else {
         setAttachment(file);
@@ -136,6 +134,10 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
               <Button variant={"primary"} onClick={handleUpload}>Send</Button>
             </div>
           </div>
+          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <Cross2Icon className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
         </DialogContent>
       </Dialog>
       <BsEmojiSmile onClick={() => {setShowEmoji(prev => !prev)}} className='fill-white hover:-translate-y-0.5 hover:fill-primary-500  transition h-5 w-5 emoji-icon cursor-pointer '/>

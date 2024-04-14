@@ -11,12 +11,14 @@ export const getValidTime = (time: any) => {
 };
 
 function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, otherUser: any}) {
+  const dalayForGroup = 120;
   const isCurrentUser = message.senderId === myUser.id;
-  const isFirstInGroup = !message.isPreviousMessageSameSender;
-  const isLastInGroup = !message.isNextMessageSameSender;
+  const isFirstInGroup = message.previousMessage?.senderId !== message.senderId || Math.abs(message.previousMessage?.time?.seconds - message.time?.seconds) > dalayForGroup;
+  const isLastInGroup = message.nextMessage?.senderId !== message.senderId || Math.abs(message.nextMessage?.time?.seconds - message.time?.seconds) > dalayForGroup;
   const [open, setOpen] = useState<boolean | undefined>(undefined);
+  
   return (
-    <div key={message.id} className={`flex relative ${isCurrentUser ? "justify-end" : "justify-start"}`}>
+    <div key={message.id} className={`flex relative ${isCurrentUser ? "justify-end" : "justify-start"} ${isLastInGroup && "mb-1.5"}`}>
       {!isCurrentUser &&
       <div className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}>
         {isLastInGroup && 
@@ -24,14 +26,14 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
       </div>
       }
       <div className={`text-light-1 max-w-[500px] overflow-hidden relative flex flex-col flex-wrap ${isCurrentUser ? "bg-dark-5 self-end  rounded-l-xl" : "bg-dark-5 rounded-r-xl self-start"} rounded-sm ${isFirstInGroup && "rounded-t-xl"} ${isLastInGroup && (isCurrentUser ? "rounded-br-none" : "rounded-bl-none")}`}>
-        {!isCurrentUser && isFirstInGroup && <Link href={"/profile/" + otherUser.id} className="text-primary-500 px-2 leading-[1em] pt-1.5">{message.senderName}</Link> }
+        {!isCurrentUser && isFirstInGroup && <Link href={"/profile/" + otherUser.id} className={`text-primary-500 px-2 leading-[1em] pt-1.5`}>{message.senderName}</Link> }
         {
           message.image && 
           <Dialog open={open}>
             <DialogTrigger asChild onClick={() => setOpen(true)}>
-              <img src={message.image} alt="image" className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer`} />
+              <img src={message.image} alt="image" className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer ${isFirstInGroup && "pt-1.5"}`} />
             </DialogTrigger>
-            <DialogContent onClick={() => setOpen(false)} className="h-screen flex justify-center items-center w-screen outline-none ring-none border-none">
+            <DialogContent onClick={() => setOpen(false)} className={`h-screen flex justify-center items-center w-screen outline-none ring-none border-none`}>
               <img src={message.image} alt="image" className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`} />
             </DialogContent>
           </Dialog>
@@ -40,11 +42,11 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
           message.video && 
           <Dialog open={open}>
             <DialogTrigger asChild onClick={() => setOpen(true)}>
-              <video src={message.video} className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer`} />
+              <video src={message.video} className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer ${isFirstInGroup && "pt-1.5"}`} />
             </DialogTrigger>
             <DialogContent className="h-screen flex justify-center items-center w-screen outline-none ring-none border-none">
               <div onClick={() => setOpen(false)} className="fixed bg-transparent left-0 top-0 h-screen w-screen -z-10"></div>
-              <video src={message.video} autoPlay={true} controls className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`} />
+              <video src={message.video} autoPlay={true} controls className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none outline-none`} />
             </DialogContent>
           </Dialog>
         }
@@ -57,9 +59,6 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
         </p>}
         <div className={`text-xs absolute bottom-1 text-gray-400 right-0 ${isCurrentUser && "self-end"} px-2`}>{getValidTime(message.time)}</div>
       </div>
-      {isLastInGroup &&
-        <img className={`w-3 absolute bottom-0 fill-white object-fill ${isCurrentUser ? "-right-3 rotate-90" : "left-[28px]"}`} src="assets/items/pseudo-elem-for-message.svg" alt="" />
-      }
     </div>
   )
 }
