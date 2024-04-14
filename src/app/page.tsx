@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { User, getAuth, signOut } from "firebase/auth"
+import { getAuth, signOut } from "firebase/auth"
 import { app, db } from "@/lib/firebase/firebase"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"

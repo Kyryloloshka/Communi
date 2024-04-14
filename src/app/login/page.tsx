@@ -14,7 +14,7 @@ export interface ErrorForm {
 }
 
 
-const page = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<ErrorForm>({});
@@ -81,4 +81,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Login
