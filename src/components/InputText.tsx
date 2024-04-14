@@ -1,20 +1,21 @@
 import { Button } from './ui/button'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '@/lib/firebase/firebase';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import EmojiPicker, { Theme } from 'emoji-picker-react';
+import Picker from "@emoji-mart/react"
+import emojiData from '@emoji-mart/data';
 import { Input } from './ui/input';
 import { FiPaperclip } from 'react-icons/fi';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { Cross2Icon } from '@radix-ui/react-icons';
+import { Textarea } from './ui/textarea';
 
 
 const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function, message: string, setMessage: Function }) => {
@@ -26,6 +27,7 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
   const [open, setOpen] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [attachment, setAttachment] = useState<any>(null);
+  const textareaRef = useRef<any>(null);
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
@@ -99,8 +101,8 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
     setOpen(false);
   }
 
-  const handleEmojiCLick = (emoji: any, event: any) => {
-    setMessage((prev: any) => prev + emoji.emoji);
+  const handleEmojiCLick = (emoji: any) => {
+    setMessage((prev: any) => prev + emoji.native);
   }
 
   return (
@@ -110,7 +112,7 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
         sendMessage();
       }
     
-    } className='flex items-center pb-1 border-t border-dark-5 relative'>
+    } className='flex items-end pb-1 border-t border-dark-5 relative'>
       <div className='text-gray-500 mr-2 cursor-pointer py-3 pl-4'>
         <label htmlFor="file-upload" className="cursor-pointer">
           <FiPaperclip className='file-clip' />
@@ -140,12 +142,17 @@ const InputText = ({ sendMessage, message, setMessage }: { sendMessage: Function
           </DialogClose>
         </DialogContent>
       </Dialog>
-      <BsEmojiSmile onClick={() => {setShowEmoji(prev => !prev)}} className='fill-white hover:-translate-y-0.5 hover:fill-primary-500  transition h-5 w-5 emoji-icon cursor-pointer '/>
-      {showEmoji && <div className="absolute bottom-[70px] left-4">
-        <EmojiPicker theme={Theme.DARK} previewConfig={{showPreview: false, defaultCaption:""}} lazyLoadEmojis={true} className='text-sm emoji-picker' onEmojiClick={handleEmojiCLick} />
+      <BsEmojiSmile onClick={() => {setShowEmoji(prev => !prev)}} className='fill-white hover:-translate-y-0.5 hover:fill-primary-500  transition h-5 w-5 emoji-icon cursor-pointer mr-2 mb-[14px]'/>
+      {showEmoji && <div className="absolute bottom-[70px] left-4 select-none">
+        {/* <EmojiPicker theme={Theme.DARK} previewConfig={{showPreview: false, defaultCaption:""}} lazyLoadEmojis={true} className='text-sm emoji-picker' onEmojiClick={handleEmojiCLick} /> */}
+        <Picker theme={Theme.DARK} data={emojiData} previewPosition="none" onEmojiSelect={handleEmojiCLick} />
       </div>}
-      <Input type="text" placeholder='Type a message' value={message} onChange={e => setMessage(e.target.value)} className='flex-1 py-2 px-3 outline-none border-none'/>
-      <button className='button-send p-3' type="submit">
+      <Textarea ref={textareaRef} placeholder='Type a message' rows={1} style={{wordWrap: "break-word", overflowWrap: 'break-word'}} value={message} onChange={e => {
+        setMessage(e.target.value);
+        textareaRef.current.style.height = 'auto';
+        textareaRef.current.style.height = `${textareaRef?.current.scrollHeight}px`;
+      }} className='flex-1 py-2 px-3 mt-1.5 mb-1.5 outline-none border-none resize-none scroll-none max-h-[200px] bg-dark-2 max-w-full'/>
+      <button className='button-send pr-3 pb-[10px]' type="submit">
         <div className="button-send-svg-wrapper">
           <svg
             xmlns="http://www.w3.org/2000/svg"

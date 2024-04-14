@@ -276,3 +276,9 @@
   border: 10px solid transparent;
   border-right-color: var(--dark-5); /* Змініть цей колір на потрібний */
 }
+
+.scroll-none::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  background: transparent;
+}
