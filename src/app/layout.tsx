@@ -1,12 +1,12 @@
 import "@/app/globals.css"
-import { Inter as FontSans } from "next/font/google"
+import { Inter, Lato } from "next/font/google"
 
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const fontSans = FontSans({
+const fontSans = Inter({
+  weight: ["400", "700"],
   subsets: ["latin"],
-  variable: "--font-sans",
 })
 
 interface RootLayoutProps {
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased dark:bg-dark-1 dark:text-white",
-          fontSans.variable
+          fontSans.className
         )}
       >
         <ThemeProvider

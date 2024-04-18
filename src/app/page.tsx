@@ -4,7 +4,7 @@ import { getAuth, signOut } from "firebase/auth"
 import { app, db } from "@/lib/firebase/firebase"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { DocumentData, doc, getDoc } from "firebase/firestore"
+import { DocumentData, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore"
 import Users from "@/components/Users"
 import Chat from "@/components/Chat"
 
@@ -52,6 +52,53 @@ export default function Home() {
       console.log(error)
     })
   }
+  const updateUserStatus = async (userId: string, status: string) => {
+    const userRef = doc(db, 'users', userId);
+    try {
+      await updateDoc(userRef, {
+        onlineStatus: status,
+        lastOnline: serverTimestamp(),
+      });
+      return;
+    } catch (error) {
+      console.error('Error updating user status:', error);
+    }
+  };
+  
+  useEffect(() => {
+    let focusListener: () => void;
+    let blurListener: () => void;
+  
+    const setUserFocusListeners = () => {
+      focusListener = () => {
+        if (user) {
+          updateUserStatus(user.id, 'online');
+        }
+      };
+  
+      blurListener = () => {
+        if (user) {
+          updateUserStatus(user.id, 'offline');
+        }
+      };
+  
+      window.addEventListener('focus', focusListener);
+      window.addEventListener('blur', blurListener);
+    };
+  
+    const removeUserFocusListeners = () => {
+      window.removeEventListener('focus', focusListener);
+      window.removeEventListener('blur', blurListener);
+    };
+  
+    if (user) {
+      setUserFocusListeners();
+    }
+  
+    return () => {
+      removeUserFocusListeners();
+    };
+  }, [user]);
 
   return (
     <div className="flex h-screen">
@@ -69,12 +116,12 @@ export default function Home() {
             </Sheet>
             <SearchUsersByTag searchTag={searchTag} setSearchTag={setSearchTag} setSearchResults={setSearchResults}/>
           </div>
-          {searchTag.length > 0 ? <SearchResultsComponent setSelectedChat={setSelectedChat} userData={user} loading={false} searchResults={searchResults}/> :
+          {searchTag.length > 0 ? <SearchResultsComponent setSearchTag={setSearchTag} setSelectedChat={setSelectedChat} userData={user} loading={false} searchResults={searchResults}/> :
           <Users userData={user} setSelectedChat={setSelectedChat} selectedChat={selectedChat}/>}
         </ResizablePanel>
         <ResizableHandle className="bg-dark-5"/>
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
-          <Chat user={user} selectedChat={selectedChat}/>
+          <Chat selectedChat={selectedChat}/>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

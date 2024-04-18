@@ -1,12 +1,11 @@
 "use client"
 
-import { DocumentData, addDoc, collection, getDocs, onSnapshot, query, serverTimestamp, where } from 'firebase/firestore'
+import { DocumentData, collection, onSnapshot, query, where } from 'firebase/firestore'
 import UserCard from './UserCard'
 import {ChatType} from './UserCard'
-import { use, useEffect, useState } from 'react'
-import { getAuth, signOut } from 'firebase/auth'
+import { useEffect, useState } from 'react'
+import { getAuth } from 'firebase/auth'
 import { app, db } from '@/lib/firebase/firebase'
-import { useRouter } from 'next/navigation'
 
 
 const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSelectedChat: Function, selectedChat: any}) => {
@@ -17,43 +16,21 @@ const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSel
 
   useEffect(() => {
     setLoading(true);
-    const tastQuery = query(collection(db, 'users'))
-
-    const unsub = onSnapshot(tastQuery, (snapshot) => {
-      const users = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-      setUserChats(users);
-      setLoading(false);
-    })
-    return unsub;
-  },[])
-
-  useEffect(() => {
-    try {
-      setLoading2(true);
-      if (!userData) {
-        setLoading2(false);
-        return;
-      }
-      const chatQuery = query(collection(db, "chats"), where("users", "array-contains", userData.id));
-
-      const unsub = onSnapshot(chatQuery, (snapshot) => {
+    if (userData) {
+      const userChatQuery = query(collection(db, "chats"), where("users", "array-contains", userData.id));
+      const unsub = onSnapshot(userChatQuery, (snapshot) => {
         const chats = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }))
         setUserChats(chats);
-        setLoading2(false);
+        setLoading(false);
       })
-      return unsub
-    } catch (error) {
-      console.log(error);
+
+      return unsub;
     }
-    
   }, [userData])
-  
+    
 
   const openChat = (chat: any) => {
     const data={

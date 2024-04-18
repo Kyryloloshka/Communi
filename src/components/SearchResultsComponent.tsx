@@ -3,9 +3,10 @@ import { DocumentData, addDoc, collection, getDocs, onSnapshot, query, serverTim
 import React, { useEffect, useState } from 'react'
 import UserCard, { ChatType } from './UserCard';
 
-const SearchResultsComponent = ({searchResults, loading, userData, setSelectedChat}: {searchResults: any[], loading: boolean, userData: any, setSelectedChat: any}) => {
+const SearchResultsComponent = ({searchResults, setSearchTag, loading, userData, setSelectedChat}: {searchResults: any[], loading: boolean, setSearchTag: Function, userData: any, setSelectedChat: any}) => {
   const [loading2, setLoading2] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
+
   const handleCreateChat = async (user: any) => {
     setLoading2(true);
     const chatQuery = query(collection(db, 'chats'), where("users", "==", [user.id, userData.id]));
@@ -28,8 +29,8 @@ const SearchResultsComponent = ({searchResults, loading, userData, setSelectedCh
       }
 
       const chatRef = await addDoc(collection(db, "chats"), chatData);
-      console.log("chat created with id: ", chatRef.id);
-      return chatRef;
+      console.log(chatRef.id);
+      return chatData;
     } catch (error) {
       console.log('Error creating chat: ', error);
     }
@@ -58,14 +59,20 @@ const SearchResultsComponent = ({searchResults, loading, userData, setSelectedCh
     
   }, [userData])
   
-  const openChat = (chat: any) => {
-    if (!chat) return;
-    const data={
-      id: chat.id,
-      myData: userData,
-      otherData: chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
-    }
-    setSelectedChat(data)
+  const openChat = async (chatData: any) => {
+    await chatData.then((chat: any) => {
+      if (chat && chat.users) {
+        const data={
+          id: chat.id,
+          myData: userData,
+          otherData: chat.usersData[chat.users.find((id: string) => id !== userData?.id)],
+        }
+        setSelectedChat(data)
+        setSearchTag("");
+      } else {
+        console.error('Chat not found');
+      }
+    })
   }
 
   return (
@@ -79,7 +86,10 @@ const SearchResultsComponent = ({searchResults, loading, userData, setSelectedCh
             className=""
             key={user.id}
             onClick={() => {
-              openChat(handleCreateChat(user))
+              const chatData = handleCreateChat(user);
+              if (chatData) {
+                openChat(chatData);
+              }
             }}
           >
             {user.id !== auth.currentUser?.uid &&

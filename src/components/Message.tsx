@@ -31,7 +31,9 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
           message.image && 
           <Dialog open={open}>
             <DialogTrigger asChild onClick={() => setOpen(true)}>
-              <img src={message.image} alt="image" className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer ${isFirstInGroup && "pt-1.5"}`} />
+              <div className={`relative overflow-hidden max-w-[400px] object-cover max-h-[400px] cursor-pointer  ${isFirstInGroup && "pt-1.5"}`}>
+                <img src={message.image} alt="image" className={`object-cover`} />
+              </div>
             </DialogTrigger>
             <DialogContent onClick={() => setOpen(false)} className={`h-screen flex justify-center items-center w-screen outline-none ring-none border-none`}>
               <img src={message.image} alt="image" className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`} />
@@ -42,7 +44,9 @@ function Message({message, myUser, otherUser}: {message: IMessage, myUser: any, 
           message.video && 
           <Dialog open={open}>
             <DialogTrigger asChild onClick={() => setOpen(true)}>
-              <video src={message.video} className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer ${isFirstInGroup && "pt-1.5"}`} />
+              <div className={`max-w-[400px] max-h-[400px] object-cover cursor-pointer ${isFirstInGroup && "pt-1.5"}`}>
+                <video src={message.video} className={`object-cover`} />
+              </div>
             </DialogTrigger>
             <DialogContent className="h-screen flex justify-center items-center w-screen outline-none ring-none border-none">
               <div onClick={() => setOpen(false)} className="fixed bg-transparent left-0 top-0 h-screen w-screen -z-10"></div>

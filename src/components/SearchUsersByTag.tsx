@@ -1,9 +1,10 @@
 import { db } from '@/lib/firebase/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
+import { collection, getDocs } from 'firebase/firestore';
+import React, { useEffect } from 'react'
 import { Input } from './ui/input';
 
 const SearchUsersByTag = ({setSearchResults, searchTag, setSearchTag}: any) => {
+  
   useEffect(() => {
     const searchUsers = async () => {
       try {
@@ -29,9 +30,9 @@ const SearchUsersByTag = ({setSearchResults, searchTag, setSearchTag}: any) => {
       }
     };
 
-    // Викликаємо функцію пошуку при зміні введеного тегу
     searchUsers();
   }, [searchTag]);
+  
   return (
     <div>
       <Input
