@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  serverRuntimeConfig: {
+    host: process.env.HOST,
+  },
+};
 
 export default nextConfig;

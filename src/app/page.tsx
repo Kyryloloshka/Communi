@@ -1,11 +1,11 @@
 "use client"
-import { Button } from "@/components/ui/button"
-import { getAuth, signOut } from "firebase/auth"
+import { getAuth } from "firebase/auth"
 import { app, db } from "@/lib/firebase/firebase"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { DocumentData, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore"
+import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore"
 import Users from "@/components/Users"
+import SheetProfile from '@/components/SheetProfile';
 import Chat from "@/components/Chat"
 
 import {
@@ -16,15 +16,15 @@ import {
 
 import {
   Sheet,
-  SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
 import SearchUsersByTag from "@/components/SearchUsersByTag"
 import SearchResultsComponent from "@/components/SearchResultsComponent"
+import { IUser } from "@/types"
 
 export default function Home() {
   const auth = getAuth(app);
-  const [user, setUser] = useState<DocumentData | null | undefined>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const router = useRouter();
   const [selectedChat, setSelectedChat] = useState(null);
   const [searchResults, setSearchResults] = useState([] as any);
@@ -36,7 +36,7 @@ export default function Home() {
         const userRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userRef);
         const userData = ({id: userDoc.id, ...userDoc.data()});
-        setUser(userData)
+        setUser(userData as IUser)
       } else {
         setUser(null)
         router.push('/login')
@@ -45,13 +45,6 @@ export default function Home() {
     return () => unsubscribe();
   }, [auth, router])
 
-  const handleLogout = () => {
-    signOut(auth).then(() => {
-      router.push('/login')
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
   const updateUserStatus = async (userId: string, status: string) => {
     const userRef = doc(db, 'users', userId);
     try {
@@ -71,13 +64,13 @@ export default function Home() {
   
     const setUserFocusListeners = () => {
       focusListener = () => {
-        if (user) {
+        if (user && user.id) {
           updateUserStatus(user.id, 'online');
         }
       };
   
       blurListener = () => {
-        if (user) {
+        if (user && user.id) {
           updateUserStatus(user.id, 'offline');
         }
       };
@@ -110,9 +103,7 @@ export default function Home() {
                 <div className='burger'>
                 </div>
               </SheetTrigger>
-              <SheetContent side={"left"} className='w-[260px]'>
-                <Button variant={"primary"} onClick={handleLogout}>Logout</Button>
-              </SheetContent>
+              <SheetProfile user={user} />
             </Sheet>
             <SearchUsersByTag searchTag={searchTag} setSearchTag={setSearchTag} setSearchResults={setSearchResults}/>
           </div>

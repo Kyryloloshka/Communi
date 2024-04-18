@@ -10,7 +10,6 @@ import { app, db } from '@/lib/firebase/firebase'
 
 const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSelectedChat: Function, selectedChat: any}) => {
   const [loading, setLoading] = useState(false);
-  const [loading2, setLoading2] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
   const auth = getAuth(app);
 
@@ -43,7 +42,7 @@ const Users = ({userData, setSelectedChat, selectedChat}: {userData: any, setSel
 
   return (
     <div className=''>
-      {loading2
+      {loading
         ? <div className='flex justify-center content-center'><span className="loader"></span></div> 
         : userChats.map((chat: DocumentData) => (
           <div 
