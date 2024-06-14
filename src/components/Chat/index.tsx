@@ -17,8 +17,6 @@ import { db } from "@/lib/firebase/firebase";
 import { formatTimestamp } from "@/lib/utils";
 import { IMessage, typeAttached } from "@/types";
 
-
-
 const Chat = ({ selectedChat }: { selectedChat: any }) => {
   const myUser = selectedChat?.myData;
   const otherUser = selectedChat?.otherData;
@@ -26,6 +24,7 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
   const chatContainerRef = useRef<any>(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
+  
   const [userStatus, setUserStatus] = useState<{
     onlineStatus: string;
     lastOnline: Timestamp;

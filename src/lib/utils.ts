@@ -18,7 +18,7 @@ export function formatTimestamp(timestamp: Timestamp) {
 
   // Перевірка, чи Timestamp був недавно (менше ніж хвилина)
   if (difference < 60000) {
-      return 'Recently';
+      return 'recently';
   }
 
   // Перевірка, чи Timestamp був недавно (менше ніж година)

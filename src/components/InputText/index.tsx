@@ -156,21 +156,21 @@ const InputText = ({
         />
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="h-screen w-screen flex justify-center items-center bg-transparent p-2 sm:p-5">
-          <div className="max-w-xl flex flex-col gap-3 flex-auto">
+        <DialogContent className="h-screen w-screen overflow-hidden flex justify-center items-center bg-transparent p-2 sm:p-5">
+          <div className="max-h-screen py-5 relative overflow-hidden max-w-[600px] flex flex-col gap-3 flex-auto">
             <DialogTitle>Send</DialogTitle>
             {imagePreview && (
               <img
                 src={imagePreview}
                 alt="preview"
-                className="w-full mt-2 object-contain max-h-[600px] max-w-[500px] self-center"
+                className="mt-2 w-full max-h-[500px] overflow-hidden object-contain object-center"
               />
             )}
             {videoPreview && (
               <video
                 src={videoPreview}
                 controls
-                className="w-full mt-2 max-h-[600px] max-w-[500px] self-center"
+                className="mt-2 w-full max-h-[500px] overflow-hidden object-contain object-center"
               />
             )}
             {uploadProgress && (
