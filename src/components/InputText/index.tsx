@@ -1,4 +1,4 @@
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   getDownloadURL,
   getStorage,
@@ -19,7 +19,7 @@ import emojiData from "@emoji-mart/data";
 import { FiPaperclip } from "react-icons/fi";
 import { BsEmojiSmile } from "react-icons/bs";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "../ui/textarea";
 
 const InputText = ({
   sendMessage,

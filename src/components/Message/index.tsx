@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { IMessage } from "./Chat";
 import Link from "next/link";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { IMessage } from "@/types";
 
 export const getValidTime = (time: any) => {
   const date = new Date(time * 1000);
@@ -21,14 +21,17 @@ function Message({
 }) {
   const dalayForGroup = 120;
   const isCurrentUser = message.senderId === myUser.id;
+
   const isFirstInGroup =
     message.previousMessage?.senderId !== message.senderId ||
     Math.abs(message.previousMessage?.time?.seconds - message.time?.seconds) >
       dalayForGroup;
+
   const isLastInGroup =
     message.nextMessage?.senderId !== message.senderId ||
     Math.abs(message.nextMessage?.time?.seconds - message.time?.seconds) >
       dalayForGroup;
+
   const [open, setOpen] = useState<boolean | undefined>(undefined);
 
   return (
@@ -72,7 +75,7 @@ function Message({
             <DialogTrigger asChild onClick={() => setOpen(true)}>
               <div
                 className={`relative overflow-hidden max-w-[400px] object-cover max-h-[400px] cursor-pointer  ${
-                  !isFirstInGroup && "pt-1.5"
+                  isFirstInGroup && !isCurrentUser && "mt-1.5"
                 }`}
               >
                 <img
@@ -99,7 +102,7 @@ function Message({
             <DialogTrigger asChild onClick={() => setOpen(true)}>
               <div
                 className={`w-full relative object-center overflow-hidden max-h-[500px] cursor-pointer ${
-                  !isFirstInGroup && "pt-1.5"
+                  isFirstInGroup && !isCurrentUser && "mt-1.5"
                 }`}
                 style={{
                   display: "flex",

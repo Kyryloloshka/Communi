@@ -1,6 +1,6 @@
 import React from "react";
-import { SheetContent } from "./ui/sheet";
-import { Button } from "./ui/button";
+import { SheetContent } from "../ui/sheet";
+import { Button } from "../ui/button";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase/firebase";

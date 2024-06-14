@@ -1,7 +1,7 @@
 import { db } from '@/lib/firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect } from 'react'
-import { Input } from './ui/input';
+import { Input } from '@/components/ui/input';
 
 const SearchUsersByTag = ({setSearchResults, searchTag, setSearchTag}: any) => {
   

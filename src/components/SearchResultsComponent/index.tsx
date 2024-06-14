@@ -1,7 +1,8 @@
 import { auth, db } from '@/lib/firebase/firebase';
 import { DocumentData, addDoc, collection, getDocs, onSnapshot, query, serverTimestamp, where } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
-import UserCard, { ChatType } from './UserCard';
+import UserCard from '../UserCard';
+import { ChatType } from '@/types';
 
 const SearchResultsComponent = ({searchResults, setSearchTag, loading, userData, setSelectedChat}: {searchResults: any[], loading: boolean, setSearchTag: Function, userData: any, setSelectedChat: any}) => {
   const [loading2, setLoading2] = useState(false);
