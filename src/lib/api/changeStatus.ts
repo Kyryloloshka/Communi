@@ -14,4 +14,5 @@ const updateUserStatus = async (userId: string, status: string) => {
   }
 };
 
+
 export default updateUserStatus;

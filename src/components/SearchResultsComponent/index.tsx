@@ -16,14 +16,14 @@ import { ChatData, ChatType, SelectedChatData, User } from "@/types";
 
 const SearchResultsComponent = ({
   searchResults,
-  setSearchTag,
+  setSearchKey,
   loading,
   userData,
   setSelectedChat,
 }: {
   searchResults: any[];
   loading: boolean;
-  setSearchTag: (tag: string) => void;
+  setSearchKey: (tag: string) => void;
   userData: User;
   setSelectedChat: (chat: SelectedChatData) => void;
 }) => {
@@ -97,7 +97,7 @@ const SearchResultsComponent = ({
             ],
         };
         setSelectedChat(data);
-        setSearchTag("");
+        setSearchKey("");
       } else {
         console.error("Chat not found");
       }

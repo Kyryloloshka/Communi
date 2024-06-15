@@ -24,7 +24,7 @@ export default function Home() {
     null
   );
   const [searchResults, setSearchResults] = useState([] as any);
-  const [searchTag, setSearchTag] = useState("");
+  const [searchKey, setSearchKey] = useState("");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -82,9 +82,9 @@ export default function Home() {
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={25} className="min-w-[200px]">
           <LeftBar
-            searchTag={searchTag}
+            searchKey={searchKey}
             user={user}
-            setSearchTag={setSearchTag}
+            setSearchKey={setSearchKey}
             setSearchResults={setSearchResults}
             setSelectedChat={setSelectedChat}
             searchResults={searchResults}
