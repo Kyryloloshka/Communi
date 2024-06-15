@@ -12,8 +12,9 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
-import { ChatData, SelectedChatData, User } from "@/types";
+import { SelectedChatData, User } from "@/types";
 import LeftBar from "@/components/LeftBar";
+import updateUserStatus from "@/lib/api/changeStatus";
 
 export default function Home() {
   const auth = getAuth(app);
@@ -40,19 +41,7 @@ export default function Home() {
     return () => unsubscribe();
   }, [auth, router]);
 
-  const updateUserStatus = async (userId: string, status: string) => {
-    const userRef = doc(db, "users", userId);
-    try {
-      await updateDoc(userRef, {
-        onlineStatus: status,
-        lastOnline: serverTimestamp(),
-      });
-      return;
-    } catch (error) {
-      console.error("Error updating user status:", error);
-    }
-  };
-
+  // Update user status when window focus changes
   useEffect(() => {
     let focusListener: () => void;
     let blurListener: () => void;

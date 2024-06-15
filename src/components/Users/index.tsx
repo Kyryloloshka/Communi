@@ -6,6 +6,7 @@ import {
   onSnapshot,
   query,
   where,
+  orderBy,
 } from "firebase/firestore";
 import UserCard from "@/components/UserCard";
 import { useEffect, useState } from "react";
@@ -31,7 +32,8 @@ const Users = ({
     if (userData) {
       const userChatQuery = query(
         collection(db, "chats"),
-        where("users", "array-contains", userData.id)
+        where("users", "array-contains", userData.id),
+        orderBy("lastMessage.time", "desc")
       );
       const unsub = onSnapshot(userChatQuery, (snapshot) => {
         const chats = snapshot.docs.map((doc) => ({

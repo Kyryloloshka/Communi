@@ -233,7 +233,7 @@ const InputText = ({
           textareaRef.current.style.height = "auto";
           textareaRef.current.style.height = `${textareaRef?.current.scrollHeight}px`;
         }}
-        className="flex-1 py-2 px-3 mt-1.5 mb-1.5 outline-none border-none resize-none scroll-none max-h-[200px] bg-dark-2 max-w-full"
+        className="flex-1 py-2 px-3 mt-1.5 mb-1.5 outline-none border-none resize-none scroll-none focus:outline-none focus-visible:ring-0  max-h-[200px] bg-dark-2 max-w-full"
         onKeyDown={handleKeyDown}
       />
       <button className="button-send pr-3 pb-[10px]" type="submit">

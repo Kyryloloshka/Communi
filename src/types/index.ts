@@ -19,7 +19,7 @@ export enum ChatType {
 export interface PropsUserCard {
   name: string;
   avatarUrl: string;
-  latestMessage: IMessage;
+  latestMessage: IMessage | null;
   type: ChatType;
   isSelected?: boolean;
 }
@@ -30,7 +30,7 @@ export interface ChatData {
     [x: number]: any;
   };
   timestamp: FieldValue;
-  lastMessage: null;
+  lastMessage: IMessage | null;
   id: string;
 }
 

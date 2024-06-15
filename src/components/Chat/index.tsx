@@ -33,7 +33,6 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
   useEffect(() => {
     try {
       if (!chatRoomId) {
-        console.error("No chat room id");
         return;
       }
       const unsub = onSnapshot(
@@ -78,7 +77,9 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages) {
+      scrollToBottom();
+    }
   }, [messages]);
 
   useEffect(() => {
