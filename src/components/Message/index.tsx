@@ -1,7 +1,9 @@
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { IMessage } from "@/types";
+import FileLink from "../FileLink";
 
 export const getValidTime = (time: any) => {
   const date = new Date(time * 1000);
@@ -131,20 +133,14 @@ function Message({
             </DialogContent>
           </Dialog>
         )}
-        {message.file && (
-          <a
-            href={message.file}
-            download
-            className="text-primary-500 px-2 leading-[1em]"
-          >
-            {message.file}
-          </a>
-        )}
+        {message.file && <FileLink fileUrl={message.file} />}
         {message.text.trim() && (
           <p
             style={{ wordBreak: "break-word" }}
-            className={`px-2 pb-2 pt-1.5 ${
-              !isCurrentUser && isFirstInGroup && "pt-0"
+            className={`px-2 pb-2  ${
+              (!isCurrentUser && isFirstInGroup) || message.file
+                ? "pt-0"
+                : "pt-1.5"
             } leading-[1em]`}
           >
             <span className="break-words text-sm">{message.text.trim()}</span>

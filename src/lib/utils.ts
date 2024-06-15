@@ -43,3 +43,25 @@ export function formatTimestamp(timestamp: Timestamp) {
   const date = timestamp.toDate();
   return date.toLocaleDateString(); // Повертаємо дату у звичайному форматі
 }
+
+export function formatFileSize(size: number) {
+  if (size < 1024) {
+    return size + ' bytes';
+  } else if (size < 1024 * 1024) {
+    return (size / 1024).toFixed(2) + ' KB';
+  } else if (size < 1024 * 1024 * 1024) {
+    return (size / (1024 * 1024)).toFixed(2) + ' MB';
+  } else {
+    return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+  }
+}
+
+export function formatFileTitle(title: string | undefined) {
+  if (!title) return 'Untitled';
+  if (title.length > 23) {
+    const firstPart = title.slice(0, 10);
+    const lastPart = title.slice(-10);
+    return firstPart + '...' + lastPart;
+  }
+  return title;
+}
