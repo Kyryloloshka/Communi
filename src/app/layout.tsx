@@ -3,7 +3,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
-  weight: ["400", "300", "600", "700", "200", "100"],
+  weight: ["100", "200", "300", "400", "600", "700"],
   subsets: ["latin", "cyrillic"],
 });
 
@@ -17,7 +17,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head />
       <body
         className={
-          "min-h-screen bg-background font-sans antialiased dark:bg-dark-1 dark:text-white " +
+          "min-h-screen bg-background antialiased dark:bg-dark-1 dark:text-white " +
           inter.className
         }
       >

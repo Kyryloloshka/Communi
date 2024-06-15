@@ -4,9 +4,9 @@ import { Button } from "../ui/button";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase/firebase";
-import { IUser } from "@/types";
+import { User } from "@/types";
 
-const SheetProfile = ({ user }: { user: IUser | null | undefined }) => {
+const SheetProfile = ({ user }: { user: User | null | undefined }) => {
   const router = useRouter();
 
   const handleLogout = () => {

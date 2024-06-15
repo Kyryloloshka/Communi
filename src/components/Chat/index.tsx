@@ -24,7 +24,7 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
   const chatContainerRef = useRef<any>(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
-  
+
   const [userStatus, setUserStatus] = useState<{
     onlineStatus: string;
     lastOnline: Timestamp;
@@ -32,7 +32,10 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
 
   useEffect(() => {
     try {
-      if (!chatRoomId) return;
+      if (!chatRoomId) {
+        console.error("No chat room id");
+        return;
+      }
       const unsub = onSnapshot(
         query(
           collection(db, "messages"),
@@ -105,19 +108,21 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
 
     try {
       const messageData = {
+        chatRoomId: chatRoomId,
+        file: typeMessage === "file" && URL ? URL : null,
+        image: typeMessage === "image" && URL ? URL : null,
+        messageType: "text",
         senderId: myUser.id,
         senderName: myUser.name,
         text: message,
-        chatRoomId: chatRoomId,
         time: serverTimestamp(),
-        image: typeMessage === "image" && URL ? URL : null,
         video: typeMessage === "video" && URL ? URL : null,
-        file: typeMessage === "file" && URL ? URL : null,
-        messageType: "text",
       };
+
       await addDoc(messageCollection, messageData);
       setMessage("");
       const chatRef = doc(db, "chats", chatRoomId);
+
       await updateDoc(chatRef, {
         lastMessage: messageData ? messageData : "Image",
       });
@@ -128,7 +133,7 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
 
   return (
     <>
-      {!selectedChat ? (
+      {selectedChat === undefined || selectedChat === null ? (
         <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50">
           Select a chat to start messaging
         </div>
@@ -153,19 +158,25 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
               )}
             </div>
           </div>
-          <div
-            ref={chatContainerRef}
-            className="flex-1 flex flex-col gap-0.5 overflow-y-auto p-5 flex-end"
-          >
-            {messages.map((message) => (
-              <Message
-                key={message.id}
-                message={message}
-                myUser={myUser}
-                otherUser={otherUser}
-              />
-            ))}
-          </div>
+          {messages.length === 0 ? (
+            <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50">
+              Say hello to {otherUser?.name}
+            </div>
+          ) : (
+            <div
+              ref={chatContainerRef}
+              className="flex-1 flex flex-col gap-0.5 overflow-y-auto p-5 flex-end"
+            >
+              {messages.map((message) => (
+                <Message
+                  key={message.id}
+                  message={message}
+                  myUser={myUser}
+                  otherUser={otherUser}
+                />
+              ))}
+            </div>
+          )}
           <InputText
             sendMessage={sendMessage}
             message={message}

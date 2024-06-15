@@ -1,6 +1,6 @@
-import { Timestamp } from "firebase/firestore";
+import { FieldValue, Timestamp } from "firebase/firestore";
 
-export interface IUser {
+export interface User {
   id: string;
   name: string;
   email: string;
@@ -16,12 +16,28 @@ export enum ChatType {
   Channel = "channel",
 }
 
-export interface ChatData {
+export interface PropsUserCard {
   name: string;
   avatarUrl: string;
   latestMessage: IMessage;
   type: ChatType;
   isSelected?: boolean;
+}
+
+export interface ChatData {
+  users: any[];
+  usersData: {
+    [x: number]: any;
+  };
+  timestamp: FieldValue;
+  lastMessage: null;
+  id: string;
+}
+
+export interface SelectedChatData {
+  id: string;
+  myData: User;
+  otherData: User;
 }
 
 

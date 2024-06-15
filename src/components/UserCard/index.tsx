@@ -1,7 +1,6 @@
 import React from "react";
 import { getValidTime } from "@/components/Message";
-import { ChatData, ChatType } from "@/types";
-
+import { PropsUserCard, ChatType } from "@/types";
 
 const UserCard = ({
   name,
@@ -9,7 +8,7 @@ const UserCard = ({
   latestMessage,
   type,
   isSelected,
-}: ChatData) => {
+}: PropsUserCard) => {
   return (
     <div
       className={`flex items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-4/70 transition w-full cursor-pointer ${
@@ -46,12 +45,12 @@ const UserCard = ({
         {latestMessage && (
           <div className="grid" style={{ gridTemplateColumns: "1fr" }}>
             <div className="whitespace-nowrap overflow-hidden truncate text-sm text-light-5/50">
+              {latestMessage.image && <span>Image </span>}
+              {latestMessage.video && <span>Video </span>}
+              {latestMessage.file && <span>File </span>}
               {latestMessage.text && (
                 <span title={latestMessage.text}>{latestMessage.text}</span>
               )}
-              {latestMessage.image && <span>Image</span>}
-              {latestMessage.video && <span>Video</span>}
-              {latestMessage.file && <span>File</span>}
             </div>
           </div>
         )}

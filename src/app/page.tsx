@@ -4,8 +4,6 @@ import { app, db } from "@/lib/firebase/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import Users from "@/components/Users";
-import SheetProfile from "@/components/SheetProfile";
 import Chat from "@/components/Chat";
 
 import {
@@ -14,16 +12,16 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import SearchUsersByTag from "@/components/SearchUsersByTag";
-import SearchResultsComponent from "@/components/SearchResultsComponent";
-import { IUser } from "@/types";
+import { ChatData, SelectedChatData, User } from "@/types";
+import LeftBar from "@/components/LeftBar";
 
 export default function Home() {
   const auth = getAuth(app);
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState<SelectedChatData | null>(
+    null
+  );
   const [searchResults, setSearchResults] = useState([] as any);
   const [searchTag, setSearchTag] = useState("");
 
@@ -33,7 +31,7 @@ export default function Home() {
         const userRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userRef);
         const userData = { id: userDoc.id, ...userDoc.data() };
-        setUser(userData as IUser);
+        setUser(userData as User);
       } else {
         setUser(null);
         router.push("/login");
@@ -94,34 +92,15 @@ export default function Home() {
     <div className="flex h-screen">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={25} className="min-w-[200px]">
-          <div className="h-12 w-full flex items-center gap-2 p-3">
-            <Sheet>
-              <SheetTrigger>
-                <div className="burger"></div>
-              </SheetTrigger>
-              <SheetProfile user={user} />
-            </Sheet>
-            <SearchUsersByTag
-              searchTag={searchTag}
-              setSearchTag={setSearchTag}
-              setSearchResults={setSearchResults}
-            />
-          </div>
-          {searchTag.length > 0 ? (
-            <SearchResultsComponent
-              setSearchTag={setSearchTag}
-              setSelectedChat={setSelectedChat}
-              userData={user}
-              loading={false}
-              searchResults={searchResults}
-            />
-          ) : (
-            <Users
-              userData={user}
-              setSelectedChat={setSelectedChat}
-              selectedChat={selectedChat}
-            />
-          )}
+          <LeftBar
+            searchTag={searchTag}
+            user={user}
+            setSearchTag={setSearchTag}
+            setSearchResults={setSearchResults}
+            setSelectedChat={setSelectedChat}
+            searchResults={searchResults}
+            selectedChat={selectedChat}
+          />
         </ResizablePanel>
         <ResizableHandle className="bg-dark-5" />
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
