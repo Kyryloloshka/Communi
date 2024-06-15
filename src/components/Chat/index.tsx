@@ -3,6 +3,8 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
+  increment,
   onSnapshot,
   orderBy,
   query,
@@ -118,14 +120,31 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
         text: message,
         time: serverTimestamp(),
         video: typeMessage === "video" && URL ? URL : null,
+        read: [
+          {
+            userId: myUser.id,
+            read: true,
+          },
+          {
+            userId: otherUser.id,
+            read: false,
+          },
+        ],
       };
 
       await addDoc(messageCollection, messageData);
       setMessage("");
       const chatRef = doc(db, "chats", chatRoomId);
-
+      const unreadedCount = await getDoc(chatRef).then((doc) => {
+        const data = doc.data();
+        return data?.unreadCount[otherUser.id];
+      });
       await updateDoc(chatRef, {
         lastMessage: messageData ? messageData : "Image",
+        unreadCount: {
+          [myUser.id]: 0,
+          [otherUser.id]: unreadedCount + 1,
+        },
       });
     } catch (error) {
       console.log("Error sending message: ", error);

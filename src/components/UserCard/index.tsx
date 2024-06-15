@@ -8,10 +8,11 @@ const UserCard = ({
   latestMessage,
   type,
   isSelected,
+  unreadCount,
 }: PropsUserCard) => {
   return (
     <div
-      className={`flex items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-4/70 transition w-full cursor-pointer ${
+      className={`flex relative items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-4/70 transition w-full cursor-pointer ${
         isSelected && "bg-dark-3"
       }`}
     >
@@ -43,7 +44,7 @@ const UserCard = ({
           </div>
         </div>
         {latestMessage && (
-          <div className="grid" style={{ gridTemplateColumns: "1fr" }}>
+          <div className="grid" style={{ gridTemplateColumns: "1fr 20px" }}>
             <div className="whitespace-nowrap overflow-hidden truncate text-sm text-light-5/50">
               {latestMessage.image && <span>Image </span>}
               {latestMessage.video && <span>Video </span>}
@@ -52,6 +53,11 @@ const UserCard = ({
                 <span title={latestMessage.text}>{latestMessage.text}</span>
               )}
             </div>
+            {unreadCount !== undefined && unreadCount > 0 && (
+              <span className="bg-primary-600 text-white text-[10px] rounded-full h-[20px] w-[20px] flex items-center justify-center text-center top-1 left-10 text-xs">
+                {unreadCount}
+              </span>
+            )}
           </div>
         )}
       </div>

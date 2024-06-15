@@ -15,7 +15,7 @@ const searchUsers = async ({searchKey, setSearchResults, myUserData}: {searchKey
     const usersSnapshot = await getDocs(usersRef);
     usersSnapshot.forEach((doc) => {
       const userData = { id: doc.id, ...doc.data() } as any;
-      if (userData.id === myUserData.id) return;
+      if (userData && myUserData && userData.id === myUserData.id) return;
       const tag = userData.tag;
       const name = userData.name;
       if (tag.startsWith(trimmedSearchKey) || name.includes(trimmedSearchKey) ) {

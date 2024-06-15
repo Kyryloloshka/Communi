@@ -51,6 +51,10 @@ const SearchResultsComponent = ({
         usersData,
         timestamp: serverTimestamp(),
         lastMessage: null,
+        unreadCount: {
+          [userData.id]: 0,
+          [user.id]: 0,
+        },
       };
 
       const chatRef = await addDoc(collection(db, "chats"), chatData);

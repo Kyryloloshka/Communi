@@ -7,6 +7,10 @@ import {
   query,
   where,
   orderBy,
+  getDocs,
+  runTransaction,
+  getFirestore,
+  doc,
 } from "firebase/firestore";
 import UserCard from "@/components/UserCard";
 import { useEffect, useState } from "react";
@@ -56,11 +60,29 @@ const Users = ({
         chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
     };
     setSelectedChat(data);
+    const chatRef = doc(db, "chats", chat.id);
+    const messagesRef = collection(db, "chats", chat.id, "messages");
+
+    runTransaction(getFirestore(), async (transaction) => {
+      const chatDoc = await transaction.get(chatRef);
+      if (!chatDoc.exists()) {
+        throw new Error("Chat does not exist!");
+      }
+
+      transaction.update(chatRef, { [`unreadCount.${userData.id}`]: 0 });
+
+      const messagesSnapshot = await getDocs(messagesRef);
+      messagesSnapshot.forEach((messageDoc) => {
+        transaction.update(messageDoc.ref, { [`read.${userData.id}`]: true });
+      });
+    }).catch((error) => {
+      console.log("Transaction failed: ", error);
+    });
   };
 
   return (
     <div className="">
-      {loading ? (
+      {loading || !userData ? (
         <div className="flex justify-center content-center">
           <span className="loader"></span>
         </div>
@@ -82,6 +104,7 @@ const Users = ({
                       chat.users.find((id: any) => id !== userData?.id)
                     ]?.avatarUrl
                   }
+                  unreadCount={chat.unreadCount[userData.id]}
                   latestMessage={chat.lastMessage}
                   type={ChatType.Chat}
                 />

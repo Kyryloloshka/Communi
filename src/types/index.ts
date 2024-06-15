@@ -22,6 +22,7 @@ export interface PropsUserCard {
   latestMessage: IMessage | null;
   type: ChatType;
   isSelected?: boolean;
+  unreadCount?: number;
 }
 
 export interface ChatData {
@@ -32,6 +33,9 @@ export interface ChatData {
   timestamp: FieldValue;
   lastMessage: IMessage | null;
   id: string;
+  unreadCount: {
+    [x: number]: number;
+  };
 }
 
 export interface SelectedChatData {
@@ -54,6 +58,10 @@ export interface IMessage {
   messageType: MessageType;
   previousMessage?: IMessage | null;
   nextMessage?: IMessage | null;
+  read: {
+    userId: string;
+    read: boolean;
+  }[];
 }
 
 export type MessageType = "text" | "voice" | "sticker" | "gif";
