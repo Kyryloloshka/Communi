@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const ProfilePage = ({userId}: {userId: string}) => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+	const [isCopiedTag, setIsCopiedTag] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
       if (userId) {
@@ -32,8 +32,33 @@ const ProfilePage = ({userId}: {userId: string}) => {
   }, [userId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+        <div className="px-[15px] max-w-[400px] mx-auto  my-4 flex items-center flex-col gap-3">
+					<div className="h-48 w-48 rounded-full overflow-hidden bg-primary-500">
+					</div>
+					<div className="self-start flex flex-col">
+						<p className={"bg-dark-4 text-dark-4 rounded-sm"}>bio bio bio bio</p>
+						<span className={"text-sm text-primary-500/50"}>About me</span>
+					</div>
+					<div className="self-start flex flex-col">
+						<p className={"bg-dark-4 text-dark-4 rounded-sm"}>name name name</p>
+						<span className={"text-sm text-primary-500/50"}>Name</span>
+					</div>
+					<div className="self-start flex flex-col">
+						<p className="cursor-pointer bg-dark-4 text-dark-4 rounded-sm">tag tag tag</p>
+						<span className={"text-sm text-primary-500/50"}>Tag</span>
+					</div>
+        </div>
+      )
   }
+	const handleCopyTag = async () => {
+    try {
+      await navigator.clipboard.writeText(user.tag);
+			setIsCopiedTag(true);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 	
   return (
     <div>
@@ -51,8 +76,8 @@ const ProfilePage = ({userId}: {userId: string}) => {
 						<span className={"text-sm text-primary-500/50"}>Name</span>
 					</div>
 					<div className="self-start flex flex-col">
-						<p>{user.tag}</p>
-						<span className={"text-sm text-primary-500/50"}>Tag</span>
+						<p className="cursor-pointer" onClick={handleCopyTag}>{user.tag}</p>
+						<span className={"text-sm text-primary-500/50"}>{isCopiedTag ? "Tag copied to clipboard" : "Tag"}</span>
 					</div>
         </div>
       ) : (

@@ -48,7 +48,9 @@ function Message({
       } ${isLastInGroup && "mb-1.5"}`}
     >
       {!isCurrentUser && (
-        <div className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}>
+        <div
+					onClick={() => handleUserClick(otherUser.id)}
+					className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}>
           {isLastInGroup && (
             <img
               src={otherUser.avatarUrl}
