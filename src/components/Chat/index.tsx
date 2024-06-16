@@ -4,6 +4,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   increment,
   onSnapshot,
   orderBy,
@@ -120,30 +121,38 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
         text: message,
         time: serverTimestamp(),
         video: typeMessage === "video" && URL ? URL : null,
-        read: [
-          {
-            userId: myUser.id,
-            read: true,
-          },
-          {
-            userId: otherUser.id,
-            read: false,
-          },
-        ],
+        read: {
+          [myUser.id]: true,
+          [otherUser.id]: false,
+        },
       };
 
       await addDoc(messageCollection, messageData);
       setMessage("");
       const chatRef = doc(db, "chats", chatRoomId);
-      const unreadedCount = await getDoc(chatRef).then((doc) => {
-        const data = doc.data();
-        return data?.unreadCount[otherUser.id];
-      });
+      const myUnreadedMessagesQuery = query(
+        messageCollection,
+        where("chatRoomId", "==", chatRoomId),
+        where(`read.${myUser.id}`, "==", false)
+      );
+      const myUnreadMessagesSnapshot = await getDocs(myUnreadedMessagesQuery);
+      const myUnreadCount = myUnreadMessagesSnapshot.size;
+
+      const otherUnreadedMessagesQuery = query(
+        messageCollection,
+        where("chatRoomId", "==", chatRoomId),
+        where(`read.${otherUser.id}`, "==", false)
+      );
+      const otherUnreadMessagesSnapshot = await getDocs(
+        otherUnreadedMessagesQuery
+      );
+      const otherUnreadCount = otherUnreadMessagesSnapshot.size;
+
       await updateDoc(chatRef, {
         lastMessage: messageData ? messageData : "Image",
         unreadCount: {
-          [myUser.id]: 0,
-          [otherUser.id]: unreadedCount + 1,
+          [myUser.id]: myUnreadCount,
+          [otherUser.id]: otherUnreadCount,
         },
       });
     } catch (error) {

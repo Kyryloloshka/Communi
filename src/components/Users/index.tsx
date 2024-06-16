@@ -61,19 +61,25 @@ const Users = ({
     };
     setSelectedChat(data);
     const chatRef = doc(db, "chats", chat.id);
-    const messagesRef = collection(db, "chats", chat.id, "messages");
+
+    const messagesRef = collection(db, "messages");
 
     runTransaction(getFirestore(), async (transaction) => {
       const chatDoc = await transaction.get(chatRef);
       if (!chatDoc.exists()) {
         throw new Error("Chat does not exist!");
       }
-
+      
       transaction.update(chatRef, { [`unreadCount.${userData.id}`]: 0 });
-
-      const messagesSnapshot = await getDocs(messagesRef);
-      messagesSnapshot.forEach((messageDoc) => {
-        transaction.update(messageDoc.ref, { [`read.${userData.id}`]: true });
+      const myUnreadedMessagesQuery = query(
+        messagesRef,
+        where("chatRoomId", "==", chat.id),
+        where(`read.${userData.id}`, "==", false)
+      );
+      const myUnreadMessagesSnapshot = await getDocs(myUnreadedMessagesQuery);
+      myUnreadMessagesSnapshot.forEach((doc) => {
+        const messageRef = doc.ref;
+        transaction.update(messageRef, { [`read.${userData.id}`]: true });
       });
     }).catch((error) => {
       console.log("Transaction failed: ", error);
