@@ -1,10 +1,11 @@
 "use client";
 import { getAuth } from "firebase/auth";
 import { app, db } from "@/lib/firebase/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import Chat from "@/components/Chat";
+import Profile from "@/components/Profile";
 
 import {
   ResizableHandle,
@@ -26,6 +27,8 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState([] as any);
   const [searchKey, setSearchKey] = useState("");
 
+	const searchParams = useSearchParams();
+	const userId = searchParams.get('userId');
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -93,7 +96,11 @@ export default function Home() {
         </ResizablePanel>
         <ResizableHandle className="bg-dark-5" />
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
-          <Chat selectedChat={selectedChat} />
+          {userId ? (
+            <Profile userId={userId} />
+          ) : (
+            <Chat selectedChat={selectedChat} />
+          )}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { app, db } from "@/lib/firebase/firebase";
 import { ChatType } from "@/types";
+import { useRouter } from "next/navigation";
 
 const Users = ({
   userData,
@@ -30,7 +31,7 @@ const Users = ({
   const [loading, setLoading] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
   const auth = getAuth(app);
-
+	const router = useRouter();;
   useEffect(() => {
     setLoading(true);
     if (userData) {
@@ -53,6 +54,7 @@ const Users = ({
   }, [userData]);
 
   const openChat = (chat: any) => {
+		router.push("/")
     const data = {
       id: chat.id,
       myData: userData,

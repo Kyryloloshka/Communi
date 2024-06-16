@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { IMessage } from "@/types";
 import FileLink from "../FileLink";
+import { useRouter } from "next/navigation";
 
 export const getValidTime = (time: any) => {
   const date = new Date(time * 1000);
@@ -21,6 +22,7 @@ function Message({
   myUser: any;
   otherUser: any;
 }) {
+	const router = useRouter();
   const dalayForGroup = 120;
   const isCurrentUser = message.senderId === myUser.id;
 
@@ -35,7 +37,9 @@ function Message({
       dalayForGroup;
 
   const [open, setOpen] = useState<boolean | undefined>(undefined);
-
+	const handleUserClick = (userId: string) => {
+    router.push(`/?userId=${userId}`);
+  };
   return (
     <div
       key={message.id}
@@ -65,12 +69,13 @@ function Message({
         }`}
       >
         {!isCurrentUser && isFirstInGroup && (
-          <Link
-            href={"/profile/" + otherUser.id}
-            className={`text-primary-500 px-2 leading-[1em] pt-1.5`}
+          <button
+						type="button"
+						onClick={() => handleUserClick(otherUser.id)}
+            className={`text-left text-primary-500 px-2 leading-[1em] pt-1.5`}
           >
             {message.senderName}
-          </Link>
+          </button>
         )}
         {message.image && (
           <Dialog open={open}>

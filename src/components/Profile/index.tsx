@@ -1,20 +1,18 @@
 "use client";
 import { db } from "@/lib/firebase/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const ProfilePage = () => {
-  const { id } = useParams();
+const ProfilePage = ({userId}: {userId: string}) => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (id) {
+      if (userId) {
         try {
           const usersRef = collection(db, "users");
-          const q = query(usersRef, where("__name__", "==", id));
+          const q = query(usersRef, where("__name__", "==", userId));
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0];
@@ -31,19 +29,31 @@ const ProfilePage = () => {
     };
 
     fetchUser();
-  }, [id]);
+  }, [userId]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
-
+	
   return (
     <div>
-      <h1>Profile ID: {id}</h1>
       {user ? (
-        <div>
-          <p>Name: {user.name}</p>
-          <p>Email: {user.email}</p>
+        <div className="px-[15px] max-w-[400px] mx-auto  my-4 flex items-center flex-col gap-3">
+					<div className="h-48 w-48 rounded-full overflow-hidden">
+						<img src={user.avatarUrl} className={"w-full h-full object-cover"} alt="avatar" />
+					</div>
+					<div className="self-start flex flex-col">
+						<p>{user.bio ? user.bio : "not specified"}</p>
+						<span className={"text-sm text-primary-500/50"}>About me</span>
+					</div>
+					<div className="self-start flex flex-col">
+						<p>{user.name}</p>
+						<span className={"text-sm text-primary-500/50"}>Name</span>
+					</div>
+					<div className="self-start flex flex-col">
+						<p>{user.tag}</p>
+						<span className={"text-sm text-primary-500/50"}>Tag</span>
+					</div>
         </div>
       ) : (
         <p>No user found</p>
