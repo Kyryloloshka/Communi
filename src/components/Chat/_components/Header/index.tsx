@@ -17,7 +17,7 @@ const Header = ({
   };
 
   return (
-    <div className="bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
+    <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
       <img
         onClick={() => handleUserClick(otherUser.id)}
         src={otherUser.avatarUrl}
@@ -27,12 +27,12 @@ const Header = ({
       <div className="flex flex-col gap-1">
         <div
           onClick={() => handleUserClick(otherUser.id)}
-          className="text-light-2 leading-[1em] cursor-pointer"
+          className="text-dark-5 dark:text-light-2 leading-[1em] cursor-pointer"
         >
           {otherUser.name}
         </div>
         {userStatus && (
-          <div className="text-primary-500/70 text-xs leading-[1em]">
+          <div className="text-dark-5/80 dark:text-primary-500/70 text-xs leading-[1em]">
             {userStatus.onlineStatus === "online"
               ? "online"
               : "last seen " + formatTimestamp(userStatus.lastOnline)}

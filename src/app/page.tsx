@@ -95,7 +95,7 @@ function Home() {
             selectedChat={selectedChat}
           />
         </ResizablePanel>
-        <ResizableHandle className="bg-dark-5" />
+        <ResizableHandle className="bg-primary-500/80 dark:bg-dark-5" />
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
           {userId ? (
             <Profile userId={userId} />

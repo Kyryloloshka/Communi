@@ -166,7 +166,7 @@ const InputText = ({
         e.preventDefault();
         sendMessage();
       }}
-      className="flex items-end pb-1 border-t border-dark-5 relative"
+      className="flex items-end pb-1 border-t border-primary-500/80 dark:border-dark-5 relative"
     >
       <div className="text-gray-500 mr-2 cursor-pointer py-3 pl-4">
         <label htmlFor="file-upload" className="cursor-pointer">
@@ -200,7 +200,7 @@ const InputText = ({
             {filePreview && (
               <div className="flex w-full justify-center">
                 <div className="bg-dark-5 px-3 flex-auto py-2 max-w-[300px] rounded-lg flex gap-3 items-center">
-                  <div className="flex items-center justify-center bg-dark-3 rounded-full h-[45px] w-[45px]">
+                  <div className="flex items-center justify-center bg-light-3 dark:bg-dark-3 rounded-full h-[45px] w-[45px]">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -267,7 +267,7 @@ const InputText = ({
         onClick={() => {
           setShowEmoji((prev) => !prev);
         }}
-        className="fill-white hover:-translate-y-0.5 hover:fill-primary-500  transition h-5 w-5 emoji-icon cursor-pointer mr-2 mb-[14px]"
+        className="fill-primary-800 dark:fill-white hover:-translate-y-0.5 hover:fill-secondary-600 dark:hover:fill-primary-500  transition h-5 w-5 emoji-icon cursor-pointer mr-2 mb-[14px]"
       />
       {showEmoji && (
         <div className="absolute bottom-[70px] left-4 select-none">
@@ -291,7 +291,7 @@ const InputText = ({
           textareaRef.current.style.height = "auto";
           textareaRef.current.style.height = `${textareaRef?.current.scrollHeight}px`;
         }}
-        className="flex-1 py-2 px-3 mt-1.5 mb-1.5 outline-none border-none resize-none scroll-none focus:outline-none focus-visible:ring-0  max-h-[200px] bg-dark-2 max-w-full"
+        className="flex-1 py-2 px-3 mt-1.5 mb-1.5 outline-none border-none resize-none scroll-none focus:outline-none focus-visible:ring-0  max-h-[200px] bg-light-2 dark:bg-dark-2 max-w-full"
         onKeyDown={handleKeyDown}
       />
       <button className="button-send pr-3 pb-[10px]" type="submit">

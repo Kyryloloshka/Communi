@@ -115,7 +115,7 @@ const SearchResultsComponent = ({
           <span className="loader"></span>
         </div>
       ) : searchResults.length === 0 ? (
-        <div className="text-center text-light-6/50">No users found</div>
+        <div className="text-center dark:text-primary-500">No users found</div>
       ) : (
         searchResults.map((user: DocumentData) => {
           return (

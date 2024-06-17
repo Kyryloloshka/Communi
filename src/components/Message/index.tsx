@@ -39,7 +39,7 @@ function Message({
 
   const [open, setOpen] = useState<boolean | undefined>(undefined);
   const messageRef = useRef<HTMLDivElement>(null);
-  
+
   const handleUserClick = (userId: string) => {
     router.push(`/?userId=${userId}`);
   };
@@ -93,10 +93,8 @@ function Message({
         </div>
       )}
       <div
-        className={`text-light-1 max-w-[400px] overflow-hidden relative flex flex-col flex-wrap ${
-          isCurrentUser
-            ? "bg-dark-5 self-end  rounded-l-xl"
-            : "bg-dark-5 rounded-r-xl self-start"
+        className={`text-light-1 max-w-[400px] overflow-hidden relative flex flex-col flex-wrap bg-light-4 dark:bg-dark-5 ${
+          isCurrentUser ? "self-end  rounded-l-xl" : "rounded-r-xl self-start"
         } rounded-sm ${isFirstInGroup && "rounded-t-xl"} ${
           isLastInGroup &&
           (isCurrentUser ? "rounded-br-none" : "rounded-bl-none")
@@ -106,7 +104,7 @@ function Message({
           <button
             type="button"
             onClick={() => handleUserClick(otherUser.id)}
-            className={`text-left text-primary-500 px-2 leading-[1em] pt-1.5`}
+            className={`text-left text-secondary-500 dark:text-primary-500 px-2 leading-[1em] pt-1.5`}
           >
             {message.senderName}
           </button>
@@ -176,7 +174,7 @@ function Message({
         {message.text.trim() && (
           <p
             style={{ wordBreak: "break-word" }}
-            className={`px-2 pb-2  ${
+            className={`px-2 pb-2 text-dark-3 dark:text-white ${
               (!isCurrentUser && isFirstInGroup) || message.file
                 ? "pt-0"
                 : "pt-1.5"

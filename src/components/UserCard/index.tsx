@@ -12,8 +12,8 @@ const UserCard = ({
 }: PropsUserCard) => {
   return (
     <div
-      className={`flex relative select-none items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-4/70 transition w-full cursor-pointer ${
-        isSelected && "bg-dark-3"
+      className={`flex relative select-none items-center gap-3 px-3 py-1.5 hover:bg-light-5 dark:hover:bg-dark-4/70 transition w-full cursor-pointer ${
+        isSelected && "bg-light-4 dark:bg-dark-3"
       }`}
     >
       <img src={avatarUrl} alt={name} className="w-10 h-10 rounded-full" />
@@ -45,7 +45,7 @@ const UserCard = ({
         </div>
         {latestMessage && (
           <div className="grid" style={{ gridTemplateColumns: "1fr 20px" }}>
-            <div className="whitespace-nowrap overflow-hidden truncate text-sm text-light-5/50">
+            <div className="whitespace-nowrap overflow-hidden truncate text-sm text-dark-5/80 dark:text-primary-500/80">
               {latestMessage.image && <span>Image </span>}
               {latestMessage.video && <span>Video </span>}
               {latestMessage.file && <span>File </span>}

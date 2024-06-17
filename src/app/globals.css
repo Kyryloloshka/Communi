@@ -47,6 +47,8 @@
     --light-3: #dbd5cc;
     --light-4: #c8bdab;
     --light-4: #c2ae8e;
+    --icon-color-light: #000;
+    --icon-color-dark: #fff;
   }
 
   .dark {
@@ -132,7 +134,10 @@
     box-shadow: 24px 0 #FFF, -24px 0 #FFF2;
   }
 }
-      
+     
+.icon {
+  stroke: currentColor;
+}
     
 .burger {
   display: flex;
@@ -178,6 +183,16 @@
 
 .button-send:hover svg {
   transform: translateX(-0.3rem) rotate(45deg) scale(1.1);
+  color: #B353C8;
+}
+.button-send {
+  color: #D0821E;
+}
+
+.dark .button-send {
+  color: #FFF;
+}
+.dark .button-send:hover svg {
   color: var(--primary-color);
 }
 
@@ -199,16 +214,24 @@
   height: 24px;
   width: 24px;
   stroke-width: 1.3px;
-  stroke: white;
+  stroke: #D0821E;
   fill: none;
   cursor: pointer;
   transition: 0.3s all ease;
   transform: rotate(0deg);
 }
 
+.dark .file-clip {
+  stroke: white;
+}
+
 .file-clip:hover {
-  stroke: var(--primary-color);
+  stroke: #B353C8;
   transform: rotate(-10deg);
+}
+
+.dark .file-clip:hover {
+  stroke: var(--primary-color);
 }
 
 .container-input {

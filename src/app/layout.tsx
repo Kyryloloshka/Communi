@@ -17,7 +17,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head />
       <body
         className={
-          "min-h-screen bg-background antialiased dark:bg-dark-1 dark:text-white " +
+          "min-h-screen bg-light-2 text-dark-3 antialiased dark:bg-dark-1 dark:text-white " +
           inter.className
         }
       >

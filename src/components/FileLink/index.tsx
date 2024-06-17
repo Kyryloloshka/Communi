@@ -27,7 +27,7 @@ const FileLink = ({ fileUrl }: { fileUrl: string }) => {
   return (
     <a href={fileUrl} download className="flex w-full justify-center">
       <div className="bg-dark-5 px-3 flex-auto py-2 max-w-[300px] rounded-lg flex gap-3 items-center">
-        <div className="flex items-center justify-center bg-dark-3 rounded-full h-[45px] w-[45px]">
+        <div className="flex items-center justify-center bg-light-3 dark:bg-dark-3 rounded-full h-[45px] w-[45px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

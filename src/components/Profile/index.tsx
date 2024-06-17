@@ -37,17 +37,17 @@ const ProfilePage = ({ userId }: { userId: string }) => {
         <div className="h-48 w-48 rounded-full overflow-hidden bg-primary-500"></div>
         <div className="self-start flex flex-col">
           <p className={"bg-dark-4 text-dark-4 rounded-sm"}>bio bio bio bio</p>
-          <span className={"text-sm text-primary-500/50"}>About me</span>
+          <span className={"text-sm text-primary-500"}>About me</span>
         </div>
         <div className="self-start flex flex-col">
           <p className={"bg-dark-4 text-dark-4 rounded-sm"}>name name name</p>
-          <span className={"text-sm text-primary-500/50"}>Name</span>
+          <span className={"text-sm text-primary-500"}>Name</span>
         </div>
         <div className="self-start flex flex-col">
-          <p className="cursor-pointer bg-dark-4 text-dark-4 rounded-sm">
+          <p className="cursor-pointer bg-primary-500 dark:bg-dark-4 text-primary-500 dark:text-dark-4 rounded-sm">
             tag tag tag
           </p>
-          <span className={"text-sm text-primary-500/50"}>Tag</span>
+          <span className={"text-sm text-primary-500"}>Tag</span>
         </div>
       </div>
     );
@@ -75,14 +75,18 @@ const ProfilePage = ({ userId }: { userId: string }) => {
           {user.bio && (
             <div className="self-start flex flex-col">
               <p>{user.bio}</p>
-              <span className={"text-sm text-primary-500/50 select-none"}>
+              <span className={"text-sm dark:text-primary-500 select-none"}>
                 About me
               </span>
             </div>
           )}
           <div className="self-start flex flex-col">
             <p>{user.name}</p>
-            <span className={"text-sm text-primary-500/50 select-none"}>
+            <span
+              className={
+                "text-sm text-secondary-700 dark:text-primary-500 select-none"
+              }
+            >
               Name
             </span>
           </div>
@@ -90,7 +94,11 @@ const ProfilePage = ({ userId }: { userId: string }) => {
             <p className="cursor-pointer" onClick={handleCopyTag}>
               {user.tag}
             </p>
-            <span className={"text-sm text-primary-500/50 select-none"}>
+            <span
+              className={
+                "text-sm text-secondary-700 dark:text-primary-500 select-none"
+              }
+            >
               {isCopiedTag ? "Tag copied to clipboard" : "Tag"}
             </span>
           </div>
