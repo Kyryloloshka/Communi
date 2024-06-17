@@ -1,6 +1,6 @@
 import React from "react";
-import { getValidTime } from "@/components/Message";
 import { PropsUserCard, ChatType } from "@/types";
+import { getValidTime } from "@/lib/utils";
 
 const UserCard = ({
   name,
@@ -12,7 +12,7 @@ const UserCard = ({
 }: PropsUserCard) => {
   return (
     <div
-      className={`flex relative items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-4/70 transition w-full cursor-pointer ${
+      className={`flex relative select-none items-center gap-3 px-3 py-1.5 bg-dark-1 hover:bg-dark-4/70 transition w-full cursor-pointer ${
         isSelected && "bg-dark-3"
       }`}
     >

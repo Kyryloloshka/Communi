@@ -3,10 +3,10 @@ import { db } from "@/lib/firebase/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-const ProfilePage = ({userId}: {userId: string}) => {
+const ProfilePage = ({ userId }: { userId: string }) => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-	const [isCopiedTag, setIsCopiedTag] = useState(false);
+  const [isCopiedTag, setIsCopiedTag] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
       if (userId) {
@@ -33,52 +33,67 @@ const ProfilePage = ({userId}: {userId: string}) => {
 
   if (loading) {
     return (
-        <div className="px-[15px] max-w-[400px] mx-auto  my-4 flex items-center flex-col gap-3">
-					<div className="h-48 w-48 rounded-full overflow-hidden bg-primary-500">
-					</div>
-					<div className="self-start flex flex-col">
-						<p className={"bg-dark-4 text-dark-4 rounded-sm"}>bio bio bio bio</p>
-						<span className={"text-sm text-primary-500/50"}>About me</span>
-					</div>
-					<div className="self-start flex flex-col">
-						<p className={"bg-dark-4 text-dark-4 rounded-sm"}>name name name</p>
-						<span className={"text-sm text-primary-500/50"}>Name</span>
-					</div>
-					<div className="self-start flex flex-col">
-						<p className="cursor-pointer bg-dark-4 text-dark-4 rounded-sm">tag tag tag</p>
-						<span className={"text-sm text-primary-500/50"}>Tag</span>
-					</div>
+      <div className="px-[15px] max-w-[400px] mx-auto  my-4 flex items-center flex-col gap-3">
+        <div className="h-48 w-48 rounded-full overflow-hidden bg-primary-500"></div>
+        <div className="self-start flex flex-col">
+          <p className={"bg-dark-4 text-dark-4 rounded-sm"}>bio bio bio bio</p>
+          <span className={"text-sm text-primary-500/50"}>About me</span>
         </div>
-      )
+        <div className="self-start flex flex-col">
+          <p className={"bg-dark-4 text-dark-4 rounded-sm"}>name name name</p>
+          <span className={"text-sm text-primary-500/50"}>Name</span>
+        </div>
+        <div className="self-start flex flex-col">
+          <p className="cursor-pointer bg-dark-4 text-dark-4 rounded-sm">
+            tag tag tag
+          </p>
+          <span className={"text-sm text-primary-500/50"}>Tag</span>
+        </div>
+      </div>
+    );
   }
-	const handleCopyTag = async () => {
+  const handleCopyTag = async () => {
     try {
       await navigator.clipboard.writeText(user.tag);
-			setIsCopiedTag(true);
+      setIsCopiedTag(true);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error("Failed to copy text: ", err);
     }
   };
-	
+
   return (
     <div>
       {user ? (
         <div className="px-[15px] max-w-[400px] mx-auto  my-4 flex items-center flex-col gap-3">
-					<div className="h-48 w-48 rounded-full overflow-hidden">
-						<img src={user.avatarUrl} className={"w-full h-full object-cover"} alt="avatar" />
-					</div>
-					<div className="self-start flex flex-col">
-						<p>{user.bio ? user.bio : "not specified"}</p>
-						<span className={"text-sm text-primary-500/50"}>About me</span>
-					</div>
-					<div className="self-start flex flex-col">
-						<p>{user.name}</p>
-						<span className={"text-sm text-primary-500/50"}>Name</span>
-					</div>
-					<div className="self-start flex flex-col">
-						<p className="cursor-pointer" onClick={handleCopyTag}>{user.tag}</p>
-						<span className={"text-sm text-primary-500/50"}>{isCopiedTag ? "Tag copied to clipboard" : "Tag"}</span>
-					</div>
+          <div className="h-48 w-48 rounded-full overflow-hidden select-none">
+            <img
+              src={user.avatarUrl}
+              className={"w-full h-full object-cover"}
+              alt="avatar"
+            />
+          </div>
+          {user.bio && (
+            <div className="self-start flex flex-col">
+              <p>{user.bio}</p>
+              <span className={"text-sm text-primary-500/50 select-none"}>
+                About me
+              </span>
+            </div>
+          )}
+          <div className="self-start flex flex-col">
+            <p>{user.name}</p>
+            <span className={"text-sm text-primary-500/50 select-none"}>
+              Name
+            </span>
+          </div>
+          <div className="self-start flex flex-col">
+            <p className="cursor-pointer" onClick={handleCopyTag}>
+              {user.tag}
+            </p>
+            <span className={"text-sm text-primary-500/50 select-none"}>
+              {isCopiedTag ? "Tag copied to clipboard" : "Tag"}
+            </span>
+          </div>
         </div>
       ) : (
         <p>No user found</p>

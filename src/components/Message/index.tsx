@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { IMessage } from "@/types";
 import FileLink from "../FileLink";
 import { useRouter } from "next/navigation";
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
 
 export const getValidTime = (time: any) => {
   const date = new Date(time * 1000);
@@ -22,7 +23,7 @@ function Message({
   myUser: any;
   otherUser: any;
 }) {
-	const router = useRouter();
+  const router = useRouter();
   const dalayForGroup = 120;
   const isCurrentUser = message.senderId === myUser.id;
 
@@ -37,20 +38,51 @@ function Message({
       dalayForGroup;
 
   const [open, setOpen] = useState<boolean | undefined>(undefined);
-	const handleUserClick = (userId: string) => {
+  const messageRef = useRef<HTMLDivElement>(null);
+  
+  const handleUserClick = (userId: string) => {
     router.push(`/?userId=${userId}`);
   };
+
+  useEffect(() => {
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting) {
+          const firestore = getFirestore();
+          const messageDocRef = doc(firestore, "messages", message.id);
+          await updateDoc(messageDocRef, { [`read.${myUser.id}`]: true });
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, {
+      threshold: 0.1,
+    });
+
+    if (messageRef.current) {
+      observer.observe(messageRef.current);
+    }
+
+    return () => {
+      if (messageRef.current) {
+        observer.unobserve(messageRef.current);
+      }
+    };
+  }, [message.id, myUser.id]);
+
   return (
     <div
       key={message.id}
       className={`flex relative ${
         isCurrentUser ? "justify-end" : "justify-start"
       } ${isLastInGroup && "mb-1.5"}`}
+      ref={messageRef}
     >
       {!isCurrentUser && (
         <div
-					onClick={() => handleUserClick(otherUser.id)}
-					className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}>
+          onClick={() => handleUserClick(otherUser.id)}
+          className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}
+        >
           {isLastInGroup && (
             <img
               src={otherUser.avatarUrl}
@@ -72,8 +104,8 @@ function Message({
       >
         {!isCurrentUser && isFirstInGroup && (
           <button
-						type="button"
-						onClick={() => handleUserClick(otherUser.id)}
+            type="button"
+            onClick={() => handleUserClick(otherUser.id)}
             className={`text-left text-primary-500 px-2 leading-[1em] pt-1.5`}
           >
             {message.senderName}

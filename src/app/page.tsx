@@ -2,7 +2,7 @@
 import { getAuth } from "firebase/auth";
 import { app, db } from "@/lib/firebase/firebase";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import Chat from "@/components/Chat";
 import Profile from "@/components/Profile";
@@ -17,7 +17,7 @@ import { SelectedChatData, User } from "@/types";
 import LeftBar from "@/components/LeftBar";
 import updateUserStatus from "@/lib/api/changeStatus";
 
-export default function Home() {
+function Home() {
   const auth = getAuth(app);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
@@ -27,8 +27,9 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState([] as any);
   const [searchKey, setSearchKey] = useState("");
 
-	const searchParams = useSearchParams();
-	const userId = searchParams.get('userId');
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -104,5 +105,13 @@ export default function Home() {
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
+  );
+}
+
+export default function HomeWithSuspense() {
+  return (
+    <Suspense>
+      <Home />
+    </Suspense>
   );
 }

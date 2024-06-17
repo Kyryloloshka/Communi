@@ -12,12 +12,12 @@ import {
   getFirestore,
   doc,
 } from "firebase/firestore";
-import UserCard from "@/components/UserCard";
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { app, db } from "@/lib/firebase/firebase";
 import { ChatType } from "@/types";
 import { useRouter } from "next/navigation";
+import UserCard from "../UserCard";
 
 const Users = ({
   userData,
@@ -71,7 +71,6 @@ const Users = ({
       if (!chatDoc.exists()) {
         throw new Error("Chat does not exist!");
       }
-      
       transaction.update(chatRef, { [`unreadCount.${userData.id}`]: 0 });
       const myUnreadedMessagesQuery = query(
         messagesRef,

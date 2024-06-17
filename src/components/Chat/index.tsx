@@ -3,9 +3,7 @@ import {
   addDoc,
   collection,
   doc,
-  getDoc,
   getDocs,
-  increment,
   onSnapshot,
   orderBy,
   query,
@@ -17,9 +15,8 @@ import React, { useEffect, useRef, useState } from "react";
 import InputText from "../InputText";
 import Message from "../Message";
 import { db } from "@/lib/firebase/firebase";
-import { formatTimestamp } from "@/lib/utils";
 import { IMessage, typeAttached } from "@/types";
-import { useRouter } from "next/navigation";
+import Header from "./_components/Header";
 
 const Chat = ({ selectedChat }: { selectedChat: any }) => {
   const myUser = selectedChat?.myData;
@@ -28,11 +25,11 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
   const chatContainerRef = useRef<any>(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
-	const router = useRouter()
+  
   const [userStatus, setUserStatus] = useState<{
     onlineStatus: string;
     lastOnline: Timestamp;
-  }>();
+  } | null>(null);
 
   useEffect(() => {
     try {
@@ -161,43 +158,18 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
     }
   };
 
-	const handleUserClick = (userId: string) => {
-    router.push(`/?userId=${userId}`);
-  };
 
   return (
     <>
       {selectedChat === undefined || selectedChat === null ? (
-        <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50">
+        <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50 select-none">
           Select a chat to start messaging
         </div>
       ) : (
         <div className="flex flex-col h-full">
-          <div className="bg-dark-3 flex gap-3 py-2 px-6 items-center">
-            <img
-						onClick={() => handleUserClick(otherUser.id)}
-              src={otherUser.avatarUrl}
-              alt=""
-              className="h-10 rounded-full cursor-pointer"
-            />
-            <div className="flex flex-col gap-1">
-              <div 
-						onClick={() => handleUserClick(otherUser.id)}
-							
-							className="text-light-2 leading-[1em] cursor-pointer">
-                {otherUser.name}
-              </div>
-              {userStatus && (
-                <div className="text-primary-500/70 text-xs leading-[1em]">
-                  {userStatus.onlineStatus === "online"
-                    ? "online"
-                    : "last seen " + formatTimestamp(userStatus.lastOnline)}
-                </div>
-              )}
-            </div>
-          </div>
+          <Header userStatus={userStatus} otherUser={otherUser} />
           {messages.length === 0 ? (
-            <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50">
+            <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50 select-none">
               Say hello to {otherUser?.name}
             </div>
           ) : (
