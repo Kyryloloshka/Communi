@@ -1,5 +1,7 @@
 import "@/app/globals.css";
+import StoreProvider from "@/components/StoreProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { store } from "@/state";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -21,14 +23,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
           inter.className
         }
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );

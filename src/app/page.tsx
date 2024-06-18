@@ -16,14 +16,13 @@ import {
 import { SelectedChatData, User } from "@/types";
 import LeftBar from "@/components/LeftBar";
 import updateUserStatus from "@/lib/api/changeStatus";
+import { authActions, useActionCreators, useStateSelector } from "@/state";
 
 function Home() {
   const auth = getAuth(app);
-  const [user, setUser] = useState<User | null>(null);
+  const actions = useActionCreators(authActions);
   const router = useRouter();
-  const [selectedChat, setSelectedChat] = useState<SelectedChatData | null>(
-    null
-  );
+  const myUser = useStateSelector((state) => state.auth.myUser);
   const [searchResults, setSearchResults] = useState([] as any);
   const [searchKey, setSearchKey] = useState("");
 
@@ -36,9 +35,9 @@ function Home() {
         const userRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userRef);
         const userData = { id: userDoc.id, ...userDoc.data() };
-        setUser(userData as User);
+        actions.setMyUser(userData as User);
       } else {
-        setUser(null);
+        actions.setMyUser(null);
         router.push("/login");
       }
     });
@@ -52,14 +51,14 @@ function Home() {
 
     const setUserFocusListeners = () => {
       focusListener = () => {
-        if (user && user.id) {
-          updateUserStatus(user.id, "online");
+        if (myUser && myUser.id) {
+          updateUserStatus(myUser.id, "online");
         }
       };
 
       blurListener = () => {
-        if (user && user.id) {
-          updateUserStatus(user.id, "offline");
+        if (myUser && myUser.id) {
+          updateUserStatus(myUser.id, "offline");
         }
       };
 
@@ -72,14 +71,14 @@ function Home() {
       window.removeEventListener("blur", blurListener);
     };
 
-    if (user) {
+    if (myUser) {
       setUserFocusListeners();
     }
 
     return () => {
       removeUserFocusListeners();
     };
-  }, [user]);
+  }, [myUser]);
 
   return (
     <div className="flex h-screen">
@@ -87,12 +86,9 @@ function Home() {
         <ResizablePanel defaultSize={25} className="min-w-[200px]">
           <LeftBar
             searchKey={searchKey}
-            user={user}
             setSearchKey={setSearchKey}
             setSearchResults={setSearchResults}
-            setSelectedChat={setSelectedChat}
             searchResults={searchResults}
-            selectedChat={selectedChat}
           />
         </ResizablePanel>
         <ResizableHandle className="bg-primary-500/80 dark:bg-dark-5" />
@@ -100,7 +96,7 @@ function Home() {
           {userId ? (
             <Profile userId={userId} />
           ) : (
-            <Chat selectedChat={selectedChat} />
+            <Chat/>
           )}
         </ResizablePanel>
       </ResizablePanelGroup>

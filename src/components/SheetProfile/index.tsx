@@ -4,14 +4,16 @@ import { Button } from "../ui/button";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase/firebase";
-import { User } from "@/types";
 import SwitchTheme from "./_components/SwitchTheme";
 import { useTheme } from "next-themes";
+import { useStateSelector } from "@/state";
 
-const SheetProfile = ({ user }: { user: User | null | undefined }) => {
+const SheetProfile = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const user = useStateSelector((state) => state.auth.myUser);
+
   const handleLogout = () => {
     signOut(auth)
       .then(() => {

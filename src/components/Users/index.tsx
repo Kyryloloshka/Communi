@@ -12,26 +12,22 @@ import {
   getFirestore,
   doc,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { app, db } from "@/lib/firebase/firebase";
 import { ChatType } from "@/types";
 import { useRouter } from "next/navigation";
 import UserCard from "../UserCard";
+import { authActions, useActionCreators, useStateSelector } from "@/state";
 
-const Users = ({
-  userData,
-  setSelectedChat,
-  selectedChat,
-}: {
-  userData: any;
-  setSelectedChat: Function;
-  selectedChat: any;
-}) => {
+const Users = () => {
   const [loading, setLoading] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
   const auth = getAuth(app);
-	const router = useRouter();;
+  const router = useRouter();
+  const actions = useActionCreators(authActions);
+  const userData = useStateSelector((state) => state.auth.myUser);
+  const selectedChat = useStateSelector((state) => state.auth.selectedChat);
   useEffect(() => {
     setLoading(true);
     if (userData) {
@@ -54,14 +50,15 @@ const Users = ({
   }, [userData]);
 
   const openChat = (chat: any) => {
-		router.push("/")
+    if (!userData) return;
+    router.push("/");
     const data = {
       id: chat.id,
       myData: userData,
       otherData:
         chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
     };
-    setSelectedChat(data);
+    actions.setSelectedChat(data);
     const chatRef = doc(db, "chats", chat.id);
 
     const messagesRef = collection(db, "messages");

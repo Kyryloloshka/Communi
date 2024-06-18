@@ -1,7 +1,6 @@
 import { auth, db } from "@/lib/firebase/firebase";
 import {
   DocumentData,
-  FieldValue,
   addDoc,
   collection,
   getDocs,
@@ -12,25 +11,25 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import UserCard from "../UserCard";
-import { ChatData, ChatType, SelectedChatData, User } from "@/types";
+import { ChatData, ChatType } from "@/types";
+import { authActions, useActionCreators, useStateSelector } from "@/state";
 
 const SearchResultsComponent = ({
   searchResults,
   setSearchKey,
   loading,
-  userData,
-  setSelectedChat,
 }: {
   searchResults: any[];
   loading: boolean;
   setSearchKey: (tag: string) => void;
-  userData: User;
-  setSelectedChat: (chat: SelectedChatData) => void;
 }) => {
   const [loading2, setLoading2] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData>([]);
+  const userData = useStateSelector((state) => state.auth.myUser);
+  const actions = useActionCreators(authActions);
 
   const handleCreateChat = async (user: DocumentData) => {
+    if (!userData) return;
     setLoading2(true);
     const chatQuery = query(
       collection(db, "chats"),
@@ -100,7 +99,7 @@ const SearchResultsComponent = ({
               chat.users.find((id: string) => id !== userData?.id)
             ],
         };
-        setSelectedChat(data);
+        actions.setSelectedChat(data);
         setSearchKey("");
       } else {
         console.error("Chat not found");

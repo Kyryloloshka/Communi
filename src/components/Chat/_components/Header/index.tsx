@@ -1,22 +1,24 @@
 import { formatTimestamp } from "@/lib/utils";
-import { User } from "@/types";
+import { useStateSelector } from "@/state";
 import { Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Header = ({
-  otherUser,
   userStatus,
 }: {
-  otherUser: User;
   userStatus: { onlineStatus: string; lastOnline: Timestamp } | null;
 }) => {
+  const selectedChat = useStateSelector((state) => state.auth.selectedChat);
+  const otherUser = selectedChat ? selectedChat.otherData : null;
+
   const router = useRouter();
   const handleUserClick = (userId: string) => {
     router.push(`/?userId=${userId}`);
   };
 
   return (
+    otherUser &&
     <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
       <img
         onClick={() => handleUserClick(otherUser.id)}

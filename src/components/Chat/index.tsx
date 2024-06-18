@@ -17,15 +17,17 @@ import Message from "../Message";
 import { db } from "@/lib/firebase/firebase";
 import { IMessage, typeAttached } from "@/types";
 import Header from "./_components/Header";
+import { useStateSelector } from "@/state";
 
-const Chat = ({ selectedChat }: { selectedChat: any }) => {
-  const myUser = selectedChat?.myData;
-  const otherUser = selectedChat?.otherData;
-  const chatRoomId = selectedChat?.id;
+const Chat = () => {
+  const selectedChat = useStateSelector((state) => state.auth.selectedChat);
+  const myUser = selectedChat ? selectedChat.myData : null;
+  const otherUser = selectedChat ? selectedChat.otherData : null;
+  const chatRoomId = selectedChat ? selectedChat.id : null;
   const chatContainerRef = useRef<any>(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
-  
+
   const [userStatus, setUserStatus] = useState<{
     onlineStatus: string;
     lastOnline: Timestamp;
@@ -106,7 +108,7 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
 
   const sendMessage = async (URL?: string, typeMessage?: typeAttached) => {
     const messageCollection = collection(db, "messages");
-    if (message.trim() === "" && !URL) return;
+    if ((message.trim() === "" && !URL) || !myUser || !otherUser) return;
 
     try {
       const messageData = {
@@ -127,6 +129,7 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
 
       await addDoc(messageCollection, messageData);
       setMessage("");
+      if (!chatRoomId) return;
       const chatRef = doc(db, "chats", chatRoomId);
       const myUnreadedMessagesQuery = query(
         messageCollection,
@@ -158,7 +161,6 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
     }
   };
 
-
   return (
     <>
       {selectedChat === undefined || selectedChat === null ? (
@@ -167,7 +169,7 @@ const Chat = ({ selectedChat }: { selectedChat: any }) => {
         </div>
       ) : (
         <div className="flex flex-col h-full">
-          <Header userStatus={userStatus} otherUser={otherUser} />
+          <Header userStatus={userStatus} />
           {messages.length === 0 ? (
             <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50 select-none">
               Say hello to {otherUser?.name}
