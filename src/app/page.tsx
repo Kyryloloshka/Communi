@@ -21,14 +21,14 @@ export default function Home() {
   const auth = getAuth(app);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const [selectedChat, setSelectedChat] = useState<SelectedChatData | null>(
-    null
-  );
+  const [selectedChat, setSelectedChat] = useState<SelectedChatData | null>(null);
   const [searchResults, setSearchResults] = useState([] as any);
   const [searchKey, setSearchKey] = useState("");
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
-	const searchParams = useSearchParams();
-	const userId = searchParams.get('userId');
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('userId');
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -80,29 +80,65 @@ export default function Home() {
     };
   }, [user]);
 
+  // Track window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isMobile = windowWidth < 640;
+
   return (
     <div className="flex h-screen">
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={25} className="min-w-[200px]">
-          <LeftBar
-            searchKey={searchKey}
-            user={user}
-            setSearchKey={setSearchKey}
-            setSearchResults={setSearchResults}
-            setSelectedChat={setSelectedChat}
-            searchResults={searchResults}
-            selectedChat={selectedChat}
-          />
-        </ResizablePanel>
-        <ResizableHandle className="bg-dark-5" />
-        <ResizablePanel defaultSize={75} className="min-w-[300px]">
-          {userId ? (
-            <Profile userId={userId} />
-          ) : (
+      {!isMobile ? (
+        <ResizablePanelGroup direction="horizontal" className="flex w-full">
+          <ResizablePanel defaultSize={25} className="min-w-[200px]">
+            <LeftBar
+              searchKey={searchKey}
+              user={user}
+              setSearchKey={setSearchKey}
+              setSearchResults={setSearchResults}
+              setSelectedChat={setSelectedChat}
+              searchResults={searchResults}
+              selectedChat={selectedChat}
+            />
+          </ResizablePanel>
+          <ResizableHandle className="bg-dark-5" />
+          <ResizablePanel defaultSize={75} className="min-w-[300px]">
+            {userId ? (
+              <Profile userId={userId} />
+            ) : (
+              <Chat selectedChat={selectedChat} />
+            )}
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      ) : (
+        <div className="flex flex-col w-full">
+          {!userId && !selectedChat && (
+            <LeftBar
+              searchKey={searchKey}
+              user={user}
+              setSearchKey={setSearchKey}
+              setSearchResults={setSearchResults}
+              setSelectedChat={setSelectedChat}
+              searchResults={searchResults}
+              selectedChat={selectedChat}
+            />
+          )}
+          {selectedChat && !userId && (
             <Chat selectedChat={selectedChat} />
           )}
-        </ResizablePanel>
-      </ResizablePanelGroup>
+          {userId && (
+            <Profile userId={userId} />
+          )}
+        </div>
+      )}
     </div>
   );
 }
