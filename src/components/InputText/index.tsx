@@ -1,26 +1,26 @@
-import { Button } from "../ui/button";
+import { Button } from '../ui/button';
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
-} from "firebase/storage";
-import { app } from "@/lib/firebase/firebase";
-import { useRef, useState } from "react";
+} from 'firebase/storage';
+import { app } from '@/lib/firebase/firebase';
+import { useRef, useState } from 'react';
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Theme } from "emoji-picker-react";
-import Picker from "@emoji-mart/react";
-import emojiData from "@emoji-mart/data";
-import { FiPaperclip } from "react-icons/fi";
-import { BsEmojiSmile } from "react-icons/bs";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { Textarea } from "../ui/textarea";
-import { formatFileSize, formatFileTitle } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { Theme } from 'emoji-picker-react';
+import Picker from '@emoji-mart/react';
+import emojiData from '@emoji-mart/data';
+import { FiPaperclip } from 'react-icons/fi';
+import { BsEmojiSmile } from 'react-icons/bs';
+import { Cross2Icon } from '@radix-ui/react-icons';
+import { Textarea } from '../ui/textarea';
+import { formatFileSize, formatFileTitle } from '@/lib/utils';
 
 const InputText = ({
   sendMessage,
@@ -42,10 +42,10 @@ const InputText = ({
   const textareaRef = useRef<any>(null);
 
   const handleKeyDown = async (e: any) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
     }
   };
 
@@ -54,9 +54,9 @@ const InputText = ({
     setFile(file);
     const reader = new FileReader();
     reader.onload = () => {
-      if (file.type.includes("image")) {
+      if (file.type.includes('image')) {
         setImagePreview(reader.result);
-      } else if (file.type.includes("video")) {
+      } else if (file.type.includes('video')) {
         setVideoPreview(reader.result);
       } else {
         console.log(file, reader.result);
@@ -76,7 +76,7 @@ const InputText = ({
       const imageUploadTask = uploadBytesResumable(imageStorageRef, file);
 
       imageUploadTask.on(
-        "state_changed",
+        'state_changed',
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -92,16 +92,16 @@ const InputText = ({
             setVideoPreview(null);
             setFilePreview(null);
             setOpen(false);
-            sendMessage(downloadURL, "image");
+            sendMessage(downloadURL, 'image');
           });
-        }
+        },
       );
     } else if (videoPreview) {
       const videoStorageRef = ref(storage, `videos/${file.name}`);
       const videoUploadTask = uploadBytesResumable(videoStorageRef, file);
 
       videoUploadTask.on(
-        "state_changed",
+        'state_changed',
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -117,15 +117,15 @@ const InputText = ({
             setVideoPreview(null);
             setFilePreview(null);
             setOpen(false);
-            sendMessage(downloadURL, "video");
+            sendMessage(downloadURL, 'video');
           });
-        }
+        },
       );
     } else {
       const fileStorageRef = ref(storage, `files/${file.name}`);
       const fileUploadTask = uploadBytesResumable(fileStorageRef, file);
       fileUploadTask.on(
-        "state_changed",
+        'state_changed',
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -141,9 +141,9 @@ const InputText = ({
             setVideoPreview(null);
             setFilePreview(null);
             setOpen(false);
-            sendMessage(downloadURL, "file");
+            sendMessage(downloadURL, 'file');
           });
-        }
+        },
       );
     }
   };
@@ -176,7 +176,7 @@ const InputText = ({
           id="file-upload"
           type="file"
           onChange={handleFileChange}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
         />
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -219,7 +219,7 @@ const InputText = ({
                     <span className="text-sm">
                       {formatFileTitle(filePreview.name)}
                     </span>
-                    <span className={"text-sm font-light text-light-5/70"}>
+                    <span className={'text-sm font-light text-light-5/70'}>
                       {formatFileSize(filePreview.size)}
                     </span>
                   </div>
@@ -237,7 +237,7 @@ const InputText = ({
                 onChange={(e) => setMessage(e.target.value)}
                 className="flex-1 py-2 px-3 outline-none border-none"
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
+                  if (e.key === 'Enter' && !e.shiftKey) {
                     handleUpload();
                   }
                 }}
@@ -246,10 +246,10 @@ const InputText = ({
               <i></i>
             </div>
             <div className="flex gap-3 justify-between">
-              <Button variant={"gray"} onClick={handleCancelUpload}>
+              <Button variant={'gray'} onClick={handleCancelUpload}>
                 Cancel
               </Button>
-              <Button variant={"primary"} onClick={handleUpload}>
+              <Button variant={'primary'} onClick={handleUpload}>
                 Send
               </Button>
             </div>
@@ -284,11 +284,11 @@ const InputText = ({
         ref={textareaRef}
         placeholder="Type a message"
         rows={1}
-        style={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+        style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}
         value={message}
         onChange={(e) => {
           setMessage(e.target.value);
-          textareaRef.current.style.height = "auto";
+          textareaRef.current.style.height = 'auto';
           textareaRef.current.style.height = `${textareaRef?.current.scrollHeight}px`;
         }}
         className="flex-1 py-2 px-3 mt-1.5 mb-1.5 outline-none border-none resize-none scroll-none focus:outline-none focus-visible:ring-0  max-h-[200px] bg-light-2 dark:bg-dark-2 max-w-full"

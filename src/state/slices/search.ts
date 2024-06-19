@@ -1,5 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { DocumentData } from "firebase/firestore";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { DocumentData } from 'firebase/firestore';
 
 interface SearchState {
   searchKey: string;
@@ -7,12 +7,12 @@ interface SearchState {
 }
 
 const initialState: SearchState = {
-  searchKey: "",
+  searchKey: '',
   searchResults: [],
 };
 
 const slice = createSlice({
-  name: "search",
+  name: 'search',
   initialState,
   reducers: {
     setSearchKey: (state, action: PayloadAction<string>) => {
@@ -20,8 +20,8 @@ const slice = createSlice({
     },
     setSearchResults: (state, action: PayloadAction<DocumentData[]>) => {
       state.searchResults = action.payload;
-    }
+    },
   },
 });
 
-export const {reducer: searchReducer, actions: searchActions } = slice;
+export const { reducer: searchReducer, actions: searchActions } = slice;

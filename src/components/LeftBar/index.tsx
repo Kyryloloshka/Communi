@@ -1,10 +1,10 @@
-import React from "react";
-import { Sheet, SheetTrigger } from "../ui/sheet";
-import SheetProfile from "../SheetProfile";
-import SearchUsersInput from "../SearchUsersInput";
-import SearchResultsComponent from "../SearchResultsComponent";
-import Users from "../Users";
-import { useStateSelector } from "@/state";
+import React from 'react';
+import { Sheet, SheetTrigger } from '../ui/sheet';
+import SheetProfile from '../SheetProfile';
+import SearchUsersInput from '../SearchUsersInput';
+import SearchResultsComponent from '../SearchResultsComponent';
+import Users from '../Users';
+import { useStateSelector } from '@/state';
 
 const LeftBar = () => {
   const searchKey = useStateSelector((state) => state.search.searchKey);
@@ -15,17 +15,14 @@ const LeftBar = () => {
           <SheetTrigger>
             <div className="burger"></div>
           </SheetTrigger>
-          <SheetProfile/>
+          <SheetProfile />
         </Sheet>
-        <SearchUsersInput
-        />
+        <SearchUsersInput />
       </div>
       {searchKey.length > 0 ? (
-        <SearchResultsComponent
-          loading={false}
-        />
+        <SearchResultsComponent loading={false} />
       ) : (
-        <Users/>
+        <Users />
       )}
     </>
   );

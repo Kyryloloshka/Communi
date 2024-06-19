@@ -1,4 +1,4 @@
-import { FieldValue, Timestamp } from "firebase/firestore";
+import { FieldValue, Timestamp } from 'firebase/firestore';
 
 export interface User {
   id: string;
@@ -11,9 +11,9 @@ export interface User {
 }
 
 export enum ChatType {
-  Chat = "chat",
-  Group = "group",
-  Channel = "channel",
+  Chat = 'chat',
+  Group = 'group',
+  Channel = 'channel',
 }
 
 export interface PropsUserCard {
@@ -44,7 +44,6 @@ export interface SelectedChatData {
   otherData: User;
 }
 
-
 export interface IMessage {
   id: string;
   chatRoomId: string;
@@ -64,6 +63,6 @@ export interface IMessage {
   }[];
 }
 
-export type MessageType = "text" | "voice" | "sticker" | "gif";
+export type MessageType = 'text' | 'voice' | 'sticker' | 'gif';
 
-export type typeAttached = "image" | "video" | "file";
+export type typeAttached = 'image' | 'video' | 'file';

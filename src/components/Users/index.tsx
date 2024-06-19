@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   DocumentData,
@@ -11,14 +11,14 @@ import {
   runTransaction,
   getFirestore,
   doc,
-} from "firebase/firestore";
-import { use, useEffect, useState } from "react";
-import { getAuth } from "firebase/auth";
-import { app, db } from "@/lib/firebase/firebase";
-import { ChatType } from "@/types";
-import { useRouter } from "next/navigation";
-import UserCard from "../UserCard";
-import { authActions, useActionCreators, useStateSelector } from "@/state";
+} from 'firebase/firestore';
+import { use, useEffect, useState } from 'react';
+import { getAuth } from 'firebase/auth';
+import { app, db } from '@/lib/firebase/firebase';
+import { ChatType } from '@/types';
+import { useRouter } from 'next/navigation';
+import UserCard from '../UserCard';
+import { authActions, useActionCreators, useStateSelector } from '@/state';
 
 const Users = () => {
   const [loading, setLoading] = useState(false);
@@ -32,9 +32,9 @@ const Users = () => {
     setLoading(true);
     if (userData) {
       const userChatQuery = query(
-        collection(db, "chats"),
-        where("users", "array-contains", userData.id),
-        orderBy("lastMessage.time", "desc")
+        collection(db, 'chats'),
+        where('users', 'array-contains', userData.id),
+        orderBy('lastMessage.time', 'desc'),
       );
       const unsub = onSnapshot(userChatQuery, (snapshot) => {
         const chats = snapshot.docs.map((doc) => ({
@@ -51,7 +51,7 @@ const Users = () => {
 
   const openChat = (chat: any) => {
     if (!userData) return;
-    router.push("/");
+    router.push('/');
     const data = {
       id: chat.id,
       myData: userData,
@@ -59,20 +59,20 @@ const Users = () => {
         chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
     };
     actions.setSelectedChat(data);
-    const chatRef = doc(db, "chats", chat.id);
+    const chatRef = doc(db, 'chats', chat.id);
 
-    const messagesRef = collection(db, "messages");
+    const messagesRef = collection(db, 'messages');
 
     runTransaction(getFirestore(), async (transaction) => {
       const chatDoc = await transaction.get(chatRef);
       if (!chatDoc.exists()) {
-        throw new Error("Chat does not exist!");
+        throw new Error('Chat does not exist!');
       }
       transaction.update(chatRef, { [`unreadCount.${userData.id}`]: 0 });
       const myUnreadedMessagesQuery = query(
         messagesRef,
-        where("chatRoomId", "==", chat.id),
-        where(`read.${userData.id}`, "==", false)
+        where('chatRoomId', '==', chat.id),
+        where(`read.${userData.id}`, '==', false),
       );
       const myUnreadMessagesSnapshot = await getDocs(myUnreadedMessagesQuery);
       myUnreadMessagesSnapshot.forEach((doc) => {
@@ -80,7 +80,7 @@ const Users = () => {
         transaction.update(messageRef, { [`read.${userData.id}`]: true });
       });
     }).catch((error) => {
-      console.log("Transaction failed: ", error);
+      console.log('Transaction failed: ', error);
     });
   };
 

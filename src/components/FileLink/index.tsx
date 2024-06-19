@@ -1,11 +1,11 @@
-"use client";
-import { formatFileSize, formatFileTitle } from "@/lib/utils";
-import { getMetadata, getStorage, ref } from "firebase/storage";
-import { useEffect, useState } from "react";
+'use client';
+import { formatFileSize, formatFileTitle } from '@/lib/utils';
+import { getMetadata, getStorage, ref } from 'firebase/storage';
+import { useEffect, useState } from 'react';
 
 const FileLink = ({ fileUrl }: { fileUrl: string }) => {
-  const [fileName, setFileName] = useState<string>("");
-  const [fileSize, setFileSize] = useState("");
+  const [fileName, setFileName] = useState<string>('');
+  const [fileSize, setFileSize] = useState('');
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -17,7 +17,7 @@ const FileLink = ({ fileUrl }: { fileUrl: string }) => {
         setFileName(formatFileTitle(metadata.name));
         setFileSize(formatFileSize(metadata.size));
       } catch (error) {
-        console.error("Error fetching file metadata:", error);
+        console.error('Error fetching file metadata:', error);
       }
     };
 
@@ -44,7 +44,7 @@ const FileLink = ({ fileUrl }: { fileUrl: string }) => {
         </div>
         <div className="flex flex-col">
           <span className="text-sm">{fileName}</span>
-          <span className={"text-sm font-light text-light-5/70"}>
+          <span className={'text-sm font-light text-light-5/70'}>
             {fileSize}
           </span>
         </div>

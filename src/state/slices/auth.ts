@@ -1,5 +1,5 @@
-import { SelectedChatData, User } from "@/types";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { SelectedChatData, User } from '@/types';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {
   myUser: User | null;
@@ -12,16 +12,19 @@ const initialState: AuthState = {
 };
 
 const slice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setMyUser: (state, action: PayloadAction<User | null>) => {
       state.myUser = action.payload;
     },
-    setSelectedChat: (state, action: PayloadAction<SelectedChatData | null>) => {
+    setSelectedChat: (
+      state,
+      action: PayloadAction<SelectedChatData | null>,
+    ) => {
       state.selectedChat = action.payload;
-    }
+    },
   },
 });
 
-export const {reducer: authReducer, actions: authActions } = slice;
+export const { reducer: authReducer, actions: authActions } = slice;

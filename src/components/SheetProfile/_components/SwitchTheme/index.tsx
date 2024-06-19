@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import "./styles.css";
-import { useTheme } from "next-themes";
+import React, { useState } from 'react';
+import './styles.css';
+import { useTheme } from 'next-themes';
 
 const SwitchTheme = () => {
   const { theme, setTheme } = useTheme();
-  const isChecked = theme === "dark";
+  const isChecked = theme === 'dark';
 
   const handleThemeChange = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
   return (
     <label className="switch cursor-pointer">

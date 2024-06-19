@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import searchUsers from "@/lib/api/search";
-import { useActionCreators, useStateSelector } from "@/state";
-import { searchActions } from "@/state/slices/search";
+import React, { useEffect } from 'react';
+import { Input } from '@/components/ui/input';
+import searchUsers from '@/lib/api/search';
+import { useActionCreators, useStateSelector } from '@/state';
+import { searchActions } from '@/state/slices/search';
 
 const SearchUsersInput = () => {
   const searchKey = useStateSelector((state) => state.search.searchKey);
   const myUserData = useStateSelector((state) => state.auth.myUser);
   const actions = useActionCreators(searchActions);
-  
+
   useEffect(() => {
     if (!searchKey || !myUserData) return;
     const setSearchResults = actions.setSearchResults;

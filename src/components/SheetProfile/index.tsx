@@ -7,6 +7,7 @@ import { auth } from "@/lib/firebase/firebase";
 import SwitchTheme from "./_components/SwitchTheme";
 import { useTheme } from "next-themes";
 import { useStateSelector } from "@/state";
+import Image from "next/image";
 
 const SheetProfile = () => {
   const router = useRouter();
@@ -34,7 +35,8 @@ const SheetProfile = () => {
           <div className="flex-auto flex flex-col gap-3">
             {user.avatarUrl && (
               <div className="">
-                <img
+                <Image
+                  layout="fill"
                   src={user.avatarUrl}
                   alt={user.name}
                   className="w-18 h-18 rounded-full object-cover"

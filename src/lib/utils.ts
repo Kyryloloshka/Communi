@@ -1,9 +1,9 @@
-import { type ClassValue, clsx } from "clsx"
-import { Timestamp } from "firebase/firestore";
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from 'clsx';
+import { Timestamp } from 'firebase/firestore';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function formatTimestamp(timestamp: Timestamp) {
@@ -18,25 +18,25 @@ export function formatTimestamp(timestamp: Timestamp) {
 
   // Перевірка, чи Timestamp був недавно (менше ніж хвилина)
   if (difference < 60000) {
-      return 'recently';
+    return 'recently';
   }
 
   // Перевірка, чи Timestamp був недавно (менше ніж година)
   if (difference < 3600000) {
-      const minutes = Math.floor(difference / 60000);
-      return `${minutes} min. ago`;
+    const minutes = Math.floor(difference / 60000);
+    return `${minutes} min. ago`;
   }
 
   // Перевірка, чи Timestamp був недавно (менше ніж день)
   if (difference < 86400000) {
-      const hours = Math.floor(difference / 3600000);
-      return `${hours} h. ago`;
+    const hours = Math.floor(difference / 3600000);
+    return `${hours} h. ago`;
   }
 
   // Перевірка, чи Timestamp був недавно (менше ніж тиждень)
   if (difference < 604800000) {
-      const days = Math.floor(difference / 86400000);
-      return `${days} d. ago`;
+    const days = Math.floor(difference / 86400000);
+    return `${days} d. ago`;
   }
 
   // Якщо Timestamp відбувся більше тижня тому, повертаємо дату та час
@@ -68,7 +68,7 @@ export function formatFileTitle(title: string | undefined) {
 
 export const getValidTime = (time: any) => {
   const date = new Date(time * 1000);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
 };

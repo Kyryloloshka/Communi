@@ -1,16 +1,16 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { IMessage } from "@/types";
-import FileLink from "../FileLink";
-import { useRouter } from "next/navigation";
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+'use client';
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
+import { IMessage } from '@/types';
+import FileLink from '../FileLink';
+import { useRouter } from 'next/navigation';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 
 export const getValidTime = (time: any) => {
   const date = new Date(time * 1000);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
 };
 
@@ -49,7 +49,7 @@ function Message({
       entries.forEach(async (entry) => {
         if (entry.isIntersecting) {
           const firestore = getFirestore();
-          const messageDocRef = doc(firestore, "messages", message.id);
+          const messageDocRef = doc(firestore, 'messages', message.id);
           await updateDoc(messageDocRef, { [`read.${myUser.id}`]: true });
         }
       });
@@ -74,8 +74,8 @@ function Message({
     <div
       key={message.id}
       className={`flex relative ${
-        isCurrentUser ? "justify-end" : "justify-start"
-      } ${isLastInGroup && "mb-1.5"}`}
+        isCurrentUser ? 'justify-end' : 'justify-start'
+      } ${isLastInGroup && 'mb-1.5'}`}
       ref={messageRef}
     >
       {!isCurrentUser && (
@@ -94,10 +94,10 @@ function Message({
       )}
       <div
         className={`text-light-1 max-w-[400px] overflow-hidden relative flex flex-col flex-wrap bg-light-4 dark:bg-dark-5 ${
-          isCurrentUser ? "self-end  rounded-l-xl" : "rounded-r-xl self-start"
-        } rounded-sm ${isFirstInGroup && "rounded-t-xl"} ${
+          isCurrentUser ? 'self-end  rounded-l-xl' : 'rounded-r-xl self-start'
+        } rounded-sm ${isFirstInGroup && 'rounded-t-xl'} ${
           isLastInGroup &&
-          (isCurrentUser ? "rounded-br-none" : "rounded-bl-none")
+          (isCurrentUser ? 'rounded-br-none' : 'rounded-bl-none')
         }`}
       >
         {!isCurrentUser && isFirstInGroup && (
@@ -114,7 +114,7 @@ function Message({
             <DialogTrigger asChild onClick={() => setOpen(true)}>
               <div
                 className={`relative overflow-hidden max-w-[400px] object-cover max-h-[400px] cursor-pointer  ${
-                  isFirstInGroup && !isCurrentUser && "mt-1.5"
+                  isFirstInGroup && !isCurrentUser && 'mt-1.5'
                 }`}
               >
                 <img
@@ -141,18 +141,18 @@ function Message({
             <DialogTrigger asChild onClick={() => setOpen(true)}>
               <div
                 className={`w-full relative object-center overflow-hidden max-h-[500px] cursor-pointer ${
-                  isFirstInGroup && !isCurrentUser && "mt-1.5"
+                  isFirstInGroup && !isCurrentUser && 'mt-1.5'
                 }`}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 <video
                   src={message.video}
                   className={`object-cover w-full h-full`}
-                  style={{ objectFit: "cover", objectPosition: "center" }}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
                 />
               </div>
             </DialogTrigger>
@@ -173,20 +173,20 @@ function Message({
         {message.file && <FileLink fileUrl={message.file} />}
         {message.text.trim() && (
           <p
-            style={{ wordBreak: "break-word" }}
+            style={{ wordBreak: 'break-word' }}
             className={`px-2 pb-2 text-dark-3 dark:text-white ${
               (!isCurrentUser && isFirstInGroup) || message.file
-                ? "pt-0"
-                : "pt-1.5"
+                ? 'pt-0'
+                : 'pt-1.5'
             } leading-[1em]`}
           >
             <span className="break-words text-sm">{message.text.trim()}</span>
-            <span className="inline-block w-[37px]">{""}</span>
+            <span className="inline-block w-[37px]">{''}</span>
           </p>
         )}
         <div
           className={`text-xs absolute bottom-1 text-gray-400 right-0 ${
-            isCurrentUser && "self-end"
+            isCurrentUser && 'self-end'
           } px-2`}
         >
           {getValidTime(message.time)}

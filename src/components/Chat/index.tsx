@@ -10,14 +10,14 @@ import {
   serverTimestamp,
   updateDoc,
   where,
-} from "firebase/firestore";
-import React, { useEffect, useRef, useState } from "react";
-import InputText from "../InputText";
-import Message from "../Message";
-import { db } from "@/lib/firebase/firebase";
-import { IMessage, typeAttached } from "@/types";
-import Header from "./_components/Header";
-import { useStateSelector } from "@/state";
+} from 'firebase/firestore';
+import React, { useEffect, useRef, useState } from 'react';
+import InputText from '../InputText';
+import Message from '../Message';
+import { db } from '@/lib/firebase/firebase';
+import { IMessage, typeAttached } from '@/types';
+import Header from './_components/Header';
+import { useStateSelector } from '@/state';
 
 const Chat = () => {
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
@@ -25,7 +25,7 @@ const Chat = () => {
   const otherUser = selectedChat ? selectedChat.otherData : null;
   const chatRoomId = selectedChat ? selectedChat.id : null;
   const chatContainerRef = useRef<any>(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
 
   const [userStatus, setUserStatus] = useState<{
@@ -40,9 +40,9 @@ const Chat = () => {
       }
       const unsub = onSnapshot(
         query(
-          collection(db, "messages"),
-          where("chatRoomId", "==", chatRoomId),
-          orderBy("time", "asc")
+          collection(db, 'messages'),
+          where('chatRoomId', '==', chatRoomId),
+          orderBy('time', 'asc'),
         ),
         (snapshot) => {
           const messagesData = snapshot.docs.map((doc) => ({
@@ -64,7 +64,7 @@ const Chat = () => {
             }
           });
           setMessages(messagesData);
-        }
+        },
       );
       return unsub;
     } catch (error) {
@@ -89,7 +89,7 @@ const Chat = () => {
     if (!selectedChat) return;
 
     const userId = selectedChat.otherData.id;
-    const userRef = doc(db, "users", userId);
+    const userRef = doc(db, 'users', userId);
 
     const unsubscribe = onSnapshot(userRef, (doc) => {
       if (doc.exists()) {
@@ -99,7 +99,7 @@ const Chat = () => {
           lastOnline: userData.lastOnline,
         });
       } else {
-        console.log("No such user document!");
+        console.log('No such user document!');
       }
     });
 
@@ -107,20 +107,20 @@ const Chat = () => {
   }, [selectedChat]);
 
   const sendMessage = async (URL?: string, typeMessage?: typeAttached) => {
-    const messageCollection = collection(db, "messages");
-    if ((message.trim() === "" && !URL) || !myUser || !otherUser) return;
+    const messageCollection = collection(db, 'messages');
+    if ((message.trim() === '' && !URL) || !myUser || !otherUser) return;
 
     try {
       const messageData = {
         chatRoomId: chatRoomId,
-        file: typeMessage === "file" && URL ? URL : null,
-        image: typeMessage === "image" && URL ? URL : null,
-        messageType: "text",
+        file: typeMessage === 'file' && URL ? URL : null,
+        image: typeMessage === 'image' && URL ? URL : null,
+        messageType: 'text',
         senderId: myUser.id,
         senderName: myUser.name,
         text: message,
         time: serverTimestamp(),
-        video: typeMessage === "video" && URL ? URL : null,
+        video: typeMessage === 'video' && URL ? URL : null,
         read: {
           [myUser.id]: true,
           [otherUser.id]: false,
@@ -128,36 +128,36 @@ const Chat = () => {
       };
 
       await addDoc(messageCollection, messageData);
-      setMessage("");
+      setMessage('');
       if (!chatRoomId) return;
-      const chatRef = doc(db, "chats", chatRoomId);
+      const chatRef = doc(db, 'chats', chatRoomId);
       const myUnreadedMessagesQuery = query(
         messageCollection,
-        where("chatRoomId", "==", chatRoomId),
-        where(`read.${myUser.id}`, "==", false)
+        where('chatRoomId', '==', chatRoomId),
+        where(`read.${myUser.id}`, '==', false),
       );
       const myUnreadMessagesSnapshot = await getDocs(myUnreadedMessagesQuery);
       const myUnreadCount = myUnreadMessagesSnapshot.size;
 
       const otherUnreadedMessagesQuery = query(
         messageCollection,
-        where("chatRoomId", "==", chatRoomId),
-        where(`read.${otherUser.id}`, "==", false)
+        where('chatRoomId', '==', chatRoomId),
+        where(`read.${otherUser.id}`, '==', false),
       );
       const otherUnreadMessagesSnapshot = await getDocs(
-        otherUnreadedMessagesQuery
+        otherUnreadedMessagesQuery,
       );
       const otherUnreadCount = otherUnreadMessagesSnapshot.size;
 
       await updateDoc(chatRef, {
-        lastMessage: messageData ? messageData : "Image",
+        lastMessage: messageData ? messageData : 'Image',
         unreadCount: {
           [myUser.id]: myUnreadCount,
           [otherUser.id]: otherUnreadCount,
         },
       });
     } catch (error) {
-      console.log("Error sending message: ", error);
+      console.log('Error sending message: ', error);
     }
   };
 
