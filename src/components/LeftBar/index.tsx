@@ -4,18 +4,10 @@ import SheetProfile from "../SheetProfile";
 import SearchUsersInput from "../SearchUsersInput";
 import SearchResultsComponent from "../SearchResultsComponent";
 import Users from "../Users";
+import { useStateSelector } from "@/state";
 
-const LeftBar = ({
-  searchKey,
-  setSearchKey,
-  setSearchResults,
-  searchResults,
-}: {
-  searchKey: string;
-  setSearchKey: (tag: string) => void;
-  setSearchResults: (results: any) => void;
-  searchResults: any;
-}) => {
+const LeftBar = () => {
+  const searchKey = useStateSelector((state) => state.search.searchKey);
   return (
     <>
       <div className="h-12 w-full flex items-center gap-2 p-3">
@@ -26,16 +18,11 @@ const LeftBar = ({
           <SheetProfile/>
         </Sheet>
         <SearchUsersInput
-          searchKey={searchKey}
-          setSearchKey={setSearchKey}
-          setSearchResults={setSearchResults}
         />
       </div>
       {searchKey.length > 0 ? (
         <SearchResultsComponent
-          setSearchKey={setSearchKey}
           loading={false}
-          searchResults={searchResults}
         />
       ) : (
         <Users/>

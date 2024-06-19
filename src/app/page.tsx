@@ -13,7 +13,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
-import { SelectedChatData, User } from "@/types";
+import { User } from "@/types";
 import LeftBar from "@/components/LeftBar";
 import updateUserStatus from "@/lib/api/changeStatus";
 import { authActions, useActionCreators, useStateSelector } from "@/state";
@@ -23,9 +23,6 @@ function Home() {
   const actions = useActionCreators(authActions);
   const router = useRouter();
   const myUser = useStateSelector((state) => state.auth.myUser);
-  const [searchResults, setSearchResults] = useState([] as any);
-  const [searchKey, setSearchKey] = useState("");
-
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
 
@@ -84,20 +81,11 @@ function Home() {
     <div className="flex h-screen">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={25} className="min-w-[200px]">
-          <LeftBar
-            searchKey={searchKey}
-            setSearchKey={setSearchKey}
-            setSearchResults={setSearchResults}
-            searchResults={searchResults}
-          />
+          <LeftBar />
         </ResizablePanel>
         <ResizableHandle className="bg-primary-500/80 dark:bg-dark-5" />
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
-          {userId ? (
-            <Profile userId={userId} />
-          ) : (
-            <Chat/>
-          )}
+          {userId ? <Profile userId={userId} /> : <Chat />}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

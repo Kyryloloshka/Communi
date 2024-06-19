@@ -4,30 +4,22 @@ import {
   addDoc,
   collection,
   getDocs,
-  onSnapshot,
   query,
   serverTimestamp,
   where,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import UserCard from "../UserCard";
 import { ChatData, ChatType } from "@/types";
 import { authActions, useActionCreators, useStateSelector } from "@/state";
+import { searchActions } from "@/state/slices/search";
 
-const SearchResultsComponent = ({
-  searchResults,
-  setSearchKey,
-  loading,
-}: {
-  searchResults: any[];
-  loading: boolean;
-  setSearchKey: (tag: string) => void;
-}) => {
+const SearchResultsComponent = ({ loading }: { loading: boolean }) => {
   const [loading2, setLoading2] = useState(false);
-  const [userChats, setUserChats] = useState<DocumentData>([]);
   const userData = useStateSelector((state) => state.auth.myUser);
-  const actions = useActionCreators(authActions);
-
+  const authAction = useActionCreators(authActions);
+  const searchAction = useActionCreators(searchActions);
+  const searchResults = useStateSelector((state) => state.search.searchResults);
   const handleCreateChat = async (user: DocumentData) => {
     if (!userData) return;
     setLoading2(true);
@@ -37,9 +29,12 @@ const SearchResultsComponent = ({
     );
     try {
       const existingChatSnapshot = await getDocs(chatQuery);
-      if (existingChatSnapshot.docs.length > 0) {
-        console.log("Chat already exists");
-        return;
+      const existingChatDoc = existingChatSnapshot.docs.find((doc) => {
+        const users = doc.data().users;
+        return users.includes(user.id) && users.includes(userData.id);
+      });
+      if (existingChatDoc) {
+        return { id: existingChatDoc.id, ...existingChatDoc.data() };
       }
       const usersData = {
         [userData.id]: userData,
@@ -62,31 +57,6 @@ const SearchResultsComponent = ({
       console.error("Error creating chat: ", error);
     }
   };
-  useEffect(() => {
-    try {
-      setLoading2(true);
-      if (!userData) {
-        setLoading2(false);
-        return;
-      }
-      const chatQuery = query(
-        collection(db, "chats"),
-        where("users", "array-contains", userData.id)
-      );
-
-      const unsub = onSnapshot(chatQuery, (snapshot) => {
-        const chats = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setUserChats(chats);
-        setLoading2(false);
-      });
-      return unsub;
-    } catch (error) {
-      console.log(error);
-    }
-  }, [userData]);
 
   const openChat = async (chatData: Promise<ChatData | undefined>) => {
     await chatData.then((chat) => {
@@ -99,8 +69,8 @@ const SearchResultsComponent = ({
               chat.users.find((id: string) => id !== userData?.id)
             ],
         };
-        actions.setSelectedChat(data);
-        setSearchKey("");
+        authAction.setSelectedChat(data);
+        searchAction.setSearchKey("");
       } else {
         console.error("Chat not found");
       }
