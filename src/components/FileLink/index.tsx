@@ -1,11 +1,11 @@
-"use client";
-import { formatFileSize, formatFileTitle } from "@/lib/utils";
-import { getMetadata, getStorage, ref } from "firebase/storage";
-import { useEffect, useState } from "react";
+'use client';
+import { formatFileSize, formatFileTitle } from '@/lib/utils';
+import { getMetadata, getStorage, ref } from 'firebase/storage';
+import { useEffect, useState } from 'react';
 
 const FileLink = ({ fileUrl }: { fileUrl: string }) => {
-  const [fileName, setFileName] = useState<string>("");
-  const [fileSize, setFileSize] = useState("");
+  const [fileName, setFileName] = useState<string>('');
+  const [fileSize, setFileSize] = useState('');
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -17,7 +17,7 @@ const FileLink = ({ fileUrl }: { fileUrl: string }) => {
         setFileName(formatFileTitle(metadata.name));
         setFileSize(formatFileSize(metadata.size));
       } catch (error) {
-        console.error("Error fetching file metadata:", error);
+        console.error('Error fetching file metadata:', error);
       }
     };
 
@@ -27,7 +27,7 @@ const FileLink = ({ fileUrl }: { fileUrl: string }) => {
   return (
     <a href={fileUrl} download className="flex w-full justify-center">
       <div className="bg-dark-5 px-3 flex-auto py-2 max-w-[300px] rounded-lg flex gap-3 items-center">
-        <div className="flex items-center justify-center bg-dark-3 rounded-full h-[45px] w-[45px]">
+        <div className="flex items-center justify-center bg-light-3 dark:bg-dark-3 rounded-full h-[45px] w-[45px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -44,7 +44,7 @@ const FileLink = ({ fileUrl }: { fileUrl: string }) => {
         </div>
         <div className="flex flex-col">
           <span className="text-sm">{fileName}</span>
-          <span className={"text-sm font-light text-light-5/70"}>
+          <span className={'text-sm font-light text-light-5/70'}>
             {fileSize}
           </span>
         </div>

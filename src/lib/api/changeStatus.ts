@@ -1,8 +1,8 @@
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 const updateUserStatus = async (userId: string, status: string) => {
-  const userRef = doc(db, "users", userId);
+  const userRef = doc(db, 'users', userId);
   try {
     await updateDoc(userRef, {
       onlineStatus: status,
@@ -10,9 +10,8 @@ const updateUserStatus = async (userId: string, status: string) => {
     });
     return;
   } catch (error) {
-    console.error("Error updating user status:", error);
+    console.error('Error updating user status:', error);
   }
 };
-
 
 export default updateUserStatus;

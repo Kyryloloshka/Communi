@@ -1,15 +1,16 @@
-"use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { IMessage } from "@/types";
-import FileLink from "../FileLink";
-import { useRouter } from "next/navigation";
+'use client';
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
+import { IMessage } from '@/types';
+import FileLink from '../FileLink';
+import { useRouter } from 'next/navigation';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 
 export const getValidTime = (time: any) => {
   const date = new Date(time * 1000);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
 };
 
@@ -22,7 +23,7 @@ function Message({
   myUser: any;
   otherUser: any;
 }) {
-	const router = useRouter();
+  const router = useRouter();
   const dalayForGroup = 120;
   const isCurrentUser = message.senderId === myUser.id;
 
@@ -37,20 +38,51 @@ function Message({
       dalayForGroup;
 
   const [open, setOpen] = useState<boolean | undefined>(undefined);
-	const handleUserClick = (userId: string) => {
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  const handleUserClick = (userId: string) => {
     router.push(`/?userId=${userId}`);
   };
+
+  useEffect(() => {
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting) {
+          const firestore = getFirestore();
+          const messageDocRef = doc(firestore, 'messages', message.id);
+          await updateDoc(messageDocRef, { [`read.${myUser.id}`]: true });
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, {
+      threshold: 0.1,
+    });
+
+    if (messageRef.current) {
+      observer.observe(messageRef.current);
+    }
+
+    return () => {
+      if (messageRef.current) {
+        observer.unobserve(messageRef.current);
+      }
+    };
+  }, [message.id, myUser.id]);
+
   return (
     <div
       key={message.id}
       className={`flex relative ${
-        isCurrentUser ? "justify-end" : "justify-start"
-      } ${isLastInGroup && "mb-1.5"}`}
+        isCurrentUser ? 'justify-end' : 'justify-start'
+      } ${isLastInGroup && 'mb-1.5'}`}
+      ref={messageRef}
     >
       {!isCurrentUser && (
         <div
-					onClick={() => handleUserClick(otherUser.id)}
-					className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}>
+          onClick={() => handleUserClick(otherUser.id)}
+          className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}
+        >
           {isLastInGroup && (
             <img
               src={otherUser.avatarUrl}
@@ -61,20 +93,18 @@ function Message({
         </div>
       )}
       <div
-        className={`text-light-1 max-w-[400px] overflow-hidden relative flex flex-col flex-wrap ${
-          isCurrentUser
-            ? "bg-dark-5 self-end  rounded-l-xl"
-            : "bg-dark-5 rounded-r-xl self-start"
-        } rounded-sm ${isFirstInGroup && "rounded-t-xl"} ${
+        className={`text-light-1 max-w-[400px] overflow-hidden relative flex flex-col flex-wrap bg-light-4 dark:bg-dark-5 ${
+          isCurrentUser ? 'self-end  rounded-l-xl' : 'rounded-r-xl self-start'
+        } rounded-sm ${isFirstInGroup && 'rounded-t-xl'} ${
           isLastInGroup &&
-          (isCurrentUser ? "rounded-br-none" : "rounded-bl-none")
+          (isCurrentUser ? 'rounded-br-none' : 'rounded-bl-none')
         }`}
       >
         {!isCurrentUser && isFirstInGroup && (
           <button
-						type="button"
-						onClick={() => handleUserClick(otherUser.id)}
-            className={`text-left text-primary-500 px-2 leading-[1em] pt-1.5`}
+            type="button"
+            onClick={() => handleUserClick(otherUser.id)}
+            className={`text-left text-secondary-500 dark:text-primary-500 px-2 leading-[1em] pt-1.5`}
           >
             {message.senderName}
           </button>
@@ -84,7 +114,7 @@ function Message({
             <DialogTrigger asChild onClick={() => setOpen(true)}>
               <div
                 className={`relative overflow-hidden max-w-[400px] object-cover max-h-[400px] cursor-pointer  ${
-                  isFirstInGroup && !isCurrentUser && "mt-1.5"
+                  isFirstInGroup && !isCurrentUser && 'mt-1.5'
                 }`}
               >
                 <img
@@ -111,18 +141,18 @@ function Message({
             <DialogTrigger asChild onClick={() => setOpen(true)}>
               <div
                 className={`w-full relative object-center overflow-hidden max-h-[500px] cursor-pointer ${
-                  isFirstInGroup && !isCurrentUser && "mt-1.5"
+                  isFirstInGroup && !isCurrentUser && 'mt-1.5'
                 }`}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 <video
                   src={message.video}
                   className={`object-cover w-full h-full`}
-                  style={{ objectFit: "cover", objectPosition: "center" }}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
                 />
               </div>
             </DialogTrigger>
@@ -143,20 +173,20 @@ function Message({
         {message.file && <FileLink fileUrl={message.file} />}
         {message.text.trim() && (
           <p
-            style={{ wordBreak: "break-word" }}
-            className={`px-2 pb-2  ${
+            style={{ wordBreak: 'break-word' }}
+            className={`px-2 pb-2 text-dark-3 dark:text-white ${
               (!isCurrentUser && isFirstInGroup) || message.file
-                ? "pt-0"
-                : "pt-1.5"
+                ? 'pt-0'
+                : 'pt-1.5'
             } leading-[1em]`}
           >
             <span className="break-words text-sm">{message.text.trim()}</span>
-            <span className="inline-block w-[37px]">{""}</span>
+            <span className="inline-block w-[37px]">{''}</span>
           </p>
         )}
         <div
           className={`text-xs absolute bottom-1 text-gray-400 right-0 ${
-            isCurrentUser && "self-end"
+            isCurrentUser && 'self-end'
           } px-2`}
         >
           {getValidTime(message.time)}
