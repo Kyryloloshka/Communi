@@ -1,4 +1,4 @@
-import { SelectedChatData, User } from '@/types';
+import { SelectedChatData, User } from '@/types/index';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {

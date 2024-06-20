@@ -13,7 +13,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
-import { User } from "@/types";
+import { User } from "@/types/index";
 import LeftBar from "@/components/LeftBar";
 import updateUserStatus from "@/lib/api/changeStatus";
 import { authActions, useActionCreators, useStateSelector } from "@/state";

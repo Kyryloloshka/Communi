@@ -15,7 +15,7 @@ import {
 import { use, useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { app, db } from '@/lib/firebase/firebase';
-import { ChatType } from '@/types';
+import { ChatType } from '@/types/index';
 import { useRouter } from 'next/navigation';
 import UserCard from '../UserCard';
 import { authActions, useActionCreators, useStateSelector } from '@/state';

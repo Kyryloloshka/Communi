@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropsUserCard, ChatType } from '@/types';
+import { PropsUserCard, ChatType } from '@/types/index';
 import { getValidTime } from '@/lib/utils';
 
 const UserCard = ({

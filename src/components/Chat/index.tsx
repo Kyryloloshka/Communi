@@ -15,7 +15,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import InputText from '../InputText';
 import Message from '../Message';
 import { db } from '@/lib/firebase/firebase';
-import { IMessage, typeAttached } from '@/types';
+import { IMessage, typeAttached } from '@/types/index';
 import Header from './_components/Header';
 import { useStateSelector } from '@/state';
 

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
-import { IMessage } from '@/types';
+import { IMessage } from '@/types/index';
 import FileLink from '../FileLink';
 import { useRouter } from 'next/navigation';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';

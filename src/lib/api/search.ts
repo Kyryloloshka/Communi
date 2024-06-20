@@ -1,6 +1,6 @@
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-import { User } from '@/types';
+import { User } from '@/types/index';
 
 const searchUsers = async ({
   searchKey,

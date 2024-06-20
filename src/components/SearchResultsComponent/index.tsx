@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore';
 import React, { useState } from 'react';
 import UserCard from '../UserCard';
-import { ChatData, ChatType } from '@/types';
+import { ChatData, ChatType } from '@/types/index';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
 import { searchActions } from '@/state/slices/search';
 
