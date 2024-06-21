@@ -1,24 +1,28 @@
-import React from "react";
-import { SheetContent } from "../ui/sheet";
-import { Button } from "../ui/button";
-import { signOut } from "firebase/auth";
-import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase/firebase";
-import SwitchTheme from "./_components/SwitchTheme";
-import { useTheme } from "next-themes";
-import { useStateSelector } from "@/state";
-import Image from "next/image";
+import React from 'react';
+import { SheetContent } from '../ui/sheet';
+import { Button } from '../ui/button';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase/firebase';
+import SwitchTheme from './_components/SwitchTheme';
+import { useTheme } from 'next-themes';
+import { authActions, useActionCreators, useStateSelector } from '@/state';
+import Image from 'next/image';
+import updateUserStatus from '@/lib/api/changeStatus';
 
 const SheetProfile = () => {
   const router = useRouter();
   const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = theme === 'dark';
   const user = useStateSelector((state) => state.auth.myUser);
-
+  const actions = useActionCreators(authActions);
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
-        router.push("/login");
+        router.push('/login');
+        if (!user) return;
+        updateUserStatus(user.id, 'offline');
+        actions.droppingData();
       })
       .catch((error) => {
         console.log(error);
@@ -27,7 +31,7 @@ const SheetProfile = () => {
 
   return (
     <SheetContent
-      side={"left"}
+      side={'left'}
       className="w-[260px] p-4 outline-none flex flex-col gap-2 bg-light-2"
     >
       {user && (
@@ -36,7 +40,9 @@ const SheetProfile = () => {
             {user.avatarUrl && (
               <div className="">
                 <Image
-                  layout="fill"
+                  width={72}
+                  height={72}
+                  sizes={'72px'}
                   src={user.avatarUrl}
                   alt={user.name}
                   className="w-18 h-18 rounded-full object-cover"
@@ -93,7 +99,7 @@ const SheetProfile = () => {
               </div>
             </div>
           </div>
-          <Button variant={"destructive"} onClick={() => handleLogout()}>
+          <Button variant={'destructive'} onClick={() => handleLogout()}>
             Logout
           </Button>
         </>

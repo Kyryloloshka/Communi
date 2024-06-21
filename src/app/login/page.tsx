@@ -1,10 +1,11 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
-import { auth } from "@/lib/firebase/firebase";
+'use client';
+import { Button } from '@/components/ui/button';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { FormEvent, useState } from 'react';
+import { auth } from '@/lib/firebase/firebase';
+import updateUserStatus from '@/lib/api/changeStatus';
 
 export interface ErrorForm {
   name?: string;
@@ -14,8 +15,8 @@ export interface ErrorForm {
 }
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<ErrorForm>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -25,10 +26,10 @@ const Login = () => {
     const newErrors = {} as ErrorForm;
 
     if (!email.trim() || !emailRegex.test(email)) {
-      newErrors.email = "Email is required!";
+      newErrors.email = 'Email is required!';
     }
     if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters long!";
+      newErrors.password = 'Password must be at least 6 characters long!';
     }
 
     setErrors(newErrors);
@@ -43,11 +44,12 @@ const Login = () => {
         const userCredentials = await signInWithEmailAndPassword(
           auth,
           email,
-          password
+          password,
         );
         const user = userCredentials.user;
         if (user) {
-          router.push("/");
+          router.push('/');
+          updateUserStatus(user.uid, 'online');
         }
         setErrors({});
       } else {
@@ -109,7 +111,7 @@ const Login = () => {
           variant="primary"
           type="submit"
         >
-          {loading ? <span className="loader"></span> : "Login"}
+          {loading ? <span className="loader"></span> : 'Login'}
         </Button>
       </form>
     </div>

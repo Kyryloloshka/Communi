@@ -24,6 +24,10 @@ const slice = createSlice({
     ) => {
       state.selectedChat = action.payload;
     },
+    droppingData: (state) => {
+      state.myUser = null;
+      state.selectedChat = null;
+    },
   },
 });
 

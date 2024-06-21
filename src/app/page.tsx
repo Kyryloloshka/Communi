@@ -1,22 +1,22 @@
-"use client";
-import { getAuth } from "firebase/auth";
-import { app, db } from "@/lib/firebase/firebase";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import Chat from "@/components/Chat";
-import Profile from "@/components/Profile";
+'use client';
+import { getAuth } from 'firebase/auth';
+import { app, db } from '@/lib/firebase/firebase';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import Chat from '@/components/Chat';
+import Profile from '@/components/Profile';
 
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable";
+} from '@/components/ui/resizable';
 
-import { User } from "@/types/index";
-import LeftBar from "@/components/LeftBar";
-import updateUserStatus from "@/lib/api/changeStatus";
-import { authActions, useActionCreators, useStateSelector } from "@/state";
+import { User } from '@/types/index';
+import LeftBar from '@/components/LeftBar';
+import updateUserStatus from '@/lib/api/changeStatus';
+import { authActions, useActionCreators, useStateSelector } from '@/state';
 
 function Home() {
   const auth = getAuth(app);
@@ -24,18 +24,18 @@ function Home() {
   const router = useRouter();
   const myUser = useStateSelector((state) => state.auth.myUser);
   const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
+  const userId = searchParams.get('userId');
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        const userRef = doc(db, "users", user.uid);
+        const userRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userRef);
         const userData = { id: userDoc.id, ...userDoc.data() };
         actions.setMyUser(userData as User);
       } else {
         actions.setMyUser(null);
-        router.push("/login");
+        router.push('/login');
       }
     });
     return () => unsubscribe();
@@ -43,29 +43,42 @@ function Home() {
 
   // Update user status when window focus changes
   useEffect(() => {
+    if (myUser && myUser.id) {
+      updateUserStatus(myUser.id, 'online');
+    }
     let focusListener: () => void;
     let blurListener: () => void;
+    let beforeUnloadListener: (event: BeforeUnloadEvent) => void;
 
     const setUserFocusListeners = () => {
       focusListener = () => {
         if (myUser && myUser.id) {
-          updateUserStatus(myUser.id, "online");
+          updateUserStatus(myUser.id, 'online');
         }
       };
 
       blurListener = () => {
         if (myUser && myUser.id) {
-          updateUserStatus(myUser.id, "offline");
+          updateUserStatus(myUser.id, 'offline');
         }
       };
 
-      window.addEventListener("focus", focusListener);
-      window.addEventListener("blur", blurListener);
+      beforeUnloadListener = (event: BeforeUnloadEvent) => {
+        if (myUser && myUser.id) {
+          updateUserStatus(myUser.id, 'offline');
+        }
+        event.returnValue = 'Are you sure you want to leave?';
+      };
+
+      window.addEventListener('focus', focusListener);
+      window.addEventListener('blur', blurListener);
+      window.addEventListener('beforeunload', beforeUnloadListener);
     };
 
     const removeUserFocusListeners = () => {
-      window.removeEventListener("focus", focusListener);
-      window.removeEventListener("blur", blurListener);
+      window.removeEventListener('focus', focusListener);
+      window.removeEventListener('blur', blurListener);
+      window.removeEventListener('beforeunload', beforeUnloadListener);
     };
 
     if (myUser) {
