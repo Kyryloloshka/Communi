@@ -4,11 +4,13 @@ import { Button } from '../ui/button';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase/firebase';
-import SwitchTheme from './_components/SwitchTheme';
 import { useTheme } from 'next-themes';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
 import Image from 'next/image';
 import updateUserStatus from '@/lib/api/changeStatus';
+import CreateGroup from './_components/SheetMenuButtons/CreateGroup';
+import SwitchTheme from './_components/SheetMenuButtons/SwitchTheme';
+import Settings from './_components/SheetMenuButtons/Settings';
 
 const SheetProfile = () => {
   const router = useRouter();
@@ -56,47 +58,9 @@ const SheetProfile = () => {
               )}
             </div>
             <div className="bg-primary-500/40 dark:bg-dark-4 rounded-sm flex flex-col overflow-hidden">
-              <div className="flex gap-2 p-2 items-center cursor-pointer hover:bg-primary-500/70 dark:hover:bg-dark-5 transition">
-                <div className="w-6">
-                  {isDark ? (
-                    <img
-                      className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2 "
-                      src="/assets/icons/settings-light.svg"
-                      alt="settings"
-                    />
-                  ) : (
-                    <img
-                      className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2 "
-                      src="/assets/icons/settings-dark.svg"
-                      alt="settings"
-                    />
-                  )}
-                </div>
-                <div>Settings</div>
-              </div>
-              <div className="flex gap-1 py-1 items-center pl-1 cursor-pointer hover:bg-primary-500/70 dark:hover:bg-dark-5 transition">
-                <div className="w-8 flex justify-center items-center">
-                  {isDark ? (
-                    <img
-                      className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2"
-                      src="/assets/icons/group-light.svg"
-                      alt="settings"
-                    />
-                  ) : (
-                    <img
-                      className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2"
-                      src="/assets/icons/group-dark.svg"
-                      alt="settings"
-                    />
-                  )}
-                </div>
-                <div>Create Group</div>
-              </div>
-              <div className="flex gap-2 items-center px-2 py-1 cursor-pointer hover:bg-primary-500/70 dark:hover:bg-dark-5 transition">
-                <div className="w-6 flex justify-center items-center"></div>
-                <div className="flex-auto">Night Theme</div>
-                <SwitchTheme />
-              </div>
+              <Settings />
+              <CreateGroup />
+              <SwitchTheme />
             </div>
           </div>
           <Button variant={'destructive'} onClick={() => handleLogout()}>

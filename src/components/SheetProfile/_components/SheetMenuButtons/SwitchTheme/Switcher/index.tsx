@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './styles.css';
 import { useTheme } from 'next-themes';
 
-const SwitchTheme = () => {
+const Switcher = () => {
   const { theme, setTheme } = useTheme();
   const isChecked = theme === 'dark';
 
@@ -35,4 +35,4 @@ const SwitchTheme = () => {
   );
 };
 
-export default SwitchTheme;
+export default Switcher;
