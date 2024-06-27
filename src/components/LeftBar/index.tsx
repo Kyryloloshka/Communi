@@ -3,7 +3,7 @@ import { Sheet, SheetTrigger } from '../ui/sheet';
 import SheetProfile from '../SheetProfile';
 import SearchUsersInput from '../SearchUsersInput';
 import SearchResultsComponent from '../SearchResultsComponent';
-import Users from '../Users';
+import Users from '../ChatsMenu';
 import { useStateSelector } from '@/state';
 
 const LeftBar = () => {

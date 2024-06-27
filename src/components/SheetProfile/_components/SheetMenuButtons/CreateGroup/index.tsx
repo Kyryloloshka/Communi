@@ -57,6 +57,7 @@ const CreateGroup = () => {
       createdAt: new Date(),
       createdBy,
       members,
+			membersData: [myUser],
       admins: [createdBy],
       lastMessage: '',
       timestamp: new Date(),

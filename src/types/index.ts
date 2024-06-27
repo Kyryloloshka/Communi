@@ -41,6 +41,7 @@ export interface ChatData {
 export interface SelectedChatData {
   id: string;
   myData: User;
+  type: ChatType;
   otherData: User;
 }
 

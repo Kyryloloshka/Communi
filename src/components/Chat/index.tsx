@@ -6,6 +6,7 @@ import { useStateSelector } from '@/state';
 import useUserStatus from '@/hooks/useUserStatus';
 import useChatMessages from '@/hooks/useChatMessages';
 import useSendMessage from '@/hooks/useSendMessage';
+import { ChatType } from '@/types';
 
 const Chat = () => {
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
@@ -34,7 +35,6 @@ const Chat = () => {
       scrollToBottom();
     }
   }, [messages]);
-
   return (
     <>
       {selectedChat === undefined || selectedChat === null ? (
@@ -44,7 +44,7 @@ const Chat = () => {
       ) : (
         <div className="flex flex-col h-full">
           <Header userStatus={userStatus} />
-          {messages.length === 0 ? (
+          {messages.length === 0 && selectedChat.type === ChatType.Chat ? (
             <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50 select-none">
               Say hello to {otherUser?.name}
             </div>
