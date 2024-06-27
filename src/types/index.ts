@@ -38,11 +38,22 @@ export interface ChatData {
   };
 }
 
+export interface Group {
+  id: string;
+  name: string;
+  description: string;
+  avatarUrl: string;
+  members: User[];
+  admins: User[];
+  timestamp: Timestamp;
+}
+
 export interface SelectedChatData {
   id: string;
   myData: User;
   type: ChatType;
-  otherData: User;
+  otherData?: User;
+  groupData?: Group;
 }
 
 export interface IMessage {

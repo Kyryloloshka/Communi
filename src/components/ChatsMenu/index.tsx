@@ -72,12 +72,16 @@ const ChatsMenu = () => {
     const data = {
       id: chat.id,
       myData: userData,
-      otherData:
-        chat.type === 'chat'
-          ? chat.usersData[chat.users.find((id: any) => id !== userData?.id)]
-          : null,
+      ...(chat.type === 'chat'
+        ? {
+            otherData:
+              chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
+          }
+        : { groupData: chat }),
+      type: chat.type,
     };
-    actions.setSelectedChat({ ...data, type: chat.type });
+
+    actions.setSelectedChat(data);
     const chatRef = doc(db, chat.type === 'chat' ? 'chats' : 'groups', chat.id);
 
     const messagesRef = collection(db, 'messages');

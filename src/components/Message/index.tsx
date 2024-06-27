@@ -32,12 +32,12 @@ function Message({ message, myUser, otherUser }: MessageProps) {
   const messageRef = useRef<HTMLDivElement>(null);
 
   const handleUserClick = (userId: string | undefined) => {
-		if (!userId) return;
+    if (!userId) return;
     router.push(`/?userId=${userId}`);
   };
 
   useEffect(() => {
-		if (!myUser) return;
+    if (!myUser) return;
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(async (entry) => {
         if (entry.isIntersecting) {

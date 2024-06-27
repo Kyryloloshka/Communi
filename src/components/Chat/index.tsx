@@ -12,12 +12,18 @@ const Chat = () => {
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
   const myUser = selectedChat ? selectedChat.myData : null;
   const otherUser = selectedChat ? selectedChat.otherData : null;
+  const groupData =
+    selectedChat && selectedChat.type === ChatType.Group
+      ? selectedChat.groupData
+      : null;
   const chatRoomId = selectedChat ? selectedChat.id : null;
   const chatContainerRef = useRef<any>(null);
   const { message, setMessage, sendMessage } = useSendMessage(
     myUser,
-    otherUser,
+    otherUser ? otherUser : null,
     chatRoomId,
+    selectedChat?.type ?? ChatType.Chat,
+    groupData ? groupData.members : [],
   );
 
   const messages = useChatMessages(chatRoomId);
@@ -58,7 +64,7 @@ const Chat = () => {
                   key={message.id}
                   message={message}
                   myUser={myUser}
-                  otherUser={otherUser}
+                  otherUser={otherUser ? otherUser : null}
                 />
               ))}
             </div>
