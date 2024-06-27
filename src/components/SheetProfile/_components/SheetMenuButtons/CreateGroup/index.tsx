@@ -27,7 +27,7 @@ const CreateGroup = () => {
   const [groupAvatar, setGroupAvatar] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [isOpenDialog, setIsOpenDialog] = useState(false);
-	const myUser = useStateSelector((state) => state.auth.myUser);
+  const myUser = useStateSelector((state) => state.auth.myUser);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setGroupAvatar(e.target.files[0]);
@@ -35,7 +35,7 @@ const CreateGroup = () => {
   };
 
   const handleCreateGroup = async () => {
-		if (!myUser) return;
+    if (!myUser) return;
     const groupId = `group_${Date.now()}`;
     const createdBy = myUser.id;
     const members = [createdBy];
@@ -72,6 +72,7 @@ const CreateGroup = () => {
     setGroupAvatar(null);
     setIsOpenDialog(false);
   };
+
   return (
     <Dialog open={isOpenDialog}>
       <DialogTrigger onClick={() => setIsOpenDialog(true)} asChild>
@@ -139,7 +140,7 @@ const CreateGroup = () => {
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleCreateGroup}>
-            Create Group
+            {uploading ? 'uploading' : 'Create Group'}
           </Button>
         </DialogFooter>
       </DialogContent>

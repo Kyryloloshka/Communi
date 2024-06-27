@@ -65,4 +65,4 @@ export interface IMessage {
 
 export type MessageType = 'text' | 'voice' | 'sticker' | 'gif';
 
-export type typeAttached = 'image' | 'video' | 'file';
+export type TypeAttached = 'image' | 'video' | 'file';

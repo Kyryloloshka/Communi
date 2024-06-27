@@ -1,31 +1,22 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
-import { IMessage } from '@/types/index';
+import { IMessage, User } from '@/types/index';
 import FileLink from '../FileLink';
 import { useRouter } from 'next/navigation';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+import { getValidTime } from '@/lib/utils';
 
-export const getValidTime = (time: any) => {
-  const date = new Date(time * 1000);
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  return `${hours}:${minutes}`;
-};
-
-function Message({
-  message,
-  myUser,
-  otherUser,
-}: {
+interface MessageProps {
   message: IMessage;
-  myUser: any;
-  otherUser: any;
-}) {
+  myUser: User | null;
+  otherUser: User | null;
+}
+
+function Message({ message, myUser, otherUser }: MessageProps) {
   const router = useRouter();
   const dalayForGroup = 120;
-  const isCurrentUser = message.senderId === myUser.id;
+  const isCurrentUser = myUser ? message.senderId === myUser.id : false;
 
   const isFirstInGroup =
     message.previousMessage?.senderId !== message.senderId ||
@@ -40,11 +31,13 @@ function Message({
   const [open, setOpen] = useState<boolean | undefined>(undefined);
   const messageRef = useRef<HTMLDivElement>(null);
 
-  const handleUserClick = (userId: string) => {
+  const handleUserClick = (userId: string | undefined) => {
+		if (!userId) return;
     router.push(`/?userId=${userId}`);
   };
 
   useEffect(() => {
+		if (!myUser) return;
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(async (entry) => {
         if (entry.isIntersecting) {
@@ -68,7 +61,7 @@ function Message({
         observer.unobserve(messageRef.current);
       }
     };
-  }, [message.id, myUser.id]);
+  }, [message.id, myUser?.id]);
 
   return (
     <div
@@ -80,12 +73,12 @@ function Message({
     >
       {!isCurrentUser && (
         <div
-          onClick={() => handleUserClick(otherUser.id)}
+          onClick={() => handleUserClick(otherUser?.id)}
           className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}
         >
           {isLastInGroup && (
             <img
-              src={otherUser.avatarUrl}
+              src={otherUser?.avatarUrl}
               alt="avatar"
               className="w-full h-full rounded-full object-cover"
             />
@@ -103,7 +96,7 @@ function Message({
         {!isCurrentUser && isFirstInGroup && (
           <button
             type="button"
-            onClick={() => handleUserClick(otherUser.id)}
+            onClick={() => handleUserClick(otherUser?.id)}
             className={`text-left text-secondary-500 dark:text-primary-500 px-2 leading-[1em] pt-1.5`}
           >
             {message.senderName}
