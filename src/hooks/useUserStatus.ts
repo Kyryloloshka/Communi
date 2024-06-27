@@ -21,7 +21,7 @@ const useUserStatus = (userId: string | null) => {
           lastOnline: userData.lastOnline,
         });
       } else {
-        console.log('No such user document!');
+        console.error('No such user document!');
       }
     });
 

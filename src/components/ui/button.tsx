@@ -22,6 +22,7 @@ const buttonVariants = cva(
         primary:
           'bg-primary-500 text-dark-3 transition shadow-sm hover:shadow-[0px_0px_15px_-6px_var(--primary-color)] hover:bg-primary-500/90',
         gray: 'bg-gray-500 text-light-1 transition shadow-sm hover:shadow-[0px_0px_15px_-6px_gray] hover:bg-gray-500/90',
+        zero: 'bg-transparent ouline-none shadow-none hover:shadow-none hover:bg-transparent focus-visible:ring-0',
       },
       size: {
         default: 'h-9 px-4 py-2',

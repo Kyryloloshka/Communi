@@ -103,7 +103,7 @@ const ChatsMenu = () => {
         transaction.update(messageRef, { [`read.${userData.id}`]: true });
       });
     }).catch((error) => {
-      console.log('Transaction failed: ', error);
+      console.error('Transaction failed: ', error);
     });
   };
 

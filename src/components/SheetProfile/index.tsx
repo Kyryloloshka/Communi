@@ -27,7 +27,7 @@ const SheetProfile = () => {
         actions.droppingData();
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
 

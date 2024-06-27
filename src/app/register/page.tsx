@@ -37,7 +37,6 @@ const Register = () => {
     try {
       const q = query(collection(db, "users"), where("tag", "==", tagValue));
       const querySnapshot = await getDocs(q);
-      console.log(querySnapshot.docs);
       return querySnapshot.docs.length > 0;
     } catch (error) {
       console.error("Error checking tag existence:", error);
@@ -49,7 +48,6 @@ const Register = () => {
     try {
       const q = query(collection(db, "users"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
-      console.log(querySnapshot.docs);
       return querySnapshot.docs.length > 0;
     } catch (error) {
       console.error("Error checking tag existence:", error);
@@ -128,7 +126,7 @@ const Register = () => {
         return;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setLoading(false);
   };
@@ -238,7 +236,6 @@ const Register = () => {
           className="overflow-hidden flex-auto"
           variant="primary"
           type="submit"
-          onClick={() => console.log("Register")}
         >
           {loading ? <span className="loader"></span> : "Register"}
         </Button>

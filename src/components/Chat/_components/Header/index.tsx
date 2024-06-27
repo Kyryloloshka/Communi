@@ -3,6 +3,7 @@ import { useStateSelector } from '@/state';
 import { Timestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import HeaderMenu from '../HeaderMenu';
 
 const Header = ({
   userStatus,
@@ -12,7 +13,6 @@ const Header = ({
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
   const otherUser = selectedChat ? selectedChat.otherData : null;
   const groupData = selectedChat ? selectedChat.groupData : null;
-  console.log('selectedChat', selectedChat);
 
   const router = useRouter();
   const handleUserClick = (userId: string) => {
@@ -51,11 +51,12 @@ const Header = ({
           alt=""
           className="h-10 rounded-full aspect-square cursor-pointer bg-light-3 dark:bg-dark-3 object-cover"
         />
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-auto flex-col gap-1">
           <div className="text-dark-5 dark:text-light-2 leading-[1em] cursor-pointer">
             {groupData.name}
           </div>
         </div>
+        <HeaderMenu />
       </div>
     )
   );

@@ -80,11 +80,11 @@ const useSendMessage = (
       );
 
       await updateDoc(chatRef, {
-        lastMessage: messageData.text ? messageData.text : 'Image',
+        lastMessage: messageData ? messageData : 'Image',
         unreadCount,
       });
     } catch (error) {
-      console.log('Error sending message: ', error);
+      console.error('Error sending message: ', error);
     }
   };
 

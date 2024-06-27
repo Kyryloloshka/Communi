@@ -20,7 +20,6 @@ const IconFileUpload = ({setFile, setImagePreview, setVideoPreview, setFilePrevi
 			} else if (file.type.includes('video')) {
 				setVideoPreview(reader.result);
 			} else {
-				console.log(file, reader.result);
 				setFilePreview(file);
 			}
 		};

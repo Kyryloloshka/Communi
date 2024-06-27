@@ -18,7 +18,7 @@ const ProfilePage = ({ userId }: { userId: string }) => {
             const userDoc = querySnapshot.docs[0];
             setUser({ id: userDoc.id, ...userDoc.data() });
           } else {
-            console.log('No such document!');
+            console.error('No such document!');
           }
         } catch (error) {
           console.error('Error fetching user:', error);

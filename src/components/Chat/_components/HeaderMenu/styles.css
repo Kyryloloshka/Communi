@@ -1,0 +1,26 @@
+.menu-header-icon {
+  height: 4px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--light-3);
+  position: relative;
+}
+
+.menu-header-icon::before,
+.menu-header-icon::after {
+  content: '';
+  height: 4px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--light-3);
+  position: absolute;
+  left: 0;
+}
+
+.menu-header-icon::before {
+  top: -8px;
+}
+
+.menu-header-icon::after {
+  bottom: -8px;
+}
