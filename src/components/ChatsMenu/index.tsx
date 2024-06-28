@@ -48,7 +48,11 @@ const ChatsMenu = () => {
         setLoading(false);
       });
 
-      const groupQuery = query(collection(db, 'groups'));
+      const groupQuery = query(
+        collection(db, 'groups'),
+        where('members', 'array-contains', userData.id),
+        orderBy('lastMessage.time', 'desc'),
+      );
       const unsubGroups = onSnapshot(groupQuery, (snapshot) => {
         const groups = snapshot.docs.map((doc) => ({
           id: doc.id,

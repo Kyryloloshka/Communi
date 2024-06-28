@@ -315,3 +315,36 @@
   width: 0;
   background: transparent;
 }
+
+.bg-filter-blur-modal {
+  overflow: hidden; /* Забезпечує, що внутрішні елементи не виходять за межі блоку */
+}
+
+.bg-filter-blur-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.767);
+  backdrop-filter: blur(10px); /* Застосовує розмиття */
+  -webkit-backdrop-filter: blur(10px); /* Для підтримки в Safari */
+  z-index: -1; /* Встановлює псевдоелемент позаду основного вмісту */
+}
+.zikmaka {
+  overflow: hidden; /* Забезпечує, що внутрішні елементи не виходять за межі блоку */
+}
+
+.zikmaka::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.397);
+  backdrop-filter: blur(3px); /* Застосовує розмиття */
+  -webkit-backdrop-filter: blur(3px); /* Для підтримки в Safari */
+  z-index: -1; /* Встановлює псевдоелемент позаду основного вмісту */
+}

@@ -1,7 +1,9 @@
 'use client';
 import { Button } from '@/components/ui/button';
+import CloseDialogElem from '@/components/ui/close-dialog-elem';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -10,7 +12,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { app, db } from '@/lib/firebase/firebase';
 import { useStateSelector } from '@/state';
 import { doc, setDoc } from 'firebase/firestore';
@@ -28,6 +29,7 @@ const CreateGroup = () => {
   const [uploading, setUploading] = useState(false);
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const myUser = useStateSelector((state) => state.auth.myUser);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setGroupAvatar(e.target.files[0]);
@@ -57,7 +59,7 @@ const CreateGroup = () => {
       createdAt: new Date(),
       createdBy,
       members,
-			membersData: [myUser],
+      membersData: [myUser],
       admins: [createdBy],
       lastMessage: '',
       timestamp: new Date(),
@@ -96,16 +98,13 @@ const CreateGroup = () => {
           <div>Create Group</div>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Group</DialogTitle>
           <DialogDescription>Add all the peaple in group</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="group-name" className="text-right">
-              Group Name
-            </Label>
             <Input
               type="group-name"
               placeholder="Group Name"
@@ -115,12 +114,8 @@ const CreateGroup = () => {
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="group-description" className="text-right">
-              Description
-            </Label>
             <Input
               type="text"
-              id="group-description"
               placeholder="Group Description"
               value={groupDescription}
               onChange={(e) => setGroupDescription(e.target.value)}
@@ -128,11 +123,7 @@ const CreateGroup = () => {
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="group-avatar" className="text-right">
-              Avatar Url
-            </Label>
             <Input
-              id={'group-avatar'}
               type="file"
               onChange={handleFileChange}
               className="p-2 border rounded col-span-3"
@@ -140,10 +131,13 @@ const CreateGroup = () => {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleCreateGroup}>
+          <Button type="submit" variant={'primary'} onClick={handleCreateGroup}>
             {uploading ? 'uploading' : 'Create Group'}
           </Button>
         </DialogFooter>
+        <DialogClose>
+          <CloseDialogElem />
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );

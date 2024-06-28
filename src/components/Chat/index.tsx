@@ -50,9 +50,9 @@ const Chat = () => {
       ) : (
         <div className="flex flex-col h-full">
           <Header userStatus={userStatus} />
-          {messages.length === 0 && selectedChat.type === ChatType.Chat ? (
+          {messages.length === 0 && otherUser ? (
             <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50 select-none">
-              Say hello to {otherUser?.name}
+              Say hello to {otherUser.name}
             </div>
           ) : (
             <div
