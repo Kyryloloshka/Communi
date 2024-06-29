@@ -12,8 +12,8 @@ const Header = ({
   userStatus: { onlineStatus: string; lastOnline: TimeType } | null;
 }) => {
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
-  const otherUser = selectedChat ? useFetchUser(selectedChat.otherId) : null;
-  const groupData = selectedChat ? selectedChat.groupData : null;
+  const otherUser = useFetchUser(selectedChat?.otherId);
+  const groupData = selectedChat?.groupData;
 
   const router = useRouter();
   const handleUserClick = (userId: string) => {

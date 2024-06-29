@@ -45,7 +45,7 @@ function Home() {
       }
     });
     return () => unsubscribe();
-  }, [auth, router]);
+  }, [auth, router, actions]);
   // Update user status when window focus changes
   useEffect(() => {
     if (myUser && myUser.id) {
