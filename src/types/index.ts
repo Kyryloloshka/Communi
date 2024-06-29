@@ -1,12 +1,17 @@
 import { FieldValue, Timestamp } from 'firebase/firestore';
 
+export interface TimeType {
+  seconds: number;
+  nanoseconds: number;
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
   avatarUrl: string;
   onlineStatus: string;
-  lastOnline: string;
+  lastOnline: TimeType;
   tag: string;
 }
 
@@ -27,15 +32,13 @@ export interface PropsUserCard {
 
 export interface ChatData {
   users: any[];
-  usersData: {
-    [x: number]: any;
-  };
-  timestamp: FieldValue;
+  timestamp: TimeType;
   lastMessage: IMessage | null;
   id: string;
   unreadCount: {
-    [x: number]: number;
+    [x: string]: number;
   };
+  type: ChatType;
 }
 
 export interface Group {
@@ -43,16 +46,21 @@ export interface Group {
   name: string;
   description: string;
   avatarUrl: string;
-  members: User[];
-  admins: User[];
-  timestamp: Timestamp;
+  members: string[];
+  admins: string[];
+  unreadCount: {
+    [x: string]: number;
+  };
+  timestamp: TimeType;
+	lastMessage: IMessage | null;
+  type: ChatType;
 }
 
 export interface SelectedChatData {
   id: string;
-  myData: User;
+  myId: string;
   type: ChatType;
-  otherData?: User;
+  otherId?: string;
   groupData?: Group;
 }
 
@@ -60,7 +68,6 @@ export interface IMessage {
   id: string;
   chatRoomId: string;
   senderId: string;
-  senderName: string;
   text: string;
   time: Timestamp;
   image?: string;
@@ -70,9 +77,8 @@ export interface IMessage {
   previousMessage?: IMessage | null;
   nextMessage?: IMessage | null;
   read: {
-    userId: string;
-    read: boolean;
-  }[];
+    [userId: string]: boolean;
+  };
 }
 
 export type MessageType = 'text' | 'voice' | 'sticker' | 'gif';

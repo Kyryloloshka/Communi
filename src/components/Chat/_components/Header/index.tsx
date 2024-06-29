@@ -1,17 +1,18 @@
 import { formatTimestamp } from '@/lib/utils';
 import { useStateSelector } from '@/state';
-import { Timestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import HeaderMenu from '../HeaderMenu';
+import { TimeType } from '@/types';
+import useFetchUser from '@/hooks/useFetchUser';
 
 const Header = ({
   userStatus,
 }: {
-  userStatus: { onlineStatus: string; lastOnline: Timestamp } | null;
+  userStatus: { onlineStatus: string; lastOnline: TimeType } | null;
 }) => {
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
-  const otherUser = selectedChat ? selectedChat.otherData : null;
+  const otherUser = selectedChat ? useFetchUser(selectedChat.otherId) : null;
   const groupData = selectedChat ? selectedChat.groupData : null;
 
   const router = useRouter();

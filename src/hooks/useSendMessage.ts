@@ -10,38 +10,37 @@ import {
   where,
 } from 'firebase/firestore';
 import { useState } from 'react';
-import { User, TypeAttached, ChatType } from '@/types/index';
+import { TypeAttached, ChatType, IMessage } from '@/types';
 
 const useSendMessage = (
-  myUser: User | null,
-  otherUser: User | null,
+  myUserId: string | null,
+  otherUserId: string | null,
   chatRoomId: string | null,
   chatType: ChatType,
-  groupUsers: User[] = [],
+  groupUsers: string[] = [],
 ) => {
   const [message, setMessage] = useState('');
 
   const sendMessage = async (URL?: string, typeMessage?: TypeAttached) => {
-    if ((message.trim() === '' && !URL) || !myUser || !chatRoomId) return;
+    if ((message.trim() === '' && !URL) || !myUserId || !chatRoomId) return;
 
     const messageData = {
       chatRoomId,
       file: typeMessage === 'file' && URL ? URL : null,
       image: typeMessage === 'image' && URL ? URL : null,
       messageType: 'text',
-      senderId: myUser.id,
-      senderName: myUser.name,
+      senderId: myUserId,
       text: message,
       time: serverTimestamp(),
       video: typeMessage === 'video' && URL ? URL : null,
       read: groupUsers.reduce(
-        (acc, user) => {
-          acc[user.id] = user.id === myUser.id;
+        (acc, id) => {
+          acc[id] = id === myUserId;
           return acc;
         },
         {} as Record<string, boolean>,
       ),
-    };
+    } as IMessage;
 
     try {
       await addDoc(collection(db, 'messages'), messageData);
@@ -54,18 +53,19 @@ const useSendMessage = (
       );
 
       const unreadCounts = await Promise.all(
-        (chatType === ChatType.Chat ? [otherUser] : groupUsers).map(
-          async (user) => {
+        (chatType === ChatType.Chat ? [otherUserId] : groupUsers).map(
+          async (id) => {
+						if (!id) return { userId: null, count: 0 };
             const userUnreadCount = (
               await getDocs(
                 query(
                   collection(db, 'messages'),
                   where('chatRoomId', '==', chatRoomId),
-                  where(`read.${user?.id}`, '==', false),
+                  where(`read.${id}`, '==', false),
                 ),
               )
             ).size;
-            return { userId: user?.id, count: userUnreadCount };
+            return { userId: id, count: userUnreadCount };
           },
         ),
       );

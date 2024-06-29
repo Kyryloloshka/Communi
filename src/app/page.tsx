@@ -31,8 +31,14 @@ function Home() {
       if (user) {
         const userRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userRef);
-        const userData = { id: userDoc.id, ...userDoc.data() };
-        actions.setMyUser(userData as User);
+        const userData = { id: userDoc.id, ...userDoc.data() } as User;
+        actions.setMyUser({
+          ...userData,
+          lastOnline: {
+            seconds: userData.lastOnline.seconds,
+            nanoseconds: userData.lastOnline.nanoseconds,
+          },
+        } as User);
       } else {
         actions.setMyUser(null);
         router.push('/login');
@@ -40,7 +46,6 @@ function Home() {
     });
     return () => unsubscribe();
   }, [auth, router]);
-
   // Update user status when window focus changes
   useEffect(() => {
     if (myUser && myUser.id) {

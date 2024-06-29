@@ -7,7 +7,6 @@ import {
   query,
   where,
   getDoc,
-  DocumentData,
 } from 'firebase/firestore';
 import { useStateSelector } from '@/state';
 import { User } from '@/types';

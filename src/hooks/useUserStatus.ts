@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase/firebase';
 import { doc, onSnapshot, Timestamp } from 'firebase/firestore';
+import { TimeType } from '@/types';
 
 const useUserStatus = (userId: string | null) => {
   const [userStatus, setUserStatus] = useState<{
     onlineStatus: string;
-    lastOnline: Timestamp;
+    lastOnline: TimeType;
   } | null>(null);
 
   useEffect(() => {
@@ -18,7 +19,10 @@ const useUserStatus = (userId: string | null) => {
         const userData = doc.data();
         setUserStatus({
           onlineStatus: userData.onlineStatus,
-          lastOnline: userData.lastOnline,
+          lastOnline: {
+            seconds: userData.lastOnline.seconds,
+            nanoseconds: userData.lastOnline.nanoseconds,
+          },
         });
       } else {
         console.error('No such user document!');

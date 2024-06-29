@@ -12,9 +12,8 @@ import {
   doc,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { getAuth } from 'firebase/auth';
-import { app, db } from '@/lib/firebase/firebase';
-import { ChatType } from '@/types';
+import { db } from '@/lib/firebase/firebase';
+import { ChatType, SelectedChatData } from '@/types';
 import { useRouter } from 'next/navigation';
 import UserCard from '../UserCard';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
@@ -23,7 +22,6 @@ const ChatsMenu = () => {
   const [loading, setLoading] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData[]>([]);
   const [groups, setGroups] = useState<DocumentData[]>([]);
-  const auth = getAuth(app);
   const router = useRouter();
   const actions = useActionCreators(authActions);
   const userData = useStateSelector((state) => state.auth.myUser);
@@ -75,16 +73,33 @@ const ChatsMenu = () => {
     router.push('/');
     const data = {
       id: chat.id,
-      myData: userData,
+      myId: userData.id,
       ...(chat.type === 'chat'
         ? {
-            otherData:
-              chat.usersData[chat.users.find((id: any) => id !== userData?.id)],
+            otherId: chat.users.find((id: any) => id !== userData.id),
           }
-        : { groupData: chat }),
+        : {
+            groupData: {
+              ...chat,
+              createdAt: {
+                seconds: chat.createdAt.seconds,
+                nanoseconds: chat.createdAt.nanoseconds,
+              },
+              timestamp: {
+                seconds: chat.timestamp.seconds,
+                nanoseconds: chat.timestamp.nanoseconds,
+              },
+              lastMessage: {
+                ...chat.lastMessage,
+                time: {
+                  seconds: chat.lastMessage.time.seconds,
+                  nanoseconds: chat.lastMessage.time.nanoseconds,
+                },
+              },
+            },
+          }),
       type: chat.type,
-    };
-
+    } as SelectedChatData;
     actions.setSelectedChat(data);
     const chatRef = doc(db, chat.type === 'chat' ? 'chats' : 'groups', chat.id);
 
@@ -114,6 +129,8 @@ const ChatsMenu = () => {
   const combinedChats = [...userChats, ...groups].sort(
     (a, b) => b.lastMessage.time - a.lastMessage.time,
   );
+  console.log(groups, userChats);
+
   if (!userData) return null;
   return (
     <div className="">

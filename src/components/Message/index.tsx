@@ -1,32 +1,34 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
-import { IMessage, User } from '@/types/index';
+import { IMessage } from '@/types';
 import FileLink from '../FileLink';
 import { useRouter } from 'next/navigation';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { getValidTime } from '@/lib/utils';
+import useFetchUser from '@/hooks/useFetchUser';
+import { useStateSelector } from '@/state';
 
 interface MessageProps {
   message: IMessage;
-  myUser: User | null;
-  otherUser: User | null;
 }
 
-function Message({ message, myUser, otherUser }: MessageProps) {
+function Message({ message }: MessageProps) {
   const router = useRouter();
-  const dalayForGroup = 120;
+  const delayForGroup = 120;
+	const myUser = useStateSelector((state) => state.auth.myUser);
   const isCurrentUser = myUser ? message.senderId === myUser.id : false;
+  const sender = useFetchUser(message.senderId);
 
   const isFirstInGroup =
     message.previousMessage?.senderId !== message.senderId ||
     Math.abs(message.previousMessage?.time?.seconds - message.time?.seconds) >
-      dalayForGroup;
+      delayForGroup;
 
   const isLastInGroup =
     message.nextMessage?.senderId !== message.senderId ||
     Math.abs(message.nextMessage?.time?.seconds - message.time?.seconds) >
-      dalayForGroup;
+      delayForGroup;
 
   const [open, setOpen] = useState<boolean | undefined>(undefined);
   const messageRef = useRef<HTMLDivElement>(null);
@@ -73,12 +75,12 @@ function Message({ message, myUser, otherUser }: MessageProps) {
     >
       {!isCurrentUser && (
         <div
-          onClick={() => handleUserClick(otherUser?.id)}
+          onClick={() => handleUserClick(message.senderId)}
           className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}
         >
           {isLastInGroup && (
             <img
-              src={otherUser?.avatarUrl}
+              src={sender?.avatarUrl}
               alt="avatar"
               className="w-full h-full rounded-full object-cover"
             />
@@ -96,10 +98,10 @@ function Message({ message, myUser, otherUser }: MessageProps) {
         {!isCurrentUser && isFirstInGroup && (
           <button
             type="button"
-            onClick={() => handleUserClick(otherUser?.id)}
+            onClick={() => handleUserClick(message.senderId)}
             className={`text-left text-secondary-500 dark:text-primary-500 px-2 leading-[1em] pt-1.5`}
           >
-            {message.senderName}
+            {sender?.name}
           </button>
         )}
         {message.image && (

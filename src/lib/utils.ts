@@ -1,17 +1,17 @@
+import { TimeType } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
-import { Timestamp } from 'firebase/firestore';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatTimestamp(timestamp: Timestamp) {
+export function formatTimestamp(timestamp: TimeType) {
   if (!timestamp) return;
   // Отримуємо поточний час в мілісекундах
   const currentTime = Date.now();
   // Отримуємо час Timestamp в мілісекундах
-  const timestampTime = timestamp.toMillis();
+  const timestampTime = timestamp.seconds * 1000;
 
   // Різниця між поточним часом і часом Timestamp у мілісекундах
   const difference = currentTime - timestampTime;
@@ -40,7 +40,9 @@ export function formatTimestamp(timestamp: Timestamp) {
   }
 
   // Якщо Timestamp відбувся більше тижня тому, повертаємо дату та час
-  const date = timestamp.toDate();
+  const date = new Date(
+    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000,
+  );
   return date.toLocaleDateString(); // Повертаємо дату у звичайному форматі
 }
 

@@ -7,27 +7,29 @@ import useUserStatus from '@/hooks/useUserStatus';
 import useChatMessages from '@/hooks/useChatMessages';
 import useSendMessage from '@/hooks/useSendMessage';
 import { ChatType } from '@/types';
+import useFetchUser from '@/hooks/useFetchUser';
 
 const Chat = () => {
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
-  const myUser = selectedChat ? selectedChat.myData : null;
-  const otherUser = selectedChat ? selectedChat.otherData : null;
-  const groupData =
+  const myUserId = selectedChat ? selectedChat.myId : null;
+	const otherUserId = selectedChat?.otherId;
+	const otherUserData = useFetchUser(otherUserId);
+	const groupData =
     selectedChat && selectedChat.type === ChatType.Group
       ? selectedChat.groupData
       : null;
   const chatRoomId = selectedChat ? selectedChat.id : null;
   const chatContainerRef = useRef<any>(null);
   const { message, setMessage, sendMessage } = useSendMessage(
-    myUser,
-    otherUser ? otherUser : null,
+    myUserId,
+    otherUserId ? otherUserId : null,
     chatRoomId,
     selectedChat?.type ?? ChatType.Chat,
     groupData ? groupData.members : [],
   );
 
   const messages = useChatMessages(chatRoomId);
-  const userStatus = useUserStatus(otherUser ? otherUser.id : null);
+  const userStatus = useUserStatus(otherUserId ? otherUserId : null);
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
@@ -35,7 +37,6 @@ const Chat = () => {
         chatContainerRef.current.scrollHeight;
     }
   };
-
   useEffect(() => {
     if (messages) {
       scrollToBottom();
@@ -50,9 +51,9 @@ const Chat = () => {
       ) : (
         <div className="flex flex-col h-full">
           <Header userStatus={userStatus} />
-          {messages.length === 0 && otherUser ? (
+          {messages.length === 0 && otherUserData ? (
             <div className="flex-1 h-full flex items-center justify-center text-lg font-light text-light-6/50 select-none">
-              Say hello to {otherUser.name}
+              Say hello to {otherUserData.name}
             </div>
           ) : (
             <div
@@ -63,8 +64,6 @@ const Chat = () => {
                 <Message
                   key={message.id}
                   message={message}
-                  myUser={myUser}
-                  otherUser={otherUser ? otherUser : null}
                 />
               ))}
             </div>

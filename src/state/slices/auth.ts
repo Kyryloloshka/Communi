@@ -1,4 +1,4 @@
-import { SelectedChatData, User } from '@/types/index';
+import { ChatType, SelectedChatData, User } from '@/types/index';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {
@@ -16,7 +16,15 @@ const slice = createSlice({
   initialState,
   reducers: {
     setMyUser: (state, action: PayloadAction<User | null>) => {
-      state.myUser = action.payload;
+      state.myUser = action.payload
+        ? {
+            ...action.payload,
+            lastOnline: {
+              seconds: action.payload.lastOnline.seconds,
+              nanoseconds: action.payload.lastOnline.nanoseconds,
+            },
+          }
+        : null;
     },
     setSelectedChat: (
       state,
