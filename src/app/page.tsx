@@ -17,6 +17,7 @@ import { User } from '@/types/index';
 import LeftBar from '@/components/LeftBar';
 import updateUserStatus from '@/lib/api/changeStatus';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
+import { timestampToTimeType } from '@/lib/utils';
 
 function Home() {
   const auth = getAuth(app);
@@ -31,13 +32,11 @@ function Home() {
       if (user) {
         const userRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userRef);
-        const userData = { id: userDoc.id, ...userDoc.data() } as User;
+        const userData = { ...userDoc.data() };
         actions.setMyUser({
           ...userData,
-          lastOnline: {
-            seconds: userData.lastOnline.seconds,
-            nanoseconds: userData.lastOnline.nanoseconds,
-          },
+          id: userDoc.id,
+          lastOnline: timestampToTimeType(userData.lastOnline),
         } as User);
       } else {
         actions.setMyUser(null);
