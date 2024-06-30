@@ -29,7 +29,6 @@ const useOnlineStatus = (myUser: User | null) => {
         if (myUser && myUser.id) {
           updateUserStatus(myUser.id, 'offline');
         }
-        event.returnValue = 'Are you sure you want to leave?';
       };
 
       window.addEventListener('focus', focusListener);

@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import useFileUpload from '@/hooks/useFileUpload';
 import { TypeAttached } from '@/types';
@@ -14,6 +14,7 @@ import VideoPreview from './VideoPreview';
 import FilePreview from './FilePreview';
 import Description from './Descriptiion';
 import IconFileUpload from './IconFileUpload';
+import { Progress } from '@/components/ui/progress';
 
 interface DialogFileUploadProps {
   message: string;
@@ -31,21 +32,25 @@ const DialogFileUpload = ({
   const [videoPreview, setVideoPreview] = useState<any>(null);
   const [filePreview, setFilePreview] = useState<any>(null);
   const [open, setOpen] = useState(false);
-  const { uploadProgress, uploadFile } = useFileUpload();
+  const { uploadProgress, uploadFile } = useFileUpload({
+    onComplete: () => {
+      setOpen(false);
+      setImagePreview(null);
+      setVideoPreview(null);
+      setFilePreview(null);
+    },
+  });
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) return;
+
     if (imagePreview) {
-      uploadFile(file, 'image', sendMessage);
+      await uploadFile(file, 'image', sendMessage);
     } else if (videoPreview) {
-      uploadFile(file, 'video', sendMessage);
+      await uploadFile(file, 'video', sendMessage);
     } else {
-      uploadFile(file, 'file', sendMessage);
+      await uploadFile(file, 'file', sendMessage);
     }
-    setImagePreview(null);
-    setVideoPreview(null);
-    setFilePreview(null);
-    setOpen(false);
   };
 
   const handleCancelUpload = () => {
@@ -66,14 +71,14 @@ const DialogFileUpload = ({
         setFilePreview={setFilePreview}
       />
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="h-screen w-screen overflow-hidden flex justify-center items-center bg-transparent p-2 sm:p-5">
-          <div className="max-h-screen py-5 relative overflow-hidden max-w-[600px] flex flex-col gap-3 flex-auto">
+        <DialogContent className="p-3 md:p-6 flex justify-center items-center bg-transparent">
+          <div className="relative overflow-hidden max-w-[600px] flex flex-col gap-3 flex-auto">
             <DialogTitle>Send</DialogTitle>
             {imagePreview && <ImagePreview src={imagePreview} />}
             {videoPreview && <VideoPreview src={videoPreview} />}
             {filePreview && <FilePreview file={filePreview} />}
             {uploadProgress && (
-              <progress value={uploadProgress} max="100"></progress>
+              <Progress value={uploadProgress} className="w-full"></Progress>
             )}
             <Description
               message={message}
@@ -91,7 +96,7 @@ const DialogFileUpload = ({
           </div>
           <DialogClose
             onClick={handleCancelUpload}
-            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            className="absolute right-3 top-3 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
           >
             <Cross2Icon className="h-4 w-4" />
             <span className="sr-only">Close</span>

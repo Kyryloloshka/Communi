@@ -8,11 +8,11 @@ import {
 import { app } from '@/lib/firebase/firebase';
 import { TypeAttached } from '@/types';
 
-const useFileUpload = () => {
+const useFileUpload = ({ onComplete }: { onComplete: () => void }) => {
   const storage = getStorage(app);
   const [uploadProgress, setUploadProgress] = useState<any>(null);
 
-  const uploadFile = (
+  const uploadFile = async (
     file: File,
     type: TypeAttached,
     sendMessage: (url?: string, type?: TypeAttached) => void,
@@ -26,6 +26,9 @@ const useFileUpload = () => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setUploadProgress(progress);
+        if (progress >= 100) {
+          onComplete();
+        }
       },
       (error) => {
         console.error(error);
