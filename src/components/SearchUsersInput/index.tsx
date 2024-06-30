@@ -13,7 +13,7 @@ const SearchUsersInput = () => {
     if (!searchKey || !myUserData) return;
     const setSearchResults = actions.setSearchResults;
     searchUsers({ setSearchResults, searchKey, myUserData });
-  }, [searchKey]);
+  }, [searchKey, actions.setSearchResults, myUserData]);
 
   return (
     <div>

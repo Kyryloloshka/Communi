@@ -1,6 +1,7 @@
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { User } from '@/types/index';
+import { timestampToTimeType } from '../utils';
 
 const searchUsers = async ({
   searchKey,
@@ -27,9 +28,13 @@ const searchUsers = async ({
       const tag = userData.tag;
       const name = userData.name;
       if (tag.startsWith(trimmedSearchKey) || name.includes(trimmedSearchKey)) {
-        users.push(userData);
+        users.push({
+          ...userData,
+          lastOnline: timestampToTimeType(userData.lastOnline),
+        });
       }
     });
+    console.log('users: ', users);
     setSearchResults(users);
   } catch (error) {
     console.error('Error searching users:', error);

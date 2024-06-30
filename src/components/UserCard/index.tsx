@@ -2,6 +2,7 @@ import React from 'react';
 import { PropsUserCard, ChatType } from '@/types/index';
 import { getValidTime } from '@/lib/utils';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 
 const UserCard = ({
   name,
@@ -22,19 +23,23 @@ const UserCard = ({
       <img
         src={avatarUrl}
         alt={name}
-        className="w-10 h-10 rounded-full aspect-square object-cover bg-light-3 dark:bg-dark-3"
+        className="w-10 text-[10px] h-10 rounded-full aspect-square object-cover bg-light-3 dark:bg-dark-3"
       />
       <div className="flex flex-col w-full">
         <div className="flex gap-1">
           {type === ChatType.Group &&
             (isDark ? (
-              <img
+              <Image
+                width={24}
+                height={24}
                 className="fill-dark-5 w-6 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2"
                 src="/assets/icons/group-light.svg"
                 alt="settings"
               />
             ) : (
-              <img
+              <Image
+                width={24}
+                height={24}
                 className="fill-dark-5 w-6 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2"
                 src="/assets/icons/group-dark.svg"
                 alt="settings"

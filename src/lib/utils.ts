@@ -1,5 +1,6 @@
 import { TimeType } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
+import { Timestamp } from 'firebase/firestore';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -73,4 +74,14 @@ export const getValidTime = (time: any) => {
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
+};
+
+export const timestampToTimeType = (
+  timestamp: Timestamp | undefined,
+): TimeType => {
+  if (!timestamp) return { seconds: 0, nanoseconds: 0 };
+  return {
+    seconds: timestamp.seconds,
+    nanoseconds: timestamp.nanoseconds,
+  };
 };

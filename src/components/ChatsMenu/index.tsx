@@ -129,7 +129,6 @@ const ChatsMenu = () => {
   const combinedChats = [...userChats, ...groups].sort(
     (a, b) => b.lastMessage.time - a.lastMessage.time,
   );
-  console.log(groups, userChats);
 
   if (!userData) return null;
   return (
@@ -139,37 +138,41 @@ const ChatsMenu = () => {
           <span className="loader"></span>
         </div>
       ) : (
-        combinedChats.map((chat: DocumentData) => (
-          <div className="" key={chat.id} onClick={() => openChat(chat)}>
-            {chat.type === 'chat' ? (
-              <UserCard
-                isSelected={selectedChat?.id === chat.id}
-                name={
-                  chat.usersData[
-                    chat.users.find((id: any) => id !== userData?.id)
-                  ]?.name
-                }
-                avatarUrl={
-                  chat.usersData[
-                    chat.users.find((id: any) => id !== userData?.id)
-                  ]?.avatarUrl
-                }
-                unreadCount={chat.unreadCount[userData.id]}
-                latestMessage={chat.lastMessage}
-                type={ChatType.Chat}
-              />
-            ) : (
-              <UserCard
-                isSelected={selectedChat?.id === chat.id}
-                name={chat.name}
-                avatarUrl={chat.avatarUrl}
-                unreadCount={chat.unreadCount && chat.unreadCount[userData.id]}
-                latestMessage={chat.lastMessage}
-                type={ChatType.Group}
-              />
-            )}
-          </div>
-        ))
+        combinedChats.map((chat: DocumentData) => {
+          return (
+            <div className="" key={chat.id} onClick={() => openChat(chat)}>
+              {chat.type === 'chat' ? (
+                <UserCard
+                  isSelected={selectedChat?.id === chat.id}
+                  name={
+                    chat.usersData[
+                      chat.users.find((id: any) => id !== userData?.id)
+                    ]?.name
+                  }
+                  avatarUrl={
+                    chat.usersData[
+                      chat.users.find((id: any) => id !== userData?.id)
+                    ]?.avatarUrl
+                  }
+                  unreadCount={chat.unreadCount[userData.id]}
+                  latestMessage={chat.lastMessage}
+                  type={ChatType.Chat}
+                />
+              ) : (
+                <UserCard
+                  isSelected={selectedChat?.id === chat.id}
+                  name={chat.name}
+                  avatarUrl={chat.avatarUrl}
+                  unreadCount={
+                    chat.unreadCount && chat.unreadCount[userData.id]
+                  }
+                  latestMessage={chat.lastMessage}
+                  type={ChatType.Group}
+                />
+              )}
+            </div>
+          );
+        })
       )}
     </div>
   );

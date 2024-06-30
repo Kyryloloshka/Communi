@@ -20,8 +20,8 @@ const useUserStatus = (userId: string | null) => {
         setUserStatus({
           onlineStatus: userData.onlineStatus,
           lastOnline: {
-            seconds: userData.lastOnline.seconds,
-            nanoseconds: userData.lastOnline.nanoseconds,
+            seconds: userData.lastOnline?.seconds,
+            nanoseconds: userData.lastOnline?.nanoseconds,
           },
         });
       } else {

@@ -3,6 +3,7 @@ import {
   DocumentData,
   addDoc,
   collection,
+  getDoc,
   getDocs,
   query,
   serverTimestamp,
@@ -10,9 +11,10 @@ import {
 } from 'firebase/firestore';
 import React, { useState } from 'react';
 import UserCard from '../UserCard';
-import { ChatData, ChatType } from '@/types/index';
+import { ChatData, ChatType, SelectedChatData } from '@/types/index';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
 import { searchActions } from '@/state/slices/search';
+import { timestampToTimeType } from '@/lib/utils';
 
 const SearchResultsComponent = ({ loading }: { loading: boolean }) => {
   const [loading2, setLoading2] = useState(false);
@@ -20,6 +22,7 @@ const SearchResultsComponent = ({ loading }: { loading: boolean }) => {
   const authAction = useActionCreators(authActions);
   const searchAction = useActionCreators(searchActions);
   const searchResults = useStateSelector((state) => state.search.searchResults);
+
   const handleCreateChat = async (user: DocumentData) => {
     if (!userData) return;
     setLoading2(true);
@@ -39,13 +42,8 @@ const SearchResultsComponent = ({ loading }: { loading: boolean }) => {
           ...existingChatDoc.data(),
         } as ChatData;
       }
-      const usersData = {
-        [userData.id]: userData,
-        [user.id]: user,
-      };
       const chatData = {
         users: [user.id, userData.id],
-        usersData,
         timestamp: serverTimestamp(),
         lastMessage: null,
         unreadCount: {
@@ -55,24 +53,27 @@ const SearchResultsComponent = ({ loading }: { loading: boolean }) => {
       };
 
       const chatRef = await addDoc(collection(db, 'chats'), chatData);
-      return { id: chatRef.id, ...chatData } as ChatData;
+      const chatDoc = await getDoc(chatRef);
+      return {
+        id: chatRef.id,
+        ...chatDoc.data(),
+        timestamp: timestampToTimeType(chatDoc.data()?.timestamp),
+      } as ChatData;
     } catch (error) {
       console.error('Error creating chat: ', error);
     }
   };
 
-  const openChat = async (chatData: Promise<ChatData | undefined>) => {
-    if (!chatData) return;
+  const openChat = async (chatData: Promise<any | undefined>) => {
+    if (!chatData || !userData) return;
     await chatData.then((chat) => {
       if (chat && chat.users) {
         const data = {
           id: chat.id,
-          myData: userData,
-          otherData:
-            chat.usersData[
-              chat.users.find((id: string) => id !== userData?.id)
-            ],
-        };
+          myId: userData.id,
+          otherId: chat.users.find((id: string) => id !== userData?.id),
+          type: ChatType.Chat,
+        } as SelectedChatData;
         authAction.setSelectedChat(data);
         searchAction.setSearchKey('');
       } else {
