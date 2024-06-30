@@ -75,7 +75,7 @@ const InviteParticipantsDialog = ({
                     width={24}
                     height={24}
                     src={user.avatarUrl}
-                    alt=""
+                    alt={user.name}
                     className="h-6 w-6 rounded-full"
                   />
                   <div className="whitespace-nowrap">{user.name}</div>
@@ -101,7 +101,7 @@ const InviteParticipantsDialog = ({
                     width={40}
                     height={40}
                     src={user.avatarUrl}
-                    alt=""
+                    alt={user.name}
                     className="h-10 rounded-full cursor-pointer"
                   />
                   <div className="flex flex-col gap-1">

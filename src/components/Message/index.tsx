@@ -41,6 +41,7 @@ function Message({ message }: MessageProps) {
 
   useEffect(() => {
     if (!myUser) return;
+
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(async (entry) => {
         if (entry.isIntersecting) {
@@ -55,17 +56,18 @@ function Message({ message }: MessageProps) {
       threshold: 0.1,
     });
 
-    if (messageRef.current) {
-      observer.observe(messageRef.current);
+    const currentMessageRef = messageRef.current;
+
+    if (currentMessageRef) {
+      observer.observe(currentMessageRef);
     }
 
     return () => {
-      if (messageRef.current) {
-        observer.unobserve(messageRef.current);
+      if (currentMessageRef) {
+        observer.unobserve(currentMessageRef);
       }
     };
-  }, [message.id, myUser?.id, myUser]);
-
+  }, [message.id, myUser?.id, myUser, messageRef]);
   return (
     <div
       key={message.id}

@@ -15,9 +15,9 @@ import {
 
 import { User } from '@/types/index';
 import LeftBar from '@/components/LeftBar';
-import updateUserStatus from '@/lib/api/changeStatus';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
 import { timestampToTimeType } from '@/lib/utils';
+import useOnlineStatus from '@/hooks/useOnlineStatus';
 
 function Home() {
   const auth = getAuth(app);
@@ -46,53 +46,7 @@ function Home() {
     return () => unsubscribe();
   }, [auth, router, actions]);
   // Update user status when window focus changes
-  useEffect(() => {
-    if (myUser && myUser.id) {
-      updateUserStatus(myUser.id, 'online');
-    }
-    let focusListener: () => void;
-    let blurListener: () => void;
-    let beforeUnloadListener: (event: BeforeUnloadEvent) => void;
-
-    const setUserFocusListeners = () => {
-      focusListener = () => {
-        if (myUser && myUser.id) {
-          updateUserStatus(myUser.id, 'online');
-        }
-      };
-
-      blurListener = () => {
-        if (myUser && myUser.id) {
-          updateUserStatus(myUser.id, 'offline');
-        }
-      };
-
-      beforeUnloadListener = (event: BeforeUnloadEvent) => {
-        if (myUser && myUser.id) {
-          updateUserStatus(myUser.id, 'offline');
-        }
-        event.returnValue = 'Are you sure you want to leave?';
-      };
-
-      window.addEventListener('focus', focusListener);
-      window.addEventListener('blur', blurListener);
-      window.addEventListener('beforeunload', beforeUnloadListener);
-    };
-
-    const removeUserFocusListeners = () => {
-      window.removeEventListener('focus', focusListener);
-      window.removeEventListener('blur', blurListener);
-      window.removeEventListener('beforeunload', beforeUnloadListener);
-    };
-
-    if (myUser) {
-      setUserFocusListeners();
-    }
-
-    return () => {
-      removeUserFocusListeners();
-    };
-  }, [myUser]);
+  useOnlineStatus(myUser);
 
   return (
     <div className="flex h-screen">

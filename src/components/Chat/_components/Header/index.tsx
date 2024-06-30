@@ -53,7 +53,7 @@ const Header = ({
           width={40}
           height={40}
           src={groupData.avatarUrl}
-          alt=""
+          alt={groupData.name}
           className="h-10 rounded-full aspect-square cursor-pointer bg-light-3 dark:bg-dark-3 object-cover"
         />
         <div className="flex flex-auto flex-col gap-1">

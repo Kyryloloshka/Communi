@@ -6,26 +6,17 @@ import {
   query,
   where,
   orderBy,
-  getDocs,
-  runTransaction,
-  getFirestore,
-  doc,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase/firebase';
-import { ChatType, SelectedChatData } from '@/types';
-import { useRouter } from 'next/navigation';
-import UserCard from '../UserCard';
-import { authActions, useActionCreators, useStateSelector } from '@/state';
+import CardChatsMenu from './CardChatsMenu';
+import { useStateSelector } from '@/state';
 
 const ChatsMenu = () => {
   const [loading, setLoading] = useState(false);
   const [userChats, setUserChats] = useState<DocumentData[]>([]);
   const [groups, setGroups] = useState<DocumentData[]>([]);
-  const router = useRouter();
-  const actions = useActionCreators(authActions);
   const userData = useStateSelector((state) => state.auth.myUser);
-  const selectedChat = useStateSelector((state) => state.auth.selectedChat);
 
   useEffect(() => {
     setLoading(true);
@@ -68,64 +59,6 @@ const ChatsMenu = () => {
     }
   }, [userData]);
 
-  const openChat = (chat: any) => {
-    if (!userData) return;
-    router.push('/');
-    const data = {
-      id: chat.id,
-      myId: userData.id,
-      ...(chat.type === 'chat'
-        ? {
-            otherId: chat.users.find((id: any) => id !== userData.id),
-          }
-        : {
-            groupData: {
-              ...chat,
-              createdAt: {
-                seconds: chat.createdAt.seconds,
-                nanoseconds: chat.createdAt.nanoseconds,
-              },
-              timestamp: {
-                seconds: chat.timestamp.seconds,
-                nanoseconds: chat.timestamp.nanoseconds,
-              },
-              lastMessage: {
-                ...chat.lastMessage,
-                time: {
-                  seconds: chat.lastMessage.time.seconds,
-                  nanoseconds: chat.lastMessage.time.nanoseconds,
-                },
-              },
-            },
-          }),
-      type: chat.type,
-    } as SelectedChatData;
-    actions.setSelectedChat(data);
-    const chatRef = doc(db, chat.type === 'chat' ? 'chats' : 'groups', chat.id);
-
-    const messagesRef = collection(db, 'messages');
-
-    runTransaction(getFirestore(), async (transaction) => {
-      const chatDoc = await transaction.get(chatRef);
-      if (!chatDoc.exists()) {
-        throw new Error('Chat does not exist!');
-      }
-      transaction.update(chatRef, { [`unreadCount.${userData.id}`]: 0 });
-      const myUnreadMessagesQuery = query(
-        messagesRef,
-        where('chatRoomId', '==', chat.id),
-        where(`read.${userData.id}`, '==', false),
-      );
-      const myUnreadMessagesSnapshot = await getDocs(myUnreadMessagesQuery);
-      myUnreadMessagesSnapshot.forEach((doc) => {
-        const messageRef = doc.ref;
-        transaction.update(messageRef, { [`read.${userData.id}`]: true });
-      });
-    }).catch((error) => {
-      console.error('Transaction failed: ', error);
-    });
-  };
-
   const combinedChats = [...userChats, ...groups].sort(
     (a, b) => b.lastMessage.time - a.lastMessage.time,
   );
@@ -140,37 +73,7 @@ const ChatsMenu = () => {
       ) : (
         combinedChats.map((chat: DocumentData) => {
           return (
-            <div className="" key={chat.id} onClick={() => openChat(chat)}>
-              {chat.type === 'chat' ? (
-                <UserCard
-                  isSelected={selectedChat?.id === chat.id}
-                  name={
-                    chat.usersData[
-                      chat.users.find((id: any) => id !== userData?.id)
-                    ]?.name
-                  }
-                  avatarUrl={
-                    chat.usersData[
-                      chat.users.find((id: any) => id !== userData?.id)
-                    ]?.avatarUrl
-                  }
-                  unreadCount={chat.unreadCount[userData.id]}
-                  latestMessage={chat.lastMessage}
-                  type={ChatType.Chat}
-                />
-              ) : (
-                <UserCard
-                  isSelected={selectedChat?.id === chat.id}
-                  name={chat.name}
-                  avatarUrl={chat.avatarUrl}
-                  unreadCount={
-                    chat.unreadCount && chat.unreadCount[userData.id]
-                  }
-                  latestMessage={chat.lastMessage}
-                  type={ChatType.Group}
-                />
-              )}
-            </div>
+            <CardChatsMenu key={chat.id} chat={chat}/>
           );
         })
       )}
