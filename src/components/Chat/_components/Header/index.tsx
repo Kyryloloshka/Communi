@@ -1,7 +1,6 @@
 import { formatTimestamp } from '@/lib/utils';
 import { useStateSelector } from '@/state';
 import { useRouter } from 'next/navigation';
-import React from 'react';
 import HeaderMenu from '../HeaderMenu';
 import { TimeType } from '@/types';
 import useFetchUser from '@/hooks/useFetchUser';
@@ -20,7 +19,7 @@ const Header = ({
     router.push(`/?userId=${userId}`);
   };
 
-  return otherUser ? (
+  return otherUser && !groupData ? (
     <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
       <img
         onClick={() => handleUserClick(otherUser.id)}

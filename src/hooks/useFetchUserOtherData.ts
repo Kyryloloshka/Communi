@@ -1,15 +1,19 @@
 import { db } from '@/lib/firebase/firebase';
+import { useStateSelector } from '@/state';
 import { User } from '@/types';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
-const useFetchUser = (userId: string | undefined, chat?: any) => {
+const useFetchUserOtherData = () => {
+  const selectedChat = useStateSelector((state) => state.auth.selectedChat);
   const [userData, setUserData] = useState<User | null>(null);
+  console.log(selectedChat);
 
   useEffect(() => {
-    if (!userId) return;
+    const otherId = selectedChat?.otherId;
+    if (!otherId) return;
 
-    const userRef = doc(db, 'users', userId);
+    const userRef = doc(db, 'users', otherId);
 
     const unsubscribe = onSnapshot(userRef, (doc) => {
       if (doc.exists()) {
@@ -19,11 +23,11 @@ const useFetchUser = (userId: string | undefined, chat?: any) => {
         console.error('No such user document!');
       }
     });
+    console.log('update');
 
     return () => unsubscribe();
-  }, [userId, chat]);
-
+  }, [selectedChat]);
   return userData;
 };
 
-export default useFetchUser;
+export default useFetchUserOtherData;
