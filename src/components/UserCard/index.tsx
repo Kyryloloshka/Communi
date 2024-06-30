@@ -2,7 +2,7 @@ import React from 'react';
 import { PropsUserCard, ChatType } from '@/types/index';
 import { getValidTime } from '@/lib/utils';
 import { useTheme } from 'next-themes';
-import Image from 'next/image';
+import Image from '@/components/Image';
 
 const UserCard = ({
   name,
@@ -20,7 +20,9 @@ const UserCard = ({
         isSelected && 'bg-light-4 dark:bg-dark-3'
       }`}
     >
-      <img
+      <Image
+        width={40}
+        height={40}
         src={avatarUrl}
         alt={name}
         className="w-10 text-[10px] h-10 rounded-full aspect-square object-cover bg-light-3 dark:bg-dark-3"

@@ -34,7 +34,6 @@ const searchUsers = async ({
         });
       }
     });
-    console.log('users: ', users);
     setSearchResults(users);
   } catch (error) {
     console.error('Error searching users:', error);

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase/firebase';
 import { useTheme } from 'next-themes';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
-import Image from 'next/image';
+import Image from '@/components/Image';
 import updateUserStatus from '@/lib/api/changeStatus';
 import CreateGroup from './_components/SheetMenuButtons/CreateGroup';
 import SwitchTheme from './_components/SheetMenuButtons/SwitchTheme';

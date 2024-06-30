@@ -8,6 +8,7 @@ import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { getValidTime } from '@/lib/utils';
 import useFetchUser from '@/hooks/useFetchUser';
 import { useStateSelector } from '@/state';
+import Image from '@/components/Image';
 
 interface MessageProps {
   message: IMessage;
@@ -16,7 +17,7 @@ interface MessageProps {
 function Message({ message }: MessageProps) {
   const router = useRouter();
   const delayForGroup = 120;
-	const myUser = useStateSelector((state) => state.auth.myUser);
+  const myUser = useStateSelector((state) => state.auth.myUser);
   const isCurrentUser = myUser ? message.senderId === myUser.id : false;
   const sender = useFetchUser(message.senderId);
 
@@ -63,7 +64,7 @@ function Message({ message }: MessageProps) {
         observer.unobserve(messageRef.current);
       }
     };
-  }, [message.id, myUser?.id]);
+  }, [message.id, myUser?.id, myUser]);
 
   return (
     <div
@@ -78,9 +79,11 @@ function Message({ message }: MessageProps) {
           onClick={() => handleUserClick(message.senderId)}
           className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}
         >
-          {isLastInGroup && (
-            <img
-              src={sender?.avatarUrl}
+          {isLastInGroup && sender && (
+            <Image
+              width={32}
+              height={32}
+              src={sender.avatarUrl}
               alt="avatar"
               className="w-full h-full rounded-full object-cover"
             />
@@ -112,7 +115,9 @@ function Message({ message }: MessageProps) {
                   isFirstInGroup && !isCurrentUser && 'mt-1.5'
                 }`}
               >
-                <img
+                <Image
+                  width={400}
+                  height={400}
                   src={message.image}
                   alt="image"
                   className={`object-cover`}
@@ -123,9 +128,11 @@ function Message({ message }: MessageProps) {
               onClick={() => setOpen(false)}
               className={`h-screen flex justify-center items-center w-screen outline-none ring-none border-none`}
             >
-              <img
+              <Image
                 src={message.image}
                 alt="image"
+                width={400}
+                height={400}
                 className={`max-h-screen px-10 object-contain flex-grow max-w-screen transition-none`}
               />
             </DialogContent>

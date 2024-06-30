@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import HeaderMenu from '../HeaderMenu';
 import { TimeType } from '@/types';
 import useFetchUser from '@/hooks/useFetchUser';
+import Image from '@/components/Image';
 
 const Header = ({
   userStatus,
@@ -21,10 +22,12 @@ const Header = ({
 
   return otherUser && !groupData ? (
     <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
-      <img
-        onClick={() => handleUserClick(otherUser.id)}
+      <Image
         src={otherUser.avatarUrl}
-        alt=""
+        alt={otherUser.name}
+        width={40}
+        height={40}
+        onClick={() => handleUserClick(otherUser.id)}
         className="h-10 rounded-full cursor-pointer"
       />
       <div className="flex flex-col gap-1">
@@ -46,7 +49,9 @@ const Header = ({
   ) : (
     groupData && (
       <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
-        <img
+        <Image
+          width={40}
+          height={40}
           src={groupData.avatarUrl}
           alt=""
           className="h-10 rounded-full aspect-square cursor-pointer bg-light-3 dark:bg-dark-3 object-cover"

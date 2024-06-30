@@ -1,6 +1,7 @@
 'use client';
 import { db } from '@/lib/firebase/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import Image from '@/components/Image';
 import { useEffect, useState } from 'react';
 
 const ProfilePage = ({ userId }: { userId: string }) => {
@@ -66,7 +67,9 @@ const ProfilePage = ({ userId }: { userId: string }) => {
       {user ? (
         <div className="px-[15px] max-w-[400px] mx-auto  my-4 flex items-center flex-col gap-3">
           <div className="h-48 w-48 rounded-full overflow-hidden select-none">
-            <img
+            <Image
+              width={192}
+              height={192}
               src={user.avatarUrl}
               className={'w-full h-full object-cover'}
               alt="avatar"

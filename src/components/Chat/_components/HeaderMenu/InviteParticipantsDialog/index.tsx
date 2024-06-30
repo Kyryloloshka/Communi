@@ -15,6 +15,7 @@ import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 import { formatTimestamp } from '@/lib/utils';
 import useGroup from '@/hooks/useGroup';
+import Image from '@/components/Image';
 
 const InviteParticipantsDialog = ({
   isOpen,
@@ -70,7 +71,9 @@ const InviteParticipantsDialog = ({
                   key={user.id}
                   className="flex items-center gap-2 bg-light-4 dark:bg-dark-3 px-2 py-1 rounded-lg"
                 >
-                  <img
+                  <Image
+                    width={24}
+                    height={24}
                     src={user.avatarUrl}
                     alt=""
                     className="h-6 w-6 rounded-full"
@@ -94,7 +97,9 @@ const InviteParticipantsDialog = ({
                       : ''
                   }`}
                 >
-                  <img
+                  <Image
+                    width={40}
+                    height={40}
                     src={user.avatarUrl}
                     alt=""
                     className="h-10 rounded-full cursor-pointer"

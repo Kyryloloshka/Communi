@@ -1,20 +1,25 @@
 import { useTheme } from 'next-themes';
-import React from 'react'
+import Image from '@/components/Image';
+import React from 'react';
 
 const Settings = () => {
-	const { theme } = useTheme();
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
-	return (
+  return (
     <div className="flex gap-2 p-2 items-center cursor-pointer hover:bg-primary-500/70 dark:hover:bg-dark-5 transition">
       <div className="w-6">
         {isDark ? (
-          <img
+          <Image
+            width={24}
+            height={24}
             className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2 "
             src="/assets/icons/settings-light.svg"
             alt="settings"
           />
         ) : (
-          <img
+          <Image
+            width={24}
+            height={24}
             className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2 "
             src="/assets/icons/settings-dark.svg"
             alt="settings"
@@ -24,6 +29,6 @@ const Settings = () => {
       <div>Settings</div>
     </div>
   );
-}
+};
 
-export default Settings
+export default Settings;

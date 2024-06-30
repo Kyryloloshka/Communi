@@ -10,6 +10,7 @@ import {
 import React, { useState } from 'react';
 import './styles.css';
 import InviteParticipantsDialog from './InviteParticipantsDialog';
+import Image from '@/components/Image';
 
 const HeaderMenu = () => {
   const [isInviteDialogOpen, setInviteDialogOpen] = useState(false);
@@ -45,7 +46,13 @@ const HeaderMenu = () => {
               <span className="text-[#ba141a] font-semibold">
                 Leave the group
               </span>
-              <img className="h-5" src="/assets/icons/leave.svg" alt="leave" />
+              <Image
+                width={20}
+                height={20}
+                className="h-5"
+                src="/assets/icons/leave.svg"
+                alt="leave"
+              />
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

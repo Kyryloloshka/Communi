@@ -17,6 +17,7 @@ import { useStateSelector } from '@/state';
 import { doc, setDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useTheme } from 'next-themes';
+import Image from '@/components/Image';
 import React, { useState } from 'react';
 
 const CreateGroup = () => {
@@ -82,13 +83,17 @@ const CreateGroup = () => {
         <button className="flex gap-1 py-1 items-center pl-1 cursor-pointer hover:bg-primary-500/70 dark:hover:bg-dark-5 transition">
           <div className="w-8 flex justify-center items-center">
             {isDark ? (
-              <img
+              <Image
+                width={24}
+                height={24}
                 className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2"
                 src="/assets/icons/group-light.svg"
                 alt="settings"
               />
             ) : (
-              <img
+              <Image
+                width={24}
+                height={24}
                 className="fill-dark-5 dark:fill-light-2 stroke-dark-5 dark:stroke-light-2"
                 src="/assets/icons/group-dark.svg"
                 alt="settings"
