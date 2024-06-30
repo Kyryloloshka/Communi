@@ -4,16 +4,17 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import Image from '@/components/Image';
 import { useEffect, useState } from 'react';
 
-const ProfilePage = ({ userId }: { userId: string }) => {
+const ProfilePage = ({ userTag }: { userTag: string }) => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isCopiedTag, setIsCopiedTag] = useState(false);
+
   useEffect(() => {
     const fetchUser = async () => {
-      if (userId) {
+      if (userTag) {
         try {
           const usersRef = collection(db, 'users');
-          const q = query(usersRef, where('__name__', '==', userId));
+          const q = query(usersRef, where('tag', '==', userTag));
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0];
@@ -30,7 +31,7 @@ const ProfilePage = ({ userId }: { userId: string }) => {
     };
 
     fetchUser();
-  }, [userId]);
+  }, [userTag]);
 
   if (loading) {
     return (

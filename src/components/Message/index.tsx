@@ -34,9 +34,9 @@ function Message({ message }: MessageProps) {
   const [open, setOpen] = useState<boolean | undefined>(undefined);
   const messageRef = useRef<HTMLDivElement>(null);
 
-  const handleUserClick = (userId: string | undefined) => {
-    if (!userId) return;
-    router.push(`/?userId=${userId}`);
+  const handleUserClick = () => {
+    if (!sender?.tag) return;
+    router.push(`/?userTag=${sender.tag}`);
   };
 
   useEffect(() => {
@@ -78,7 +78,7 @@ function Message({ message }: MessageProps) {
     >
       {!isCurrentUser && (
         <div
-          onClick={() => handleUserClick(message.senderId)}
+          onClick={() => handleUserClick()}
           className={`w-8 h-8 mr-2 self-end aspect-square cursor-pointer`}
         >
           {isLastInGroup && sender && (
@@ -103,7 +103,7 @@ function Message({ message }: MessageProps) {
         {!isCurrentUser && isFirstInGroup && (
           <button
             type="button"
-            onClick={() => handleUserClick(message.senderId)}
+            onClick={() => handleUserClick()}
             className={`text-left text-secondary-500 dark:text-primary-500 px-2 leading-[1em] pt-1.5`}
           >
             {sender?.name}

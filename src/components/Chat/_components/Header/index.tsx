@@ -17,7 +17,7 @@ const Header = ({
 
   const router = useRouter();
   const handleUserClick = (userId: string) => {
-    router.push(`/?userId=${userId}`);
+    router.push(`/?userTag=${userId}`);
   };
 
   return otherUser && !groupData ? (

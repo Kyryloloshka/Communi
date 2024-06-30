@@ -25,7 +25,7 @@ function Home() {
   const router = useRouter();
   const myUser = useStateSelector((state) => state.auth.myUser);
   const searchParams = useSearchParams();
-  const userId = searchParams.get('userId');
+  const userTag = searchParams.get('userTag');
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -56,7 +56,7 @@ function Home() {
         </ResizablePanel>
         <ResizableHandle className="bg-primary-500/80 dark:bg-dark-5" />
         <ResizablePanel defaultSize={75} className="min-w-[300px]">
-          {userId ? <Profile userId={userId} /> : <Chat />}
+          {userTag ? <Profile userTag={userTag} /> : <Chat />}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

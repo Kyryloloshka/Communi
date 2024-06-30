@@ -24,6 +24,7 @@ const CardChatsMenu = ({ chat }: { chat: DocumentData }) => {
   const actions = useActionCreators(authActions);
   const router = useRouter();
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
+
   const openChat = (chat: any) => {
     if (!userData) return;
     router.push('/');
@@ -81,10 +82,11 @@ const CardChatsMenu = ({ chat }: { chat: DocumentData }) => {
       console.error('Transaction failed: ', error);
     });
   };
+
   return (
     userData && (
       <div className="" onClick={() => openChat(chat)}>
-        {chat.type === 'chat' && otherData ? (
+        {chat.type === ChatType.Chat && otherData ? (
           <UserCard
             isSelected={selectedChat?.id === chat.id}
             name={otherData.name}
@@ -94,14 +96,16 @@ const CardChatsMenu = ({ chat }: { chat: DocumentData }) => {
             type={ChatType.Chat}
           />
         ) : (
-          <UserCard
-            isSelected={selectedChat?.id === chat.id}
-            name={chat.name}
-            avatarUrl={chat.avatarUrl}
-            unreadCount={chat.unreadCount && chat.unreadCount[userData.id]}
-            latestMessage={chat.lastMessage}
-            type={ChatType.Group}
-          />
+          chat.type === ChatType.Group && (
+            <UserCard
+              isSelected={selectedChat?.id === chat.id}
+              name={chat.name}
+              avatarUrl={chat.avatarUrl}
+              unreadCount={chat.unreadCount && chat.unreadCount[userData.id]}
+              latestMessage={chat.lastMessage}
+              type={ChatType.Group}
+            />
+          )
         )}
       </div>
     )
