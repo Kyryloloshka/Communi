@@ -1,10 +1,8 @@
-import { formatTimestamp } from '@/lib/utils';
 import { useStateSelector } from '@/state';
-import { useRouter } from 'next/navigation';
-import HeaderMenu from '../HeaderMenu';
 import { TimeType } from '@/types';
 import useFetchUser from '@/hooks/useFetchUser';
-import Image from '@/components/Image';
+import UserHeader from './UserHeader';
+import GroupHeader from './GroupHeader';
 
 const Header = ({
   userStatus,
@@ -15,55 +13,10 @@ const Header = ({
   const otherUser = useFetchUser(selectedChat?.otherId);
   const groupData = selectedChat?.groupData;
 
-  const router = useRouter();
-  const handleUserClick = (userId: string) => {
-    router.push(`/?userTag=${userId}`);
-  };
-
   return otherUser && !groupData ? (
-    <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
-      <Image
-        src={otherUser.avatarUrl}
-        alt={otherUser.name}
-        width={40}
-        height={40}
-        onClick={() => handleUserClick(otherUser.id)}
-        className="h-10 rounded-full cursor-pointer"
-      />
-      <div className="flex flex-col gap-1">
-        <div
-          onClick={() => handleUserClick(otherUser.id)}
-          className="text-dark-5 dark:text-light-2 leading-[1em] cursor-pointer"
-        >
-          {otherUser.name}
-        </div>
-        {userStatus && (
-          <div className="text-dark-5/80 dark:text-primary-500/70 text-xs leading-[1em]">
-            {userStatus.onlineStatus === 'online'
-              ? 'online'
-              : 'last seen ' + formatTimestamp(userStatus.lastOnline)}
-          </div>
-        )}
-      </div>
-    </div>
+    <UserHeader otherUser={otherUser} userStatus={userStatus} />
   ) : (
-    groupData && (
-      <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
-        <Image
-          width={40}
-          height={40}
-          src={groupData.avatarUrl}
-          alt={groupData.name}
-          className="h-10 rounded-full aspect-square cursor-pointer bg-light-3 dark:bg-dark-3 object-cover"
-        />
-        <div className="flex flex-auto flex-col gap-1">
-          <div className="text-dark-5 dark:text-light-2 leading-[1em] cursor-pointer">
-            {groupData.name}
-          </div>
-        </div>
-        <HeaderMenu />
-      </div>
-    )
+    groupData && <GroupHeader groupData={groupData} />
   );
 };
 

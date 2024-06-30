@@ -48,11 +48,12 @@ export interface Group {
   avatarUrl: string;
   members: string[];
   admins: string[];
+  createdAt: TimeType;
   unreadCount: {
     [x: string]: number;
   };
   timestamp: TimeType;
-	lastMessage: IMessage | null;
+  lastMessage: IMessage | null;
   type: ChatType;
 }
 
