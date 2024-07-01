@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -7,15 +7,14 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import CloseDialogElem from '@/components/ui/close-dialog-elem';
-import useChatUsers from '@/hooks/useChatUsers';
 import { User } from '@/types';
 import { Button } from '@/components/ui/button';
-import { useStateSelector } from '@/state';
+import { authActions, useActionCreators, useStateSelector } from '@/state';
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
-import { formatTimestamp } from '@/lib/utils';
-import useGroup from '@/hooks/useGroup';
-import Image from '@/components/Image';
+import SelectedUsers from './SelectedUsers';
+import ChatsList from './ChatsList';
+import { convertChatToSelectedChat } from '@/lib/utils';
 
 const InviteParticipantsDialog = ({
   isOpen,
@@ -24,22 +23,14 @@ const InviteParticipantsDialog = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const chatUsers = useChatUsers();
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const selectedChat = useStateSelector((state) => state.auth.selectedChat);
-  const { groupData } = useGroup(selectedChat?.id);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const handleUserSelect = useCallback((user: User) => {
-    setErrorMessage('');
-    setSelectedUsers((prevSelected) =>
-      prevSelected.some((u) => u.id === user.id)
-        ? prevSelected.filter((u) => u.id !== user.id)
-        : [...prevSelected, user],
-    );
-  }, []);
+  const actions = useActionCreators(authActions);
+  const myUser = useStateSelector((state) => state.auth.myUser);
 
   const handleConfirm = useCallback(async () => {
-    if (!selectedChat || selectedUsers.length === 0) {
+    if (!selectedChat || selectedUsers.length === 0 || !myUser?.id) {
       setErrorMessage('Please select at least one user to add to the group.');
       return;
     }
@@ -50,11 +41,20 @@ const InviteParticipantsDialog = ({
       await updateDoc(groupRef, {
         members: arrayUnion(...selectedUsers.map((user) => user.id)),
       });
+      actions.setSelectedChat({
+        ...selectedChat,
+        ...(selectedChat.groupData?.members && {
+          members: [
+            ...selectedChat.groupData.members,
+            ...selectedUsers.map((user) => user.id),
+          ],
+        }),
+      });
       onClose();
     } catch (error) {
       console.error('Error adding participants to group: ', error);
     }
-  }, [selectedChat, selectedUsers, onClose]);
+  }, [selectedChat, selectedUsers, onClose, myUser?.id, actions]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -64,65 +64,13 @@ const InviteParticipantsDialog = ({
           <p>
             Add people to this chat. They will be able to see the chat history.
           </p>
-          {selectedUsers.length > 0 && (
-            <div className="flex gap-2 flex-wrap">
-              {selectedUsers.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center gap-2 bg-light-4 dark:bg-dark-3 px-2 py-1 rounded-lg"
-                >
-                  <Image
-                    width={24}
-                    height={24}
-                    src={user.avatarUrl}
-                    alt={user.name}
-                    className="h-6 w-6 rounded-full"
-                  />
-                  <div className="whitespace-nowrap">{user.name}</div>
-                </div>
-              ))}
-            </div>
-          )}
+          <SelectedUsers selectedUsers={selectedUsers} />
           <div className="flex flex-col gap-2">
-            {chatUsers.map((user) => (
-              <button
-                className={`text-left cursor-pointer ${groupData?.members.includes(user.id) ? 'opacity-50' : ''}`}
-                key={user.id}
-                onClick={() => handleUserSelect(user)}
-              >
-                <div
-                  className={`bg-light-4 dark:bg-dark-3 flex gap-3 p-2 rounded-lg items-center select-none ${
-                    selectedUsers.some((u) => u.id === user.id)
-                      ? 'dark:bg-dark-4 light:bg-neutral-300'
-                      : ''
-                  }`}
-                >
-                  <Image
-                    width={40}
-                    height={40}
-                    src={user.avatarUrl}
-                    alt={user.name}
-                    className="h-10 rounded-full cursor-pointer"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <div className="text-dark-5 dark:text-light-2 leading-[1em] cursor-pointer">
-                      {user.name}
-                    </div>
-                    {user.onlineStatus && (
-                      <div className="text-dark-5/80 dark:text-primary-500/70 text-xs leading-[1em]">
-                        {user.onlineStatus === 'online'
-                          ? 'online'
-                          : 'last seen ' +
-                            formatTimestamp({
-                              seconds: user.lastOnline.seconds,
-                              nanoseconds: user.lastOnline.nanoseconds,
-                            })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
+            <ChatsList
+              selectedUsers={selectedUsers}
+              setSelectedUsers={setSelectedUsers}
+              setErrorMessage={setErrorMessage}
+            />
           </div>
           <Button variant={'primary'} onClick={handleConfirm}>
             Confirm

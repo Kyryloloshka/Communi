@@ -12,7 +12,7 @@ import { useStateSelector } from '@/state';
 import { User } from '@/types';
 
 const useChatUsers = () => {
-  const [chatUsers, setChatUsers] = useState<User[]>([]);
+  const [chatUsers, setChatUsers] = useState<(User | null)[]>([]);
   const user = useStateSelector((state) => state.auth.myUser);
 
   useEffect(() => {
@@ -42,13 +42,13 @@ const useChatUsers = () => {
         ),
       );
 
-      const userList = userDocs.map(
-        (doc) =>
-          ({
-            ...doc.data(),
-            id: doc.id,
-          }) as User,
-      );
+      const userList = userDocs.map((doc) => {
+        if (!doc.exists()) return null;
+        return {
+          ...doc.data(),
+          id: doc.id,
+        } as User;
+      });
       setChatUsers(userList);
     };
 

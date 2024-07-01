@@ -1,6 +1,7 @@
 import UserCard from '@/components/UserCard';
 import useFetchUser from '@/hooks/useFetchUser';
 import { db } from '@/lib/firebase/firebase';
+import { convertChatToSelectedChat } from '@/lib/utils';
 import { authActions, useActionCreators, useStateSelector } from '@/state';
 import { ChatType, SelectedChatData } from '@/types';
 import {
@@ -28,35 +29,7 @@ const CardChatsMenu = ({ chat }: { chat: DocumentData }) => {
   const openChat = (chat: any) => {
     if (!userData) return;
     router.push('/');
-    const data = {
-      id: chat.id,
-      myId: userData.id,
-      ...(chat.type === 'chat'
-        ? {
-            otherId: chat.users.find((id: any) => id !== userData.id),
-          }
-        : {
-            groupData: {
-              ...chat,
-              createdAt: {
-                seconds: chat.createdAt.seconds,
-                nanoseconds: chat.createdAt.nanoseconds,
-              },
-              timestamp: {
-                seconds: chat.timestamp.seconds,
-                nanoseconds: chat.timestamp.nanoseconds,
-              },
-              lastMessage: {
-                ...chat.lastMessage,
-                time: {
-                  seconds: chat.lastMessage.time.seconds,
-                  nanoseconds: chat.lastMessage.time.nanoseconds,
-                },
-              },
-            },
-          }),
-      type: chat.type,
-    } as SelectedChatData;
+    const data = convertChatToSelectedChat(chat, userData.id);
     actions.setSelectedChat(data);
     const chatRef = doc(db, chat.type === 'chat' ? 'chats' : 'groups', chat.id);
 

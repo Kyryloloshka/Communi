@@ -1,4 +1,4 @@
-import { TimeType } from '@/types';
+import { SelectedChatData, TimeType, User } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
 import { Timestamp } from 'firebase/firestore';
 import { twMerge } from 'tailwind-merge';
@@ -85,3 +85,35 @@ export const timestampToTimeType = (
     nanoseconds: timestamp.nanoseconds,
   };
 };
+
+export const convertChatToSelectedChat = (chat: any, myId: string) => {
+  return {
+    id: chat.id,
+    myId: myId,
+    ...(chat.type === 'chat'
+      ? {
+          otherId: chat.users.find((id: any) => id !== myId),
+        }
+      : {
+          groupData: {
+            ...chat,
+            createdAt: {
+              seconds: chat.createdAt.seconds,
+              nanoseconds: chat.createdAt.nanoseconds,
+            },
+            timestamp: {
+              seconds: chat.timestamp.seconds,
+              nanoseconds: chat.timestamp.nanoseconds,
+            },
+            lastMessage: {
+              ...chat.lastMessage,
+              time: {
+                seconds: chat.lastMessage.time.seconds,
+                nanoseconds: chat.lastMessage.time.nanoseconds,
+              },
+            },
+          },
+        }),
+    type: chat.type,
+  } as SelectedChatData;
+}
