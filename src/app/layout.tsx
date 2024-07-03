@@ -1,13 +1,18 @@
 import '@/app/globals.css';
 import StoreProvider from '@/components/StoreProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { store } from '@/state';
+import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 const inter = Inter({
   weight: ['100', '200', '300', '400', '600', '700'],
   subsets: ['latin', 'cyrillic'],
 });
+
+export const metadata: Metadata = {
+  title: "Communi - Chat App",
+  description: "Communi is a chat app that allows you to chat with friends and family.",
+};
 
 interface RootLayoutProps {
   children: React.ReactNode;
