@@ -11,10 +11,15 @@ import React, { useState } from 'react';
 import './styles.css';
 import InviteParticipantsDialog from './InviteParticipantsDialog';
 import Image from '@/components/Image';
+import { dialogActions, useActionCreators, useStateSelector } from '@/state';
 
 const HeaderMenu = () => {
   const [isInviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const isGroupInfoOpen = useStateSelector(
+    (state) => state.dialogs.groupInfoOpen,
+  );
 
+  const actions = useActionCreators(dialogActions);
   const handleInviteDialogOpen = () => {
     setInviteDialogOpen(true);
   };
@@ -22,6 +27,11 @@ const HeaderMenu = () => {
   const handleInviteDialogClose = () => {
     setInviteDialogOpen(false);
   };
+
+  const handleOpenInfoAboutGroup = () => {
+    actions.setGroupInfoOpen(true);
+  };
+	
   return (
     <>
       <DropdownMenu>
@@ -32,9 +42,11 @@ const HeaderMenu = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 mx-4">
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <span>Information about group</span>
-            </DropdownMenuItem>
+            {!isGroupInfoOpen && (
+              <DropdownMenuItem onSelect={handleOpenInfoAboutGroup}>
+                <span>Information about group</span>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onSelect={handleInviteDialogOpen}>
               <span>Invite Participants</span>
             </DropdownMenuItem>

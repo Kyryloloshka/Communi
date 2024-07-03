@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import HeaderMenu from '../../HeaderMenu';
 import { Group } from '@/types';
 import GroupInfoDialog from './GroupInfoDialog';
+import { dialogActions, useActionCreators } from '@/state';
 
 const GroupHeader = ({ groupData }: { groupData: Group }) => {
-  const [openDialog, setOpenDialog] = useState(false);
-  const handleGroupClick = () => {
-    setOpenDialog(true);
-  };
+	const actions = useActionCreators(dialogActions);
+  
+	const handleGroupClick = () => {
+		actions.setGroupInfoOpen(true)
+	};
+
   return (
     <div className="bg-light-4 dark:bg-dark-3 flex gap-3 py-2 px-6 items-center select-none">
       <Image
@@ -29,8 +32,6 @@ const GroupHeader = ({ groupData }: { groupData: Group }) => {
       </div>
       <HeaderMenu />
       <GroupInfoDialog
-        setOpen={setOpenDialog}
-        open={openDialog}
         groupData={groupData}
       />
     </div>

@@ -13,16 +13,15 @@ import Image from 'next/image';
 import React from 'react';
 import HeaderMenu from '../../../HeaderMenu';
 import GroupMembersList from './GroupMembersList';
+import { dialogActions, useActionCreators, useStateSelector } from '@/state';
 
 const GroupInfoDialog = ({
-  open,
   groupData,
-  setOpen,
 }: {
-  open: boolean;
   groupData: Group;
-  setOpen: (open: boolean) => void;
 }) => {
+	const open = useStateSelector((state) => state.dialogs.groupInfoOpen);
+	const actions = useActionCreators(dialogActions);
   return (
     <Dialog open={open}>
       <DialogContent className="gap-1">
@@ -71,7 +70,7 @@ const GroupInfoDialog = ({
         </div>
         <DropdownMenuSeparator />
         <GroupMembersList groupData={groupData} />
-        <CloseDialogElem onClick={() => setOpen(false)} />
+        <CloseDialogElem onClick={() => actions.setGroupInfoOpen(false)} />
       </DialogContent>
     </Dialog>
   );
