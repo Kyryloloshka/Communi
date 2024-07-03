@@ -105,15 +105,17 @@ export const convertChatToSelectedChat = (chat: any, myId: string) => {
               seconds: chat.timestamp.seconds,
               nanoseconds: chat.timestamp.nanoseconds,
             },
-            lastMessage: {
-              ...chat.lastMessage,
-              time: {
-                seconds: chat.lastMessage.time.seconds,
-                nanoseconds: chat.lastMessage.time.nanoseconds,
+            ...(chat.lastMessage && {
+              lastMessage: {
+                ...chat.lastMessage,
+                time: {
+                  seconds: chat.lastMessage.time.seconds,
+                  nanoseconds: chat.lastMessage.time.nanoseconds,
+                },
               },
-            },
+            }),
           },
         }),
     type: chat.type,
   } as SelectedChatData;
-}
+};

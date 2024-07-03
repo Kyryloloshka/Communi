@@ -40,7 +40,6 @@ const ChatsMenu = () => {
       const groupQuery = query(
         collection(db, 'groups'),
         where('members', 'array-contains', userData.id),
-        orderBy('lastMessage.time', 'desc'),
       );
       const unsubGroups = onSnapshot(groupQuery, (snapshot) => {
         const groups = snapshot.docs.map((doc) => ({
@@ -59,10 +58,12 @@ const ChatsMenu = () => {
     }
   }, [userData]);
 
-  const combinedChats = [...userChats, ...groups].sort(
-    (a, b) => b.lastMessage.time - a.lastMessage.time,
-  );
+  const combinedChats = [...userChats, ...groups].sort((a, b) => {
+    const timeA = a.lastMessage ? a.lastMessage.time : a.createdAt;
+    const timeB = b.lastMessage ? b.lastMessage.time : b.createdAt;
 
+    return timeB - timeA;
+  });
   if (!userData) return null;
   return (
     <div className="">
@@ -72,9 +73,7 @@ const ChatsMenu = () => {
         </div>
       ) : (
         combinedChats.map((chat: DocumentData) => {
-          return (
-            <CardChatsMenu key={chat.id} chat={chat}/>
-          );
+          return <CardChatsMenu key={chat.id} chat={chat} />;
         })
       )}
     </div>
